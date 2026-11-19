@@ -192,6 +192,16 @@ tr.click:hover td{background:var(--surface-2)}
   .form{grid-template-columns:1fr}
   .g2{grid-template-columns:1fr}
 }
+
+.navg{font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.4px;padding:12px 10px 4px}
+nav a span:first-of-type{flex:1;min-width:0}
+a.card.link{text-decoration:none;color:inherit;display:block}
+a.card.link:hover{border-color:var(--accent)}
+tr.grp td{background:var(--surface-2);font-weight:700;font-size:12.5px;color:var(--ink)}
+tr.zero td{color:var(--ink-3)} tr.zero .mname{color:var(--ink-2)}
+.brk{font-size:11px;color:var(--crit);font-weight:600}
+.mini{display:flex;align-items:center;gap:8px}.mini .bar-track{flex:1;height:10px}.mini span{min-width:22px;text-align:right;font-weight:600}
+.errbox{font-family:ui-monospace,monospace;font-size:12px;white-space:pre-wrap;word-break:break-all;margin-top:6px}
 </style>
 </head>
 <body class="ro">
@@ -210,7 +220,10 @@ tr.click:hover td{background:var(--surface-2)}
 <div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
 <div class="tip" id="tip"></div>
 <div class="toast" id="toast"></div>
-
+<script>
+/* Lista de materiales por defecto (STOCK_MATERIAL.xlsx). Se reemplaza al subir una nueva lista en "Actualizar stock". */
+const DEFAULT_CATALOG = {"gpon":[{"code":"291368","sub":"OLT","name":"OLT GPON ZTE C610 - 16 port DC","type":"Equipo","unit":"Set","grp":"OLT"},{"code":"294701","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP GPON-OLT class C+","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"283866","sub":"OLT","name":"Single Channel Dual Fiber Bidirectional Optical Module ZTE 10Km/1.25Gb","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"294702","sub":"PATCH CORD","name":"Patch Cord SC/UPC-SC/UPC 3mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000089","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 3mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000087","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 15mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000086","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 10mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"267990","sub":"ODF","name":"ODF 48 Ports SC/UPC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"002925","sub":"ODF","name":"ODF 24 Ports SC/UPC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"265191","sub":"GABINETE","name":"Cabinet Outdoor for OLT and ODF","type":"Gabinete Exterior","unit":"Unit","grp":"ODF"},{"code":"299798","sub":"MUFA","name":"Clousure 48Fo Dome, 8 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"299799","sub":"MUFA","name":"Clousure 24Fo Dome, 8 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"000424","sub":"MUFA","name":"Clousure 24Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"000423","sub":"MUFA","name":"Clousure 12Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"008810","sub":"MUFA","name":"Clousure 4Fo Plane, 3 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"262079","sub":"MUFA","name":"Clousure 1Fo Plane, 2 Ports, Empalme mecanico","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"300476","sub":"ODB","name":"ODB, 11 Ports Adapter (HUB-BOX 70/30)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300477","sub":"ODB","name":"ODB, 11 Ports Adapter (SUB-BOX 70/30)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300478","sub":"ODB","name":"ODB, 11 Ports Adapter (SUB-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300479","sub":"ODB","name":"ODB, 10 Ports Adapter (END-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"298476","sub":"ODB","name":"ODB, 9 Ports Adapter (EXP-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"298912","sub":"ODB","name":"ODB, 9 Ports Adapter (Building)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"296344","sub":"MUFA","name":"ZTE_ODB, 2 fiber Ports Adapter (Juntion Box)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294765","sub":"MUFA","name":"ZTE_ODB, 8 MPO and 4 fiber Ports Adapter (X-BOX)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294764","sub":"MUFA","name":"ZTE_ODB, 5 Ports Adapter (HUB-BOX)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294767","sub":"ODB","name":"ZTE_ODB, 11 Ports Adapter (SUB-BOX 70/30)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294768","sub":"ODB","name":"ZTE_ODB, 11 Ports Adapter (SUB-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294766","sub":"ODB","name":"ZTE_ODB, 10 Ports Adapter (END-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"296345","sub":"ODB","name":"ZTE_ODB, 9 Ports Adapter (EXP-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"299379","sub":"CONNECTOR","name":"Waterproof Field Conector for ZTE Box","type":"Conector pre-ensamblado","unit":"Set","grp":"Connector"},{"code":"299378","sub":"CONNECTOR","name":"Conector Fastener SC/APC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"","sub":"SPLITTER","name":"Splitter 1x8 PLC (Pigtail 1*8 PLC)","type":"Splitter","unit":"Unit","grp":"Connector"},{"code":"043978","sub":"CABLES","name":"Fiber Optic Cable ADSS 48 Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"063004","sub":"CABLES","name":"Fiber Optic Cable ADSS 24 Span 200m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"000067","sub":"CABLES","name":"Fiber Optic Cable ADSS 24 Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"299344","sub":"CABLES","name":"Fiber Optic Cable ASU 12Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"300378","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"009266","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m - Flexible","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"300379","sub":"CABLES","name":"Fiber Optic Cable ASU 1Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"294795","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 100m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294796","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 200m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"296347","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 300m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294797","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 500m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294798","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 600m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294799","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 700m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294790","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 50m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294791","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 100m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294792","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 150m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294793","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 200m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294794","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 250m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"295995","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 300m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"299381","sub":"CABLES","name":"Cable Fibra Optica 1 Hilo - Drop","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"296348","sub":"PATCH CORD","name":"ZTE_Patch Cord SC/APC 7mt","type":"Patch Cord","unit":"Unit","grp":"Accesories"},{"code":"000306","sub":"PREFORMADOS","name":"Tension Span 200","type":"Herraje de Tensión","unit":"Unit","grp":"Accesories"},{"code":"000305","sub":"PREFORMADOS","name":"Tension Span 100","type":"Herraje de Tensión","unit":"Unit","grp":"Accesories"},{"code":"000313","sub":"FERRETERIA","name":"Suspension Span 100","type":"Herraje de Suspensión","unit":"Unit","grp":"Accesories"},{"code":"000350","sub":"FERRETERIA","name":"Cable clamps OPGW","type":"Herraje de Suspensión","unit":"Unit","grp":"Accesories"},{"code":"298983","sub":"PREFORMADOS","name":"Preformed plastic for 5mm-8mm cable","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"294929","sub":"PREFORMADOS","name":"Preformed for 6.8mm cable (MPO Cable)","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"294928","sub":"PREFORMADOS","name":"Preformed for 5mm cable (Pre-con Cable)","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"299380","sub":"PREFORMADOS","name":"Templador for Drop Cable","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"028497","sub":"FERRETERIA","name":"Clevis D type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"294898","sub":"FERRETERIA","name":"Clevis Trebol Type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"285043","sub":"FERRETERIA","name":"Supporting arm 1.0m","type":"Brazo de Soporte","unit":"Unit","grp":"Accesories"},{"code":"295136","sub":"FERRETERIA","name":"Supporting arm 0.6m","type":"Brazo de Soporte","unit":"Unit","grp":"Accesories"},{"code":"024941","sub":"FERRETERIA","name":"Cruzeta 60cm","type":"Cruceta","unit":"Unit","grp":"Accesories"},{"code":"295280","sub":"MENSAJERO","name":"Steel Wire Rope 4mm, with PVC cover","type":"Cable de Acero","unit":"Meters","grp":"Accesories"},{"code":"295360","sub":"MENSAJERO","name":"Dielectric Hanging clamp","type":"Abrazadera Dieléctrica","unit":"Unit","grp":"Accesories"},{"code":"020910","sub":"MENSAJERO","name":"Steel Padlock 3/8\" for Steel Wire","type":"Accesorio de Seguridad","unit":"Unit","grp":"Accesories"},{"code":"008332","sub":"FERRETERIA","name":"Cinta Bandit + Set belt (Hebillas)","type":"Cinta de Acero + Hebillas de Fijación","unit":"Set","grp":"Accesories"},{"code":"294899","sub":"FERRETERIA","name":"Steel Band for pole diameters range from 100-200mm","type":"Cinta de Acero Ensamblado","unit":"Set","grp":"Accesories"},{"code":"295660","sub":"FERRETERIA","name":"Cinta Bandit","type":"Cinta de Acero","unit":"Meters","grp":"Accesories"},{"code":"295661","sub":"FERRETERIA","name":"Set belt (Hebillas)","type":"Hebillas de Fijación","unit":"Unit","grp":"Accesories"},{"code":"","sub":"","name":"Fiber cable label","type":"Etiqueta de Identificación","unit":"Unit","grp":"Accesories"},{"code":"009610","sub":"FERRETERIA","name":"Fireproof PVC Corrugated Tube 25mm","type":"Tubo corrugado PVC","unit":"Meters","grp":"Accesories"},{"code":"","sub":"FERRETERIA","name":"Ear type cable Clamp","type":"Abrazadera","unit":"Unit","grp":"Accesories"},{"code":"","sub":"","name":"Cable Cintillo 4x200mm","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"}],"bccs1":[{"code":"110012","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 1.25Gb LC/UPC (Tx1310/Rx1550)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110004","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 1.25Gb LC/UPC (Tx1550/Rx1310)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110003","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 1.25Gb SC/UPC (Tx1310/Rx1550)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110033","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 20km (Tx1490/Rx1310)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110006","sub":"PATCH CORD","name":"Patch Cord FC/UPC-LC/UPC 5mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110029","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 1mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110028","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 2mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110027","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 3mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110026","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 5mt","type":"Equipo de Distribución","unit":"Unit","grp":"ODF"},{"code":"110025","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/UPC 2mt","type":"Equipo de Distribución","unit":"Unit","grp":"ODF"},{"code":"110024","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/UPC 3mt","type":"Gabinete Exterior","unit":"Unit","grp":"ODF"},{"code":"110079","sub":"PATCH CORD","name":"Patch Cord SC/UPC-FC/UPC 3mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110014","sub":"PATCH CORD","name":"Patch Cord SC/UPC-LC/UPC 5mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110023","sub":"PATCH CORD","name":"Patch Cord SC/UPC-SC/UPC 2mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110078","sub":"PATCH CORD","name":"Patch Cord SC/UPC-SC/UPC 3mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110019","sub":"PATCH CORD","name":"Pigtail SC/UPC","type":"Pigtail","unit":"Unit","grp":"ODF"},{"code":"110016","sub":"ODF","name":"ODF 2 Ports","type":"Pigtail","unit":"Set","grp":"ODF"},{"code":"110032","sub":"ODF","name":"ODF 24 Ports SC/APC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"110030","sub":"ODF","name":"ODF 48 Ports SC/APC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"110018","sub":"ODF","name":"ODF 96 Ports SC/APC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"110055","sub":"MUFA","name":"Clousure 1Fo Plane, 2 Ports, Empalme mecanico","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"110068","sub":"MUFA","name":"Clousure 24Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"110059","sub":"MUFA","name":"Empalme Para Fibra de 1 Hilo","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"110031","sub":"MUFA","name":"ODB, 9 Ports Adapter (Building)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"110021","sub":"MUFA","name":"Splitter 1x16 PLC (SC/APC)","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110020","sub":"MUFA","name":"Splitter 1x4 FHP (SC/APC)","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110022","sub":"ODB","name":"Splitter 1x8 FHP","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110034","sub":"ODB","name":"Splitter 1x8 FHP (SC/APC)","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110013","sub":"CONNECTOR","name":"Conector Fastener LC/APC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"110039","sub":"CONNECTOR","name":"Conector Fastener SC/APC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"110005","sub":"CONNECTOR","name":"Conector Fastener SC/UPC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"110069","sub":"CONNECTOR","name":"Waterproof Field Conector for ZTE Box","type":"Conector","unit":"Set","grp":"Connector"},{"code":"110001","sub":"CABLES","name":"Cable Fibra Optica 1 Hilo - Drop","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"110036","sub":"CABLES","name":"Cable Fibra Optica 2 Hilos - Drop","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"110035","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"110044","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 100m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110045","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 150m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110046","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 200m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110047","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 250m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110048","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 300m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110049","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 350m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110042","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 50m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110043","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 80m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110057","sub":"CABLES","name":"UTP Cat5 Cable","type":"Cable de Red","unit":"Meters","grp":"Cables"},{"code":"110017","sub":"ONU","name":"PHYHOME_Router AC1200","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110002","sub":"ONU","name":"TP LINK_Router TL-WR841F","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110054","sub":"ONU","name":"ZTE_Mesh ZXHN H196A","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110041","sub":"ONU","name":"ZTE_Router F671Y","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110071","sub":"ONU","name":"ZTE_Router F672Y","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110052","sub":"ONU","name":"ZTE_Router S6600P","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110066","sub":"TV BOX","name":"DYNALINK_Tv Box DL-GT36","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110070","sub":"TV BOX","name":"Tv Box DV9187","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110058","sub":"TV BOX","name":"ZTE_Tv Box ZXV10 B866V2K","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110060","sub":"TV BOX","name":"ZTE_Tv Box ZXV10 B866V2K","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110064","sub":"ACCESORIOS","name":"Canaleta Adhesiva 13x7x2000mm","type":"Canaleta de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110080","sub":"ACCESORIOS","name":"Cintillo Bandera Amarillo 2.5mm","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110063","sub":"ACCESORIOS","name":"Grapa","type":"Grapa de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110065","sub":"FERRETERIA","name":"Cinta Aislante Negro 3m","type":"Cinta Aislante Negro","unit":"Unit","grp":"Accesories"},{"code":"110008","sub":"FERRETERIA","name":"Cinta Bandit + Set belt (Hebillas)","type":"Cinta de Acero + Hebillas de Fijación","unit":"Set","grp":"Accesories"},{"code":"110051","sub":"FERRETERIA","name":"Cinta Bandit + Set belt (Hebillas)","type":"Cinta de Acero + Hebillas de Fijación","unit":"Set","grp":"Accesories"},{"code":"110062","sub":"FERRETERIA","name":"Cintillo Blanco 4.8mm","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110007","sub":"FERRETERIA","name":"Clevis D type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"110050","sub":"FERRETERIA","name":"Clevis Trebol Type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"110053","sub":"PREFORMADOS","name":"Templador for Drop Cable","type":"Retenida Preformada","unit":"Set","grp":"Accesories"}]};
+</script>
 <script>
 /* ============ Utilidades ============ */
 const $ = s => document.querySelector(s);
@@ -223,17 +236,16 @@ const MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov',
 const DOW = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 const pad = n => String(n).padStart(2,'0');
 const isoDate = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-const parseISO = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+const parseISO = s => { const [y,m,d] = String(s).slice(0,10).split('-').map(Number); return new Date(y,m-1,d); };
 const todayISO = () => isoDate(new Date());
 const fmtDate = s => { if(!s) return '—'; const d = parseISO(s); return `${pad(d.getDate())} ${MES3[d.getMonth()]} ${d.getFullYear()}`; };
+const fmtShort = s => { const d = parseISO(s); return `${pad(d.getDate())} ${MES3[d.getMonth()]}`; };
 const daysBetween = (a,b) => Math.round((parseISO(b)-parseISO(a))/86400000);
 const addDays = (s,n) => { const d = parseISO(s); d.setDate(d.getDate()+n); return isoDate(d); };
-const UNIT = {'sợi':'pza','cái':'pza','pcs':'pza','bộ/ set':'jgo','bộ':'jgo','hộp':'caja','m':'m'};
+const UNIT = {'sợi':'und','cái':'und','pcs':'und','unit':'und','bộ/ set':'jgo','bộ':'jgo','set':'jgo','hộp':'caja','m':'m','meters':'m'};
 const unitEs = u => UNIT[String(u||'').trim().toLowerCase()] || u || '';
-function splitName(name){
-  const parts = String(name||'').split('|')[0].split('_').map(s=>s.trim()).filter(Boolean);
-  return {short: parts[0] || name, spec: parts.slice(1).join(' · ')};
-}
+const normCode = v => { if(v===null||v===undefined) return ''; let s = String(v).trim(); if(/no\s*code/i.test(s)) return ''; if(/^\d+(\.0+)?$/.test(s)) s = String(parseInt(s,10)).padStart(6,'0'); return s; };
+const cleanName = n => { const p = String(n||'').split('|').map(x=>x.trim()).filter(Boolean); return p.length>1 ? p[1] : (p[0]||''); };
 const ICON = {
   ok:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 8.5l3 3 7-7"/></svg>',
   warn:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l7.5 13H.5z"/><rect x="7.2" y="5.5" width="1.6" height="4.5" fill="#fff"/><rect x="7.2" y="11" width="1.6" height="1.6" fill="#fff"/></svg>',
@@ -242,92 +254,138 @@ const ICON = {
   truck:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 3h9v7H1zM10 6h3l2 2.5V10h-5z"/><circle cx="4" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/></svg>',
   x:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
 };
-function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none',2600); }
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none',2800); }
+const tag = (cls,label,ic) => `<span class="tag ${cls}">${ic?ICON[ic]:''}${esc(label)}</span>`;
 
-/* ============ Estado ============ */
-const DEFAULT_WH = {VTP_GPON:'Lima · Central',LAL_GPON:'La Libertad',ARE_GPON:'Arequipa',CAJ_GPON:'Cajamarca',CUS_GPON:'Cusco',HUN_GPON:'Huánuco',JUN_GPON:'Junín',PIU_GPON:'Piura',SAN_GPON:'San Martín'};
+/* ============ Configuración base ============ */
+// Las 3 familias de almacenes del WMS, según el sufijo del código de almacén.
+const SECS = {
+  GPON:{key:'GPON', n:1, hash:'proyectos',   title:'Proyectos nuevos ODN', short:'Proyectos',  desc:'Material para implementación de proyectos nuevos ODN · almacenes <b>*_GPON</b>'},
+  NOC: {key:'NOC',  n:2, hash:'incidencias', title:'Incidencias ODN',      short:'Incidencias',desc:'Material para incidencias ODN · almacenes <b>*_NOC_GPON</b>'},
+  ROT: {key:'ROT',  n:3, hash:'recuperado',  title:'Material recuperado ODN', short:'Recuperado', desc:'Material recuperado ODN · almacenes <b>*_ROTATIONAL_GPON</b>'},
+};
+const SEC_KEYS = ['GPON','NOC','ROT'];
+const whType = w => /_ROTATIONAL_GPON$/i.test(w) ? 'ROT' : /_NOC_GPON$/i.test(w) ? 'NOC' : /_GPON$/i.test(w) ? 'GPON' : 'OTRO';
+const whRegion = w => String(w).split('_')[0];
+const REGION = {VTP:'Lima · Central', ARE:'Arequipa', CAJ:'Cajamarca', CUS:'Cusco', HUN:'Huánuco', JUN:'Junín', LAL:'La Libertad', PIU:'Piura', SAN:'San Martín', AYA:'Ayacucho', HUA:'Huaraz'};
+const regionLabel = r => (S.cfg.wh && S.cfg.wh[r]) || REGION[r] || r;
+const regionSort = (a,b) => (a===b?0:a==='VTP'?-1:b==='VTP'?1:a.localeCompare(b));
+const whSort = (a,b) => regionSort(whRegion(a), whRegion(b)) || SEC_KEYS.indexOf(whType(a)) - SEC_KEYS.indexOf(whType(b)) || a.localeCompare(b);
+const whNice = w => { const t = whType(w); return `${whRegion(w)} · ${t==='OTRO'?w:SECS[t].short}`; };
 const STATUS = {
   programado:{l:'Programado',cls:'t-info',ic:'clock'},
   transito:{l:'En tránsito',cls:'t-warn',ic:'truck'},
   entregado:{l:'Entregado',cls:'t-good',ic:'ok'},
   cancelado:{l:'Cancelado',cls:'t-mute',ic:'x'},
 };
-const TYPES = {ingreso:'Ingreso de proveedor',transferencia:'Transferencia entre almacenes',despacho:'Despacho a contrata / obra'};
+const TYPES = {ingreso:'Ingreso de proveedor',transferencia:'Transferencia entre almacenes',despacho:'Despacho a contrata / obra',devolucion:'Devolución / recupero'};
+
+/* ============ Estado ============ */
 const S = {
   email:null, canWrite:false, conn:'connecting',
-  snaps:[], sel:null, deliveries:[], cfg:{min:{},wh:{},central:'VTP_GPON'},
-  view:'resumen', stock:{q:'',wh:'',st:'',sort:'code',dir:1}, heatQ:'',
-  cmp:{a:null,b:null,only:true}, trend:{code:''}, whA:'', whB:'',
+  cortes:[], catalog:{gpon:DEFAULT_CATALOG.gpon, bccs1:DEFAULT_CATALOG.bccs1}, catalogFromDb:false,
+  deliveries:[], cfg:{min:{}, wh:{}},
+  view:'resumen', sel:null, selLm:null,
+  tbl:{q:'', grp:'', wh:'', st:'', broken:false, sort:'cat', dir:1},
+  cmp:{code:'', a:'', b:'', sugT:'GPON', sugSrc:'central'},
+  mov:{a:'', b:'', t:'', r:'', onlyCat:false},
   cal:{y:new Date().getFullYear(), m:new Date().getMonth(), wh:'', st:''},
-  pending:null, names:{}
+  pending:null
 };
-const snap = () => S.snaps.find(s=>s.date===S.sel) || S.snaps[S.snaps.length-1] || null;
-const prevSnap = () => { const c=snap(); if(!c) return null; const i=S.snaps.indexOf(c); return i>0?S.snaps[i-1]:null; };
-const whLabel = w => (S.cfg.wh && S.cfg.wh[w]) || DEFAULT_WH[w] || w;
-const whShort = w => String(w).replace(/_GPON$/,'');
-const minOf = code => { const v = S.cfg.min && S.cfg.min[code]; return (v===undefined||v===null||v==='') ? null : Number(v); };
-function stockStatus(it){
-  const m = minOf(it.code);
-  if(it.total<=0) return {k:'crit',l:'Sin stock',cls:'t-crit',ic:'crit'};
-  if(m===null) return {k:'none',l:'Sin mínimo',cls:'t-mute',ic:null};
-  if(it.total<m) return {k:'crit',l:'Bajo mínimo',cls:'t-crit',ic:'crit'};
-  if(it.total<m*1.25) return {k:'warn',l:'Cerca del mínimo',cls:'t-warn',ic:'warn'};
+const cortesOf = kind => S.cortes.filter(c=>c.kind===kind).sort((a,b)=>a.date.localeCompare(b.date));
+const curWh = () => { const l = cortesOf('wh'); return l.find(c=>c.date===S.sel) || l[l.length-1] || null; };
+const prevWh = () => { const l = cortesOf('wh'), c = curWh(); const i = l.indexOf(c); return i>0 ? l[i-1] : null; };
+const curLm = () => { const l = cortesOf('bccs1'); return l.find(c=>c.date===S.selLm) || l[l.length-1] || null; };
+function idx(c){ // Map código → Map almacén → {g,b}
+  if(!c) return new Map();
+  if(c._idx) return c._idx;
+  const m = new Map();
+  for(const r of c.rows){ if(!m.has(r.c)) m.set(r.c, new Map()); const x = m.get(r.c).get(r.w) || {g:0,b:0}; x.g += r.g; x.b += r.b; m.get(r.c).set(r.w, x); }
+  c._idx = m; return m;
+}
+const whsIn = (c, T) => c ? [...new Set(c.rows.map(r=>r.w))].filter(w=>!T || whType(w)===T).sort(whSort) : [];
+const qty = (c, code, w) => (idx(c).get(code)?.get(w)?.g) || 0;
+const sumType = (c, code, T) => { let s=0, b=0; const m = idx(c).get(code); if(m) for(const [w,v] of m) if(whType(w)===T){ s+=v.g; b+=v.b; } return {g:s, b}; };
+const catGpon = () => S.catalog.gpon || [];
+const catBccs = () => S.catalog.bccs1 || [];
+function info(code){
+  for(const it of [...catGpon(), ...catBccs()]) if(it.code===code) return {name:it.name, unit:it.unit, grp:it.grp, sub:it.sub, type:it.type, inCat:true};
+  for(const c of S.cortes){ const n = c.names[code]; if(n) return {name:n[0], unit:n[1], grp:'', inCat:false}; }
+  return {name:code, unit:'', grp:'', inCat:false};
+}
+const minKey = (T, code) => `${T}:${code}`;
+const minOf = (T, code) => { const v = S.cfg.min && S.cfg.min[minKey(T,code)]; return (v===undefined||v===null||v==='') ? null : Number(v); };
+function stStatus(total, min){
+  if(total<=0) return {k:'crit',l:'Sin stock',cls:'t-crit',ic:'crit'};
+  if(min===null) return {k:'none',l:'OK',cls:'t-mute',ic:null};
+  if(total<min) return {k:'crit',l:'Bajo mínimo',cls:'t-crit',ic:'crit'};
+  if(total<min*1.25) return {k:'warn',l:'Cerca del mínimo',cls:'t-warn',ic:'warn'};
   return {k:'ok',l:'OK',cls:'t-good',ic:'ok'};
 }
-const tag = (cls,label,ic) => `<span class="tag ${cls}">${ic?ICON[ic]:''}${esc(label)}</span>`;
 const isOverdue = d => d.date < todayISO() && (d.status==='programado'||d.status==='transito');
 function delivTag(d){ if(isOverdue(d)) return tag('t-crit','Vencida','crit'); const s=STATUS[d.status]||STATUS.programado; return tag(s.cls,s.l,s.ic); }
-function itemByCode(code){ const s=snap(); return s ? s.items.find(i=>i.code===code) : null; }
-function catalog(){ // todos los materiales conocidos en cualquier corte
-  const m = new Map(); for(const s of S.snaps) for(const i of s.items) m.set(i.code,i); return m;
-}
 
 /* ============ Navegación ============ */
-const VIEWS = [
-  ['resumen','Resumen','<path d="M3 13h4v8H3zM10 3h4v18h-4zM17 9h4v12h-4z"/>'],
-  ['stock','Stock','<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10" fill="none" stroke="currentColor" stroke-width="1.6"/>'],
-  ['comparacion','Comparación de almacenes','<path d="M4 4h6v16H4zM14 8h6v12h-6z"/>'],
-  ['calendario','Calendario de entregas','<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="var(--surface)" stroke-width="1.8"/>'],
-  ['historial','Historial y variaciones','<path d="M12 3a9 9 0 1 1-9 9h3a6 6 0 1 0 6-6z"/><path d="M11 7h2v6h-2z"/>'],
-  ['actualizar','Actualizar stock','<path d="M12 3l5 5h-3v7h-4V8H7zM4 17h16v4H4z"/>'],
+const NAV = [
+  {k:'resumen', l:'Resumen', i:'<path d="M3 13h4v8H3zM10 3h4v18h-4zM17 9h4v12h-4z"/>'},
+  {g:'Stock por almacén'},
+  {k:'proyectos', l:'1. Proyectos nuevos ODN', i:'<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/>'},
+  {k:'incidencias', l:'2. Incidencias ODN', i:'<path d="M12 2l10 18H2z"/>'},
+  {k:'recuperado', l:'3. Recuperado ODN', i:'<path d="M12 4a8 8 0 1 1-8 8h3a5 5 0 1 0 5-5v3L7 5.5 12 1z"/>'},
+  {k:'lastmile', l:'4. Lastmile (BCCS1)', i:'<path d="M3 11l9-7 9 7v10h-6v-6H9v6H3z"/>'},
+  {g:'5. Comparativa y movimientos'},
+  {k:'comparativa', l:'Comparativa de almacenes', i:'<path d="M4 4h6v16H4zM14 8h6v12h-6z"/>'},
+  {k:'movimientos', l:'Movimientos diarios', i:'<path d="M4 7h13l-3-3 1.4-1.4L21 8l-5.6 5.4L14 12l3-3H4zM20 17H7l3 3-1.4 1.4L3 16l5.6-5.4L10 12l-3 3h13z"/>'},
+  {k:'calendario', l:'Calendario de entregas', i:'<rect x="3" y="5" width="18" height="16" rx="2"/>'},
+  {g:'Administración'},
+  {k:'actualizar', l:'Actualizar stock', i:'<path d="M12 3l5 5h-3v7h-4V8H7zM4 17h16v4H4z"/>'},
 ];
 function renderNav(){
   const od = S.deliveries.filter(isOverdue).length;
-  $('#nav').innerHTML = VIEWS.map(([k,l,p]) =>
-    `<a href="#${k}" class="${S.view===k?'on':''}"><svg viewBox="0 0 24 24" fill="currentColor">${p}</svg>${l}${k==='calendario'&&od?`<span class="badge" title="Entregas vencidas">${od}</span>`:''}</a>`).join('');
+  $('#nav').innerHTML = NAV.map(n => n.g ? `<div class="navg">${esc(n.g)}</div>` :
+    `<a href="#${n.k}" class="${S.view===n.k?'on':''}"><svg viewBox="0 0 24 24" fill="currentColor">${n.i}</svg><span>${n.l}</span>${n.k==='calendario'&&od?`<span class="badge" title="Entregas vencidas">${od}</span>`:''}</a>`).join('');
 }
 function route(){
   const h = location.hash.replace('#','');
-  S.view = VIEWS.some(v=>v[0]===h) ? h : 'resumen';
-  render();
+  S.view = NAV.some(n=>n.k===h) ? h : 'resumen';
+  render(); window.scrollTo(0,0);
 }
 window.addEventListener('hashchange', route);
 
-function header(title, sub){
-  const s = snap();
-  const opts = S.snaps.slice().reverse().map(x=>`<option value="${x.date}" ${s&&x.date===s.date?'selected':''}>${fmtDate(x.date)}</option>`).join('');
-  return `<div class="top"><div><h2>${esc(title)}</h2><div class="sub">${sub}</div></div>
-    ${S.snaps.length?`<div class="cutpill">Corte de stock <select id="cutSel">${opts}</select></div>`:''}</div>`;
+function cutPicker(kind){
+  const l = cortesOf(kind); if(!l.length) return '';
+  const c = kind==='wh' ? curWh() : curLm();
+  return `<div class="cutpill">Corte <select data-cut="${kind}">${l.slice().reverse().map(x=>`<option value="${x.date}" ${c&&x.date===c.date?'selected':''}>${fmtDate(x.date)}</option>`).join('')}</select></div>`;
 }
-function bindHeader(){ const c=$('#cutSel'); if(c) c.onchange=()=>{S.sel=c.value; render();}; }
-function staleBanner(){
-  const s = snap(); if(!s) return '';
-  const latest = S.snaps[S.snaps.length-1];
-  if(s!==latest) return `<div class="banner info">${ICON.clock}<div>Estás viendo el corte del <b>${fmtDate(s.date)}</b>, no el más reciente (${fmtDate(latest.date)}).</div></div>`;
-  const age = daysBetween(s.date, todayISO());
-  if(age>=3) return `<div class="banner warn">${ICON.warn}<div>El último corte de stock tiene <b>${age} días</b>. <a href="#actualizar">Carga el reporte más reciente del WMS</a> para mantener las cifras al día.</div></div>`;
+function header(title, sub, kind='wh'){
+  return `<div class="top"><div><h2>${title}</h2><div class="sub">${sub}</div></div>${kind?cutPicker(kind):''}</div>`;
+}
+function staleBanner(c, kind='wh'){
+  if(!c) return '';
+  const l = cortesOf(kind), latest = l[l.length-1];
+  if(c!==latest) return `<div class="banner info">${ICON.clock}<div>Estás viendo el corte del <b>${fmtDate(c.date)}</b>, no el más reciente (${fmtDate(latest.date)}).</div></div>`;
+  const age = daysBetween(c.date, todayISO());
+  if(age>=2) return `<div class="banner warn">${ICON.warn}<div>El último corte tiene <b>${age} días</b>. <a href="#actualizar">Carga el reporte más reciente</a> o revisa el script automático.</div></div>`;
   return '';
 }
 function emptyState(){
-  if(S.conn==='connecting') return `<div class="card empty"><b>Cargando datos…</b>Conectando con la base de datos de la plataforma.</div>`;
-  return `<div class="card empty"><b>Aún no hay cortes de stock cargados</b>Descarga el reporte “Báo cáo tổng hợp tồn kho” del WMS y súbelo en <a href="#actualizar">Actualizar stock</a>.</div>`;
+  if(S.conn==='connecting') return `<div class="card empty"><b>Cargando datos…</b>Conectando con la base de datos.</div>`;
+  if(S.loadError) return `<div class="card empty"><b>No se pudo leer la base de datos</b>Revisa que hayas ejecutado <span class="code">supabase_schema.sql</span> (versión 2) en Supabase. Detalle técnico:<div class="errbox">${esc(S.loadError)}</div></div>`;
+  return `<div class="card empty"><b>Aún no hay reportes de stock cargados</b>Sube el “Inventory Report” diario del WMS en <a href="#actualizar">Actualizar stock</a>.</div>`;
 }
-
 function render(){
   renderNav();
-  const fn = {resumen:vResumen, stock:vStock, comparacion:vComparacion, calendario:vCalendario, historial:vHistorial, actualizar:vActualizar}[S.view];
-  fn();
-  bindHeader();
+  const v = S.view;
+  if(v==='resumen') vResumen();
+  else if(v==='proyectos') vSection('GPON');
+  else if(v==='incidencias') vSection('NOC');
+  else if(v==='recuperado') vSection('ROT');
+  else if(v==='lastmile') vLastmile();
+  else if(v==='comparativa') vComparativa();
+  else if(v==='movimientos') vMovimientos();
+  else if(v==='calendario') vCalendario();
+  else if(v==='actualizar') vActualizar();
+  document.querySelectorAll('[data-cut]').forEach(sel=>sel.onchange=()=>{ if(sel.dataset.cut==='wh') S.sel=sel.value; else S.selLm=sel.value; render(); });
 }
 
 /* ============ Tooltip ============ */
@@ -335,8 +393,7 @@ const tip = $('#tip');
 document.addEventListener('mousemove', e => {
   const t = e.target.closest('[data-tip]');
   if(!t){ tip.style.display='none'; return; }
-  tip.innerHTML = esc(t.getAttribute('data-tip')) // solo se permiten <div class='tt'>, </div> y <br>
-    .replace(/&lt;div class=&#39;tt&#39;&gt;/g,"<div class='tt'>").replace(/&lt;\/div&gt;/g,'</div>').replace(/&lt;br&gt;/g,'<br>');
+  tip.innerHTML = esc(t.getAttribute('data-tip')).replace(/&lt;div class=&#39;tt&#39;&gt;/g,"<div class='tt'>").replace(/&lt;\/div&gt;/g,'</div>').replace(/&lt;br&gt;/g,'<br>');
   tip.style.display='block';
   const w = tip.offsetWidth, h = tip.offsetHeight;
   let x = e.clientX+14, y = e.clientY+14;
@@ -346,14 +403,14 @@ document.addEventListener('mousemove', e => {
 });
 
 /* ============ Gráficos ============ */
-function hbars(rows, opt={}){ // rows: [{label, sub, value, tip, fmt}]
+function hbars(rows){
   const max = Math.max(1, ...rows.map(r=>r.value));
-  return `<div class="bars">${rows.map(r=>`<div class="bar-row" data-tip="${esc(r.tip||'')}" ${r.onclick?`style="cursor:pointer" data-act="${r.onclick}"`:''}>
+  return `<div class="bars">${rows.map(r=>`<div class="bar-row" data-tip="${esc(r.tip||'')}" ${r.act?`style="cursor:pointer" data-act="${r.act}"`:''}>
     <div class="bl"><b>${esc(r.label)}</b>${r.sub?` <span class="muted">${esc(r.sub)}</span>`:''}</div>
     <div class="bar-track"><div class="bar-fill" style="width:${(r.value/max*100).toFixed(2)}%;${r.value>0?'min-width:2px':''}"></div></div>
     <div class="bv">${r.text ?? fmt(r.value)}</div></div>`).join('')}</div>`;
 }
-function lineChart(points, opt={}){ // points [{x:label, y:number, tip}]
+function lineChart(points){
   if(points.length<2) return `<div class="empty" style="padding:24px">Se necesitan al menos dos cortes para ver la tendencia.</div>`;
   const W=640,H=220,L=56,R=16,T=14,B=28;
   const ys = points.map(p=>p.y); let lo=Math.min(0,...ys), hi=Math.max(...ys); if(hi===lo) hi=lo+1;
@@ -368,244 +425,345 @@ function lineChart(points, opt={}){ // points [{x:label, y:number, tip}]
     ${points.map((p,i)=> i%step===0||i===points.length-1 ? `<text x="${X(i)}" y="${H-8}" text-anchor="middle">${esc(p.x)}</text>`:'').join('')}
     <path d="${path}" fill="none" stroke="var(--s400)" stroke-width="2" stroke-linejoin="round"/>
     ${points.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.y)}" r="4" fill="var(--s400)" stroke="var(--surface)" stroke-width="2"/>
-      <rect x="${X(i)-14}" y="${T}" width="28" height="${H-T-B}" fill="transparent" data-tip="${esc(p.tip||`<div class='tt'>${p.x}</div>${fmt(p.y)}`)}"/>`).join('')}
+      <rect x="${X(i)-14}" y="${T}" width="28" height="${H-T-B}" fill="transparent" data-tip="${esc(p.tip||'')}"/>`).join('')}
   </svg>`;
 }
 const RAMP = ['var(--s100)','var(--s200)','var(--s300)','var(--s400)','var(--s500)','var(--s600)','var(--s700)'];
 function rampColor(f){ if(!(f>0)) return ''; const i = Math.min(RAMP.length-1, Math.floor(f*RAMP.length)); return `background:${RAMP[i]};color:${i>=3?'#fff':'var(--ink)'}`; }
+const numCell = (v, b, showB) => `<td class="num">${v?fmt(v):'<span class="z">0</span>'}${showB&&b?`<div class="brk">+${fmt(b)} dañ.</div>`:''}</td>`;
 
-/* ============ Vista: Resumen ============ */
+/* ============ Resumen ============ */
+function secStats(c, T){
+  const cat = catGpon().filter(i=>i.code);
+  let withStock=0, none=0, low=0, broken=0;
+  for(const it of cat){ const s = sumType(c, it.code, T); if(s.g>0) withStock++; else none++; const st = stStatus(s.g, minOf(T,it.code)); if(s.g>0 && (st.k==='crit'||st.k==='warn')) low++; if(s.b>0) broken++; }
+  return {n:cat.length, withStock, none, low, broken, whs:whsIn(c,T).length};
+}
 function vResumen(){
-  const s = snap();
-  if(!s){ $('#main').innerHTML = header('Resumen','Visión general del stock y las entregas') + emptyState(); return; }
-  const t = todayISO();
-  const items = s.items;
-  const withStock = items.filter(i=>i.total>0).length;
-  const crit = items.filter(i=>stockStatus(i).k==='crit');
-  const warn = items.filter(i=>stockStatus(i).k==='warn');
-  const minsSet = items.filter(i=>minOf(i.code)!==null).length;
-  const up7 = S.deliveries.filter(d=>d.date>=t && d.date<=addDays(t,7) && d.status!=='cancelado' && d.status!=='entregado');
+  const c = curWh();
+  if(!c){ $('#main').innerHTML = header('Resumen','Visión general del stock y las entregas') + emptyState(); return; }
+  const t = todayISO(), age = daysBetween(c.date, t);
+  const stats = SEC_KEYS.map(T=>({T, ...secStats(c,T)}));
+  const regions = [...new Set(c.rows.map(r=>whRegion(r.w)))].sort(regionSort);
+  const catCodes = new Set(catGpon().map(i=>i.code).filter(Boolean));
+  const cov = {}; for(const r of c.rows){ if(r.g>0 && catCodes.has(r.c)){ const k = whRegion(r.w)+'|'+whType(r.w); (cov[k]=cov[k]||new Set()).add(r.c); } }
+  const maxCov = Math.max(1, ...Object.values(cov).map(s=>s.size));
+  const up = S.deliveries.filter(d=>d.date>=t && d.status!=='cancelado' && d.status!=='entregado').sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||''))).slice(0,6);
   const od = S.deliveries.filter(isOverdue);
-  const age = daysBetween(s.date, t);
-  const cov = s.warehouses.map(w=>({w, n:items.filter(i=>(i.q[w]||0)>0).length}));
-  const central = S.cfg.central || s.warehouses[0];
-  const onlyCentral = items.filter(i=>Object.keys(i.q).length===1 && i.q[central]>0).length;
-  const prev = prevSnap();
-  let moves = [];
-  if(prev){
-    const pm = new Map(prev.items.map(i=>[i.code,i]));
-    moves = items.map(i=>{ const p=pm.get(i.code); const a=p?p.total:0; return {i, a, d:i.total-a, r:a?(i.total-a)/a:null}; })
-      .filter(x=>x.d!==0).sort((x,y)=>Math.abs(y.r??1)-Math.abs(x.r??1)).slice(0,6);
+  const alerts = [];
+  for(const T of SEC_KEYS) for(const it of catGpon()){ if(!it.code) continue; const m = minOf(T,it.code); if(m===null) continue; const s = sumType(c,it.code,T).g; const st = stStatus(s,m); if(st.k==='crit'||st.k==='warn') alerts.push({T,it,s,m,st}); }
+  const p = prevWh(); let moves = [];
+  if(p){
+    const keys = new Set([...c.rows,...p.rows].map(r=>r.w+'|'+r.c));
+    const iA = idx(p), iB = idx(c);
+    for(const k of keys){ const [w,code] = k.split('|'); const a = iA.get(code)?.get(w)?.g||0, b = iB.get(code)?.get(w)?.g||0; if(a!==b) moves.push({w,code,a,b,d:b-a}); }
+    moves.sort((x,y)=>Math.abs(y.d)/Math.max(y.a,1)-Math.abs(x.d)/Math.max(x.a,1));
   }
-  const upcoming = S.deliveries.filter(d=>d.date>=t && d.status!=='cancelado' && d.status!=='entregado').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,6);
-
-  $('#main').innerHTML = header('Resumen', `Corte del ${fmtDate(s.date)} · ${s.warehouses.length} almacenes · ${items.length} materiales`) + staleBanner() + `
+  const lm = curLm();
+  $('#main').innerHTML = header('Resumen', `Corte del ${fmtDate(c.date)} · ${whsIn(c).length} almacenes · ${catGpon().length} materiales en la lista ODN`) + staleBanner(c) + `
   <div class="grid g4">
-    <div class="card kpi"><div class="lbl">Último corte de stock</div><div class="val">${fmtDate(s.date)}</div><div class="foot">${age===0?'Hoy':age===1?'Hace 1 día':`Hace ${age} días`}</div></div>
-    <div class="card kpi"><div class="lbl">Materiales con stock</div><div class="val">${withStock}<span class="muted" style="font-size:16px"> / ${items.length}</span></div><div class="foot">${onlyCentral} solo en ${esc(whShort(central))}</div></div>
-    <div class="card kpi"><div class="lbl">Bajo o cerca del mínimo</div><div class="val" style="color:${crit.length?'var(--crit)':'inherit'}">${crit.length}<span class="muted" style="font-size:16px"> + ${warn.length}</span></div><div class="foot">${minsSet?`${minsSet} materiales con mínimo definido`:'Define mínimos en la sección Stock'}</div></div>
-    <div class="card kpi"><div class="lbl">Entregas próximos 7 días</div><div class="val">${up7.length}</div><div class="foot">${od.length?`<span style="color:var(--crit);font-weight:600">${od.length} vencida${od.length>1?'s':''}</span>`:'Ninguna vencida'}</div></div>
+    <div class="card kpi"><div class="lbl">Último reporte del WMS</div><div class="val">${fmtDate(c.date)}</div><div class="foot">${age<=0?'Hoy':age===1?'Hace 1 día':`Hace ${age} días`}</div></div>
+    ${stats.map(s=>`<a class="card kpi link" href="#${SECS[s.T].hash}"><div class="lbl">${SECS[s.T].n}. ${SECS[s.T].title}</div><div class="val">${s.withStock}<span class="muted" style="font-size:16px"> / ${s.n}</span></div>
+      <div class="foot">con stock · <span style="color:${s.none?'var(--crit)':'inherit'}">${s.none} sin stock</span>${s.low?` · ${s.low} bajo mín.`:''}</div></a>`).join('')}
   </div>
   <div class="grid g2 mt">
-    <div class="card"><h3>Cobertura por almacén</h3><p class="hint">Cantidad de materiales distintos con stock en cada almacén (de ${items.length}). Clic para ver su stock.</p>
-      ${hbars(cov.sort((a,b)=>b.n-a.n).map(c=>({label:whShort(c.w), sub:whLabel(c.w), value:c.n, text:`${c.n} <span class="muted" style="font-weight:400">(${pct(c.n/items.length)})</span>`, tip:`<div class='tt'>${esc(c.w)} · ${esc(whLabel(c.w))}</div>${c.n} de ${items.length} materiales con stock`, onclick:'wh:'+c.w})))}
-    </div>
-    <div class="card"><h3>Próximas entregas</h3><p class="hint">Entregas programadas o en tránsito.</p>
-      ${upcoming.length?`<div class="list">${upcoming.map(delivLi).join('')}</div>`:`<div class="empty" style="padding:20px">No hay entregas programadas. <a href="#calendario">Abrir calendario</a></div>`}
+    <div class="card"><h3>Cobertura por región</h3><p class="hint">Materiales de la lista con stock en cada región y tipo de almacén (de ${catCodes.size}).</p>
+      <div class="tbl-wrap" style="max-height:none"><table><thead><tr><th>Región</th>${SEC_KEYS.map(T=>`<th>${SECS[T].short}</th>`).join('')}</tr></thead><tbody>
+      ${regions.map(r=>`<tr><td><b>${esc(r)}</b> <span class="muted">${esc(regionLabel(r))}</span></td>${SEC_KEYS.map(T=>{const n=(cov[r+'|'+T]||new Set()).size; const w=`${r}_${T==='GPON'?'GPON':T==='NOC'?'NOC_GPON':'ROTATIONAL_GPON'}`;
+        return `<td style="min-width:120px" data-tip="<div class='tt'>${esc(w)}</div>${n} de ${catCodes.size} materiales con stock"><div class="mini"><div class="bar-track"><div class="bar-fill" style="width:${n/maxCov*100}%;${n?'min-width:2px':''}"></div></div><span>${n||'<span class=z>—</span>'}</span></div></td>`}).join('')}</tr>`).join('')}
+      </tbody></table></div></div>
+    <div class="card"><h3>Próximas entregas</h3><p class="hint">Programadas o en tránsito.</p>
+      ${up.length?`<div class="list">${up.map(delivLi).join('')}</div>`:`<div class="empty" style="padding:20px">No hay entregas programadas. <a href="#calendario">Abrir calendario</a></div>`}
       ${od.length?`<div class="banner crit mt" style="margin-bottom:0">${ICON.crit}<div><b>${od.length} entrega${od.length>1?'s':''} vencida${od.length>1?'s':''}</b> sin marcar como entregada. <a href="#calendario">Revisar</a></div></div>`:''}
+      <div class="kpi mt" style="border-top:1px solid var(--line);padding-top:12px"><div class="lbl">4. Lastmile (BCCS1)</div><div class="foot">${lm?`Último reporte: ${fmtDate(lm.date)}`:'Fuente de datos pendiente de definir.'} <a href="#lastmile">Ver sección</a></div></div>
     </div>
   </div>
   <div class="grid g2 mt">
-    <div class="card"><h3>Alertas de stock</h3><p class="hint">Materiales sin stock o por debajo del mínimo definido.</p>
-      ${crit.length+warn.length ? `<div class="list">${[...crit,...warn].slice(0,10).map(i=>{const st=stockStatus(i);const n=splitName(i.name);return `<div class="li click" data-act="mat:${i.code}"><div class="body"><div class="t">${esc(n.short)}</div><div class="s"><span class="code">${i.code}</span> · Total ${fmt(i.total)} ${unitEs(i.unit)}${minOf(i.code)!==null?` · Mín. ${fmt(minOf(i.code))}`:''}</div></div>${tag(st.cls,st.l,st.ic)}</div>`}).join('')}</div>`
-        : `<div class="empty" style="padding:20px">${minsSet?'Todo el stock está por encima de los mínimos.':'Aún no hay mínimos definidos. Abre un material en <a href="#stock">Stock</a> para fijar su stock mínimo y recibir alertas aquí.'}</div>`}
-    </div>
-    <div class="card"><h3>Mayores variaciones vs. corte anterior</h3><p class="hint">${prev?`Comparado con el ${fmtDate(prev.date)}.`:'Disponible cuando haya al menos dos cortes cargados.'}</p>
-      ${moves.length?`<div class="list">${moves.map(m=>{const n=splitName(m.i.name);return `<div class="li click" data-act="mat:${m.i.code}"><div class="body"><div class="t">${esc(n.short)}</div><div class="s">${fmt(m.a)} → ${fmt(m.i.total)} ${unitEs(m.i.unit)}</div></div><span class="${m.d>0?'delta-up':'delta-dn'}">${m.d>0?'+':''}${fmt(m.d)}${m.r!==null?` (${m.d>0?'+':''}${pct(m.r)})`:''}</span></div>`}).join('')}</div>`
-        : `<div class="empty" style="padding:20px">${prev?'Sin cambios entre ambos cortes.':'—'}</div>`}
-    </div>
+    <div class="card"><h3>Alertas de stock mínimo</h3><p class="hint">Materiales por debajo o cerca del mínimo que definiste.</p>
+      ${alerts.length?`<div class="list">${alerts.slice(0,12).map(a=>`<div class="li click" data-act="mat:${a.it.code}:${a.T}"><div class="body"><div class="t">${esc(a.it.name)}</div><div class="s">${SECS[a.T].short} · <span class="code">${a.it.code}</span> · ${fmt(a.s)} de mín. ${fmt(a.m)} ${esc(unitEs(a.it.unit))}</div></div>${tag(a.st.cls,a.st.l,a.st.ic)}</div>`).join('')}</div>`
+        : `<div class="empty" style="padding:20px">Sin alertas. Para recibirlas, abre un material en cualquier sección y define su stock mínimo.</div>`}</div>
+    <div class="card"><h3>Mayores movimientos vs. reporte anterior</h3><p class="hint">${p?`Comparado con el ${fmtDate(p.date)}. <a href="#movimientos">Ver todos</a>`:'Disponible cuando haya al menos dos reportes cargados.'}</p>
+      ${moves.length?`<div class="list">${moves.slice(0,8).map(m=>`<div class="li click" data-act="mat:${m.code}:${whType(m.w)==='OTRO'?'GPON':whType(m.w)}"><div class="body"><div class="t">${esc(info(m.code).name)}</div><div class="s"><b>${esc(m.w)}</b> · ${fmt(m.a)} → ${fmt(m.b)}</div></div><span class="${m.d>0?'delta-up':'delta-dn'}">${m.d>0?'+':''}${fmt(m.d)}</span></div>`).join('')}</div>`:`<div class="empty" style="padding:20px">${p?'Sin cambios entre ambos reportes.':'—'}</div>`}</div>
   </div>`;
 }
 function delivLi(d){
   const dt = parseISO(d.date);
-  const items = (d.items||[]);
-  const first = items[0] ? (itemByCode(items[0].code)||catalog().get(items[0].code)) : null;
-  const title = first ? splitName(first.name).short + (items.length>1?` +${items.length-1}`:'') : (TYPES[d.type]||'Entrega');
-  const route = [d.origin?whShort(d.origin):'', d.dest?whShort(d.dest):''].filter(Boolean).join(' → ');
+  const items = d.items||[];
+  const title = items[0] ? info(items[0].code).name + (items.length>1?` +${items.length-1}`:'') : (TYPES[d.type]||'Entrega');
+  const rt = [d.origin, d.dest].filter(Boolean).join(' → ');
   return `<div class="li click" data-act="del:${d.id}"><div class="when"><b>${dt.getDate()}</b><span>${MES3[dt.getMonth()]}</span></div>
-    <div class="body"><div class="t">${esc(title)}</div><div class="s">${esc(TYPES[d.type]||'')}${route?' · '+esc(route):''}${d.party?' · '+esc(d.party):''}${d.time?' · '+esc(d.time):''}</div></div>${delivTag(d)}</div>`;
+    <div class="body"><div class="t">${esc(title)}</div><div class="s">${esc(TYPES[d.type]||'')}${rt?' · '+esc(rt):''}${d.party?' · '+esc(d.party):''}${d.time?' · '+esc(d.time):''}</div></div>${delivTag(d)}</div>`;
 }
 
-/* ============ Vista: Stock ============ */
-function vStock(){
-  const s = snap();
-  if(!s){ $('#main').innerHTML = header('Stock','Inventario por material y almacén') + emptyState(); return; }
-  const f = S.stock;
-  const q = f.q.trim().toLowerCase();
-  let rows = s.items.filter(i => (!q || (i.code+' '+i.name+' '+(i.nameVi||'')).toLowerCase().includes(q))
-    && (!f.wh || (i.q[f.wh]||0)>0)
-    && (!f.st || (f.st==='alert' ? ['crit','warn'].includes(stockStatus(i).k) : f.st==='nomin' ? minOf(i.code)===null : stockStatus(i).k===f.st)));
-  const key = f.sort;
-  const val = i => key==='code'?i.code : key==='name'?i.name.toLowerCase() : key==='total'?i.total : key==='min'?(minOf(i.code)??-1) : key==='st'?stockStatus(i).k : (i.q[key]||0);
-  rows.sort((a,b)=>{ const x=val(a), y=val(b); return (x<y?-1:x>y?1:0)*f.dir; });
+/* ============ Tabla de stock (secciones 1–4) ============ */
+function stockTable({c, cat, whs, T, kindLabel}){
+  const f = S.tbl, q = f.q.trim().toLowerCase();
+  const codesCat = new Set(cat.map(i=>i.code).filter(Boolean));
+  let rows = cat.map((it,i)=>{
+    const per = whs.map(w=>{ const v = idx(c).get(it.code)?.get(w); return {g:v?.g||0, b:v?.b||0}; });
+    const total = per.reduce((a,x)=>a+x.g,0), broken = per.reduce((a,x)=>a+x.b,0);
+    return {it, i, per, total, broken, st: it.code ? stStatus(total, minOf(T,it.code)) : {k:'nc',l:'Sin código',cls:'t-mute'}};
+  });
+  // Materiales presentes en los almacenes que no están en la lista
+  const others = c ? [...idx(c).keys()].filter(code=>!codesCat.has(code) && whs.some(w=>qty(c,code,w)>0 || (idx(c).get(code)?.get(w)?.b||0)>0)).map(code=>{
+    const per = whs.map(w=>{ const v = idx(c).get(code)?.get(w); return {g:v?.g||0, b:v?.b||0}; });
+    const inf = info(code);
+    return {it:{code, name:inf.name, unit:inf.unit, grp:'', sub:'', type:''}, per, total:per.reduce((a,x)=>a+x.g,0), broken:per.reduce((a,x)=>a+x.b,0), st:stStatus(1,null), other:true};
+  }) : [];
+  const groups = [...new Set(cat.map(i=>i.grp).filter(Boolean))];
+  const filt = r => (!q || (r.it.code+' '+r.it.name+' '+(r.it.sub||'')+' '+(r.it.type||'')).toLowerCase().includes(q))
+    && (!f.grp || r.it.grp===f.grp)
+    && (!f.wh || r.per[whs.indexOf(f.wh)]?.g>0)
+    && (!f.st || (f.st==='sin'?r.total<=0 : f.st==='con'?r.total>0 : f.st==='alert'?['crit','warn'].includes(r.st.k)&&r.total>0 : f.st==='dan'?r.broken>0 : true));
+  rows = rows.filter(filt);
+  const oth = others.filter(filt);
+  const sorted = f.sort!=='cat';
+  if(sorted){
+    const val = r => f.sort==='code'?r.it.code : f.sort==='name'?r.it.name.toLowerCase() : f.sort==='total'?r.total : f.sort==='min'?(minOf(T,r.it.code)??-1) : f.sort==='st'?r.st.k : (r.per[whs.indexOf(f.sort)]?.g||0);
+    rows.sort((a,b)=>{ const x=val(a), y=val(b); return (x<y?-1:x>y?1:0)*f.dir; });
+  }
   const arrow = k => f.sort===k ? (f.dir>0?' ▲':' ▼') : '';
-  const whs = s.warehouses;
-  $('#main').innerHTML = header('Stock', `Corte del ${fmtDate(s.date)} · ${rows.length} de ${s.items.length} materiales`) + staleBanner() + `
-  <div class="toolbar">
-    <input type="search" id="sq" placeholder="Buscar por código o nombre…" value="${esc(f.q)}" style="min-width:260px" class="grow">
-    <select id="swh"><option value="">Todos los almacenes</option>${whs.map(w=>`<option value="${w}" ${f.wh===w?'selected':''}>Con stock en ${whShort(w)} · ${esc(whLabel(w))}</option>`).join('')}</select>
-    <select id="sst"><option value="">Todos los estados</option><option value="alert" ${f.st==='alert'?'selected':''}>Con alerta</option><option value="crit" ${f.st==='crit'?'selected':''}>Bajo mínimo / sin stock</option><option value="warn" ${f.st==='warn'?'selected':''}>Cerca del mínimo</option><option value="ok" ${f.st==='ok'?'selected':''}>OK</option><option value="nomin" ${f.st==='nomin'?'selected':''}>Sin mínimo definido</option></select>
-    <button class="btn" id="xlsxBtn" title="Descarga la tabla filtrada como Excel">Descargar Excel</button>
-  </div>
-  <div class="tbl-wrap"><table>
-    <thead><tr>
-      <th class="sort" data-sort="code">Código${arrow('code')}</th>
-      <th class="sort" data-sort="name">Material${arrow('name')}</th>
-      <th>Und.</th>
+  const cols = whs.length + 6;
+  const rowHtml = r => `<tr class="click ${r.total<=0?'zero':''}" data-act="mat:${r.it.code}:${T}">
+      <td class="code">${r.it.code?esc(r.it.code):'<span class="z">sin código</span>'}</td>
+      <td class="wrap"><div class="mname">${esc(r.it.name)}</div>${r.it.type||r.it.sub?`<div class="mspec">${esc([r.it.sub,r.it.type].filter(Boolean).join(' · '))}</div>`:''}</td>
+      <td>${esc(unitEs(r.it.unit))}</td>
+      <td class="num"><b>${r.total?fmt(r.total):'<span class="z">0</span>'}</b>${f.broken&&r.broken?`<div class="brk">+${fmt(r.broken)} dañ.</div>`:''}</td>
+      ${r.per.map(x=>numCell(x.g,x.b,f.broken)).join('')}
+      <td class="num">${r.it.code&&minOf(T,r.it.code)!==null?fmt(minOf(T,r.it.code)):'<span class="z">—</span>'}</td>
+      <td>${tag(r.st.cls,r.st.l,r.st.ic)}</td></tr>`;
+  let body = '';
+  if(sorted) body = rows.map(rowHtml).join('');
+  else for(const g of [...groups, '']){ const rs = rows.filter(r=>(r.it.grp||'')===g); if(!rs.length) continue; if(g) body += `<tr class="grp"><td colspan="${cols}">${esc(g)} <span class="muted">· ${rs.length}</span></td></tr>`; body += rs.map(rowHtml).join(''); }
+  if(!body) body = `<tr><td colspan="${cols}" class="empty">Ningún material coincide con los filtros.</td></tr>`;
+  const head = `<thead><tr>
+      <th class="sort" data-sort="code">Código${arrow('code')}</th><th class="sort" data-sort="name">Material${arrow('name')}</th><th>Und.</th>
       <th class="sort num" data-sort="total">Total${arrow('total')}</th>
-      ${whs.map(w=>`<th class="sort num" data-sort="${w}" title="${esc(whLabel(w))}">${whShort(w)}${arrow(w)}<span class="whname">${esc(whLabel(w))}</span></th>`).join('')}
-      <th class="sort num" data-sort="min">Mínimo${arrow('min')}</th>
-      <th class="sort" data-sort="st">Estado${arrow('st')}</th>
-    </tr></thead>
-    <tbody>${rows.map(i=>{ const n=splitName(i.name); const st=stockStatus(i);
-      return `<tr class="click" data-act="mat:${i.code}">
-        <td class="code">${esc(i.code)}</td>
-        <td class="wrap"><div class="mname">${esc(n.short)}</div>${n.spec?`<div class="mspec">${esc(n.spec)}</div>`:''}</td>
-        <td>${esc(unitEs(i.unit))}</td>
-        <td class="num"><b>${fmt(i.total)}</b></td>
-        ${whs.map(w=>`<td class="num">${i.q[w]?fmt(i.q[w]):'<span class="z">·</span>'}</td>`).join('')}
-        <td class="num">${minOf(i.code)!==null?fmt(minOf(i.code)):'<span class="z">—</span>'}</td>
-        <td>${tag(st.cls,st.l,st.ic)}</td></tr>`; }).join('') || `<tr><td colspan="${whs.length+6}" class="empty">Ningún material coincide con los filtros.</td></tr>`}
-    </tbody></table></div>
-  <p class="muted" style="font-size:12px">Clic en una fila para ver el detalle, la tendencia, fijar el stock mínimo o programar una entrega.</p>`;
-  const sq=$('#sq'); sq.oninput=()=>{ f.q=sq.value; const pos=sq.selectionStart; vStock(); bindHeader(); const n=$('#sq'); n.focus(); n.setSelectionRange(pos,pos); };
-  $('#swh').onchange=e=>{f.wh=e.target.value; render();};
-  $('#sst').onchange=e=>{f.st=e.target.value; render();};
-  document.querySelectorAll('th.sort').forEach(th=>th.onclick=()=>{ const k=th.dataset.sort; if(f.sort===k) f.dir*=-1; else {f.sort=k; f.dir=(k==='code'||k==='name'||k==='st')?1:-1;} render(); });
-  $('#xlsxBtn').onclick=()=>{
-    if(!window.XLSX){ toast('El generador de Excel aún está cargando.'); return; }
-    const data=rows.map(i=>{ const r={'Código':i.code,'Material':i.name,'Unidad':unitEs(i.unit),'Total':i.total}; whs.forEach(w=>r[w]=i.q[w]||0); r['Mínimo']=minOf(i.code)??''; r['Estado']=stockStatus(i).l; return r; });
-    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'Stock');
-    XLSX.writeFile(wb, `Stock_FBB_${s.date}.xlsx`);
+      ${whs.map(w=>`<th class="sort num" data-sort="${w}" title="${esc(w)}">${esc(T==='LM'?w:whRegion(w))}${arrow(w)}${T==='LM'?'':`<span class="whname">${esc(regionLabel(whRegion(w)))}</span>`}</th>`).join('')}
+      <th class="sort num" data-sort="min">Mínimo${arrow('min')}</th><th class="sort" data-sort="st">Estado${arrow('st')}</th></tr></thead>`;
+  const html = `
+  <div class="toolbar">
+    <input type="search" id="sq" placeholder="Buscar código, material o tipo…" value="${esc(f.q)}" style="min-width:240px" class="grow">
+    <select id="sgrp"><option value="">Todas las secciones</option>${groups.map(g=>`<option ${f.grp===g?'selected':''}>${esc(g)}</option>`).join('')}</select>
+    <select id="swh"><option value="">Todos los almacenes</option>${whs.map(w=>`<option value="${w}" ${f.wh===w?'selected':''}>Con stock en ${esc(w)}</option>`).join('')}</select>
+    <select id="sst"><option value="">Todos</option><option value="con" ${f.st==='con'?'selected':''}>Con stock</option><option value="sin" ${f.st==='sin'?'selected':''}>Sin stock</option><option value="alert" ${f.st==='alert'?'selected':''}>Bajo / cerca del mínimo</option><option value="dan" ${f.st==='dan'?'selected':''}>Con material dañado</option></select>
+    <label class="row" style="font-size:13px"><input type="checkbox" id="sbrk" ${f.broken?'checked':''}> Ver dañados</label>
+    ${sorted?'<button class="btn" id="sReset">Orden de la lista</button>':''}
+    <button class="btn" id="xlsxBtn">Descargar Excel</button>
+  </div>
+  <div class="tbl-wrap"><table>${head}<tbody>${body}</tbody></table></div>
+  ${others.length?`<details class="card mt" ${oth.length&&q?'open':''}><summary style="cursor:pointer"><b>Otros materiales en estos almacenes</b> <span class="muted">· ${others.length} que no están en tu lista de materiales</span></summary>
+    <div class="tbl-wrap mt"><table>${head.replace(/class="sort[^"]*" data-sort="[^"]*"/g,'')}<tbody>${oth.map(rowHtml).join('')||`<tr><td colspan="${cols}" class="empty">Ninguno coincide con los filtros.</td></tr>`}</tbody></table></div></details>`:''}
+  <p class="muted" style="font-size:12px">Clic en un material para ver el detalle por almacén, compararlo entre tipos de almacén, fijar su mínimo o programar un movimiento.</p>`;
+  const bind = (rerender) => {
+    const sq=$('#sq'); sq.oninput=()=>{ f.q=sq.value; const p=sq.selectionStart; rerender(); const n=$('#sq'); n.focus(); n.setSelectionRange(p,p); };
+    $('#sgrp').onchange=e=>{f.grp=e.target.value; rerender();};
+    $('#swh').onchange=e=>{f.wh=e.target.value; rerender();};
+    $('#sst').onchange=e=>{f.st=e.target.value; rerender();};
+    $('#sbrk').onchange=e=>{f.broken=e.target.checked; rerender();};
+    if($('#sReset')) $('#sReset').onclick=()=>{f.sort='cat'; f.dir=1; rerender();};
+    document.querySelectorAll('th.sort').forEach(th=>th.onclick=()=>{ const k=th.dataset.sort; if(f.sort===k) f.dir*=-1; else {f.sort=k; f.dir=(k==='code'||k==='name'||k==='st')?1:-1;} rerender(); });
+    $('#xlsxBtn').onclick=()=>{
+      if(!window.XLSX){ toast('El generador de Excel aún está cargando.'); return; }
+      const data=[...rows,...oth].map(r=>{ const o={'Sección':r.it.grp||'Otros','Código':r.it.code,'Material':r.it.name,'Tipo':r.it.type||'','Unidad':unitEs(r.it.unit),'Total':r.total}; whs.forEach((w,i)=>o[w]=r.per[i].g); o['Dañado']=r.broken; o['Mínimo']=r.it.code?(minOf(T,r.it.code)??''):''; o['Estado']=r.st.l; return o; });
+      const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), kindLabel.slice(0,30));
+      XLSX.writeFile(wb, `${kindLabel.replace(/\W+/g,'_')}_${c?c.date:todayISO()}.xlsx`);
+    };
   };
+  return {html, bind, rows};
+}
+function vSection(T){
+  const sec = SECS[T], c = curWh();
+  if(!c){ $('#main').innerHTML = header(`${sec.n}. ${sec.title}`, sec.desc) + emptyState(); return; }
+  const whs = whsIn(c, T);
+  const st = secStats(c, T);
+  const tb = stockTable({c, cat:catGpon(), whs, T, kindLabel:sec.title});
+  $('#main').innerHTML = header(`${sec.n}. ${sec.title}`, `${sec.desc} · corte del ${fmtDate(c.date)} · ${whs.length} almacenes`) + staleBanner(c) + `
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi"><div class="lbl">Materiales de la lista con stock</div><div class="val">${st.withStock}<span class="muted" style="font-size:16px"> / ${st.n}</span></div><div class="foot">${pct(st.withStock/st.n)} de la lista</div></div>
+    <div class="card kpi"><div class="lbl">Sin stock en ningún almacén</div><div class="val" style="color:${st.none?'var(--crit)':'inherit'}">${st.none}</div><div class="foot">Filtra “Sin stock” para verlos</div></div>
+    <div class="card kpi"><div class="lbl">Bajo o cerca del mínimo</div><div class="val">${st.low}</div><div class="foot">Según los mínimos definidos</div></div>
+    <div class="card kpi"><div class="lbl">Con material dañado</div><div class="val">${st.broken}</div><div class="foot">Columna “Broken” del reporte</div></div>
+  </div>` + (whs.length ? tb.html : `<div class="card empty"><b>No hay almacenes de este tipo en el reporte</b>El corte del ${fmtDate(c.date)} no trae almacenes ${sec.desc.split('·')[1]||''}.</div>`);
+  if(whs.length) tb.bind(()=>vSection(T));
+}
+function vLastmile(){
+  const c = curLm();
+  const whs = whsIn(c);
+  const tb = stockTable({c, cat:catBccs(), whs, T:'LM', kindLabel:'Lastmile BCCS1'});
+  $('#main').innerHTML = header('4. Lastmile (BCCS1)', `Material de última milla · almacén <b>BCCS1</b> · ${catBccs().length} materiales en la lista`, 'bccs1') +
+    (c ? staleBanner(c,'bccs1') : `<div class="banner info">${ICON.clock}<div><b>Fuente de datos pendiente.</b> Cuando tengas el reporte de BCCS1 (por ejemplo, el “Reporte detallado de inventario de canales”), súbelo en <a href="#actualizar">Actualizar stock</a> y esta tabla se llenará sola. Mientras tanto se muestra tu lista de materiales.</div></div>`) +
+    tb.html;
+  tb.bind(vLastmile);
 }
 
 /* ============ Detalle de material ============ */
-function openMaterial(code){
-  const s = snap(); const it = s && s.items.find(i=>i.code===code) || catalog().get(code);
-  if(!it) return;
-  const n = splitName(it.name);
-  const whs = s ? s.warehouses : [];
-  const hist = S.snaps.map(x=>{ const m=x.items.find(i=>i.code===code); return {x:fmtDate(x.date).slice(0,6), y:m?m.total:0, tip:`<div class='tt'>${fmtDate(x.date)}</div>${fmt(m?m.total:0)} ${unitEs(it.unit)}`}; });
+function openMaterial(code, T){
+  if(!code) return;
+  const c = T==='LM' ? curLm() : curWh();
+  const inf = info(code);
+  const whs = T==='LM' ? whsIn(c) : whsIn(c, T);
+  const per = whs.map(w=>({w, g:qty(c,code,w), b:idx(c).get(code)?.get(w)?.b||0}));
+  const total = per.reduce((a,x)=>a+x.g,0);
+  const m = minOf(T, code), st = stStatus(total, m);
+  const list = T==='LM' ? cortesOf('bccs1') : cortesOf('wh');
+  const hist = list.map(x=>{ const v = T==='LM' ? whsIn(x).reduce((a,w)=>a+qty(x,code,w),0) : sumType(x,code,T).g; return {x:fmtShort(x.date), y:v, tip:`<div class='tt'>${fmtDate(x.date)}</div>${fmt(v)} ${unitEs(inf.unit)}`}; });
+  const regions = T==='LM' ? [] : [...new Set(whsIn(c).map(whRegion))].sort(regionSort);
+  const cross = regions.map(r=>({r, v:SEC_KEYS.map(k=>qty(c,code,`${r}_${k==='GPON'?'GPON':k==='NOC'?'NOC_GPON':'ROTATIONAL_GPON'}`))})).filter(x=>x.v.some(Boolean));
   const dels = S.deliveries.filter(d=>(d.items||[]).some(x=>x.code===code)).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
-  const m = minOf(code); const st = stockStatus(it);
-  openModal(`<div class="mh"><div><div class="code">${esc(code)} · ${esc(unitEs(it.unit))}</div><h3>${esc(n.short)}</h3>
-      ${n.spec?`<div class="muted" style="font-size:12.5px">${esc(n.spec)}</div>`:''}${it.nameVi?`<div class="muted" style="font-size:12px;margin-top:4px">${esc(it.nameVi)}</div>`:''}</div>
+  const secName = T==='LM' ? 'Lastmile (BCCS1)' : SECS[T].title;
+  openModal(`<div class="mh"><div><div class="code">${esc(code)} · ${esc(unitEs(inf.unit))} · ${esc(secName)}</div><h3>${esc(inf.name)}</h3>
+      <div class="muted" style="font-size:12.5px">${esc([inf.grp, inf.sub, inf.type].filter(Boolean).join(' · '))}${inf.inCat?'':' Fuera de tu lista de materiales'}</div></div>
       <button class="btn ghost" data-act="close">${ICON.x}</button></div>
     <div class="grid g4" style="margin-bottom:14px">
-      <div class="card kpi"><div class="lbl">Stock total</div><div class="val">${fmt(it.total)}</div><div class="foot">${esc(unitEs(it.unit))} · corte ${s?fmtDate(s.date):''}</div></div>
-      <div class="card kpi"><div class="lbl">Stock mínimo</div><div class="row" style="margin-top:6px"><input type="number" min="0" id="minIn" ${S.canWrite?'':'disabled'} value="${m??''}" placeholder="Sin definir" style="width:120px"><button class="btn pri sm edit-only" id="minSave">Guardar</button></div><div class="foot">${tag(st.cls,st.l,st.ic)}</div></div>
+      <div class="card kpi"><div class="lbl">Stock total en ${esc(secName)}</div><div class="val">${fmt(total)}</div><div class="foot">${esc(unitEs(inf.unit))}${c?` · corte ${fmtDate(c.date)}`:''}</div></div>
+      <div class="card kpi"><div class="lbl">Stock mínimo</div><div class="row" style="margin-top:6px"><input type="number" min="0" id="minIn" value="${m??''}" placeholder="Sin definir" style="width:120px" ${S.canWrite?'':'disabled'}><button class="btn pri sm edit-only" id="minSave">Guardar</button></div><div class="foot">${tag(st.cls,st.l,st.ic)}</div></div>
     </div>
-    <h3 style="font-size:14px">Distribución por almacén</h3>
-    ${hbars(whs.map(w=>({label:whShort(w), sub:whLabel(w), value:it.q[w]||0, tip:`<div class='tt'>${esc(w)}</div>${fmt(it.q[w]||0)} ${esc(unitEs(it.unit))} · ${pct((it.q[w]||0)/(it.total||1))} del total`})))}
-    <h3 style="font-size:14px;margin-top:18px">Tendencia del stock total</h3>
+    <h3 style="font-size:14px">Por almacén</h3>
+    ${per.length?hbars(per.map(x=>({label:x.w, sub:regionLabel(whRegion(x.w)), value:x.g, tip:`<div class='tt'>${esc(x.w)}</div>${fmt(x.g)} ${esc(unitEs(inf.unit))}${x.b?` · ${fmt(x.b)} dañados`:''}`}))):'<p class="muted">Sin datos de almacenes.</p>'}
+    ${cross.length?`<h3 style="font-size:14px;margin-top:18px">Comparado entre tipos de almacén</h3><p class="hint">Stock de este material por región en Proyectos, Incidencias y Recuperado.</p>
+      <div class="tbl-wrap" style="max-height:260px"><table><thead><tr><th>Región</th>${SEC_KEYS.map(k=>`<th class="num">${SECS[k].short}</th>`).join('')}</tr></thead><tbody>
+      ${cross.map(x=>`<tr><td><b>${esc(x.r)}</b> <span class="muted">${esc(regionLabel(x.r))}</span></td>${x.v.map(v=>`<td class="num">${v?fmt(v):'<span class="z">0</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:''}
+    <h3 style="font-size:14px;margin-top:18px">Tendencia</h3>
     ${lineChart(hist)}
-    <div class="row" style="justify-content:space-between;margin-top:14px"><h3 style="font-size:14px;margin:0">Entregas relacionadas</h3><button class="btn sm edit-only" id="newDelMat">+ Programar entrega</button></div>
+    <div class="row" style="justify-content:space-between;margin-top:14px"><h3 style="font-size:14px;margin:0">Entregas y movimientos registrados</h3><button class="btn sm edit-only" id="newDelMat">+ Programar</button></div>
     ${dels.length?`<div class="list">${dels.map(delivLi).join('')}</div>`:'<p class="muted">No hay entregas registradas con este material.</p>'}`);
   $('#minSave').onclick = async () => {
     const v = $('#minIn').value.trim();
-    const min = {...(S.cfg.min||{})}; if(v==='') delete min[code]; else min[code]=Number(v);
+    const min = {...(S.cfg.min||{})}; if(v==='') delete min[minKey(T,code)]; else min[minKey(T,code)] = Number(v);
     if(await saveCfg({min})){ toast('Stock mínimo guardado'); closeModal(); }
   };
   $('#newDelMat').onclick = () => openDelivery(null, {items:[{code, qty:''}]});
 }
 
-/* ============ Vista: Comparación ============ */
-function vComparacion(){
-  const s = snap();
-  if(!s){ $('#main').innerHTML = header('Comparación de almacenes','') + emptyState(); return; }
-  const whs = s.warehouses, items = s.items;
-  const central = S.cfg.central && whs.includes(S.cfg.central) ? S.cfg.central : whs[0];
-  if(!S.whA || !whs.includes(S.whA)) S.whA = central;
-  if(!S.whB || !whs.includes(S.whB)) S.whB = whs.find(w=>w!==central) || whs[0];
-  const cov = whs.map(w=>{
-    const has = items.filter(i=>(i.q[w]||0)>0);
-    const excl = has.filter(i=>Object.keys(i.q).filter(k=>i.q[k]>0).length===1);
-    const share = items.reduce((a,i)=>a+((i.q[w]||0)/(i.total||1)),0)/items.length;
-    const fromCentral = w===central?0:items.filter(i=>!(i.q[w]>0) && i.q[central]>0).length;
-    return {w,n:has.length,excl:excl.length,share,fromCentral};
-  });
-  const q = S.heatQ.trim().toLowerCase();
-  const hrows = items.filter(i=>!q || (i.code+' '+i.name).toLowerCase().includes(q));
-  const A=S.whA, B=S.whB;
-  const ab = items.filter(i=>(i.q[A]||0)>0||(i.q[B]||0)>0);
-  const onlyA = ab.filter(i=>i.q[A]>0 && !(i.q[B]>0)).length, onlyB = ab.filter(i=>i.q[B]>0 && !(i.q[A]>0)).length, both = ab.length-onlyA-onlyB;
-  const regional = whs.filter(w=>w!==central);
-  const sugg = regional.map(w=>({w, list:items.filter(i=>!(i.q[w]>0) && i.q[central]>0)}));
-  const whOpts = sel => whs.map(w=>`<option value="${w}" ${sel===w?'selected':''}>${whShort(w)} · ${esc(whLabel(w))}</option>`).join('');
-
-  $('#main').innerHTML = header('Comparación de almacenes', `Corte del ${fmtDate(s.date)} · almacén central: ${esc(whShort(central))}`) + staleBanner() + `
-  <div class="card"><h3>Resumen por almacén</h3><p class="hint">Cobertura del catálogo, materiales que solo existen en ese almacén y faltantes que sí hay en el central.</p>
-    <div class="tbl-wrap" style="max-height:none"><table><thead><tr><th>Almacén</th><th class="num">Materiales con stock</th><th>Cobertura</th><th class="num">Exclusivos</th><th class="num">Participación media</th><th class="num">Faltantes disponibles en central</th></tr></thead>
-    <tbody>${cov.map(c=>`<tr><td><b>${whShort(c.w)}</b> <span class="muted">${esc(whLabel(c.w))}</span>${c.w===central?' '+tag('t-info','Central'):''}</td>
-      <td class="num">${c.n} / ${items.length}</td>
-      <td style="min-width:160px"><div class="bar-track" data-tip="${pct(c.n/items.length)} del catálogo"><div class="bar-fill" style="width:${c.n/items.length*100}%"></div></div></td>
-      <td class="num">${c.excl}</td><td class="num">${pct(c.share)}</td><td class="num">${c.w===central?'<span class="z">—</span>':c.fromCentral}</td></tr>`).join('')}</tbody></table></div>
-    <p class="muted" style="font-size:12px;margin:8px 0 0">Participación media: en promedio, qué porcentaje del stock total de cada material está en ese almacén.</p>
+/* ============ 5. Comparativa ============ */
+const whOf = (r, T) => `${r}_${T==='GPON'?'GPON':T==='NOC'?'NOC_GPON':'ROTATIONAL_GPON'}`;
+function vComparativa(){
+  const c = curWh();
+  if(!c){ $('#main').innerHTML = header('Comparativa de almacenes','') + emptyState(); return; }
+  const cat = catGpon().filter(i=>i.code);
+  const all = whsIn(c);
+  const regions = [...new Set(all.map(whRegion))].sort(regionSort);
+  const k = S.cmp;
+  if(!k.code || !cat.some(i=>i.code===k.code)) k.code = (cat.find(i=>idx(c).has(i.code))||cat[0]||{}).code || '';
+  if(!all.includes(k.a)) k.a = all.find(w=>w==='VTP_GPON') || all[0];
+  if(!all.includes(k.b)) k.b = all.find(w=>w!==k.a && whRegion(w)!=='VTP') || all[1] || all[0];
+  // Matriz región × tipo para el material elegido
+  const grid = regions.map(r=>({r, v:SEC_KEYS.map(T=>qty(c,k.code,whOf(r,T)))}));
+  const gmax = Math.max(1, ...grid.flatMap(g=>g.v));
+  const tot = SEC_KEYS.map((T,i)=>grid.reduce((a,g)=>a+g.v[i],0));
+  // A vs B
+  const codes = [...new Set([...cat.map(i=>i.code), ...idx(c).keys()])].filter(code=>qty(c,code,k.a)>0||qty(c,code,k.b)>0);
+  const ab = codes.map(code=>({code, a:qty(c,code,k.a), b:qty(c,code,k.b)})).sort((x,y)=>Math.abs(y.a-y.b)-Math.abs(x.a-x.b));
+  const onlyA = ab.filter(x=>x.a&&!x.b).length, onlyB = ab.filter(x=>x.b&&!x.a).length;
+  const missingA = cat.filter(i=>!qty(c,i.code,k.a)).length, missingB = cat.filter(i=>!qty(c,i.code,k.b)).length;
+  // Sugerencias
+  const T = k.sugT, src = k.sugSrc;
+  const centralW = whOf('VTP', T);
+  const sugg = regions.filter(r=>r!=='VTP' || src==='recuperado').map(r=>{
+    const dest = whOf(r,T);
+    const from = src==='central' ? centralW : whOf(r,'ROT');
+    const list = cat.filter(i=>!qty(c,i.code,dest) && qty(c,i.code,from)>0).map(i=>({i, av:qty(c,i.code,from)}));
+    return {r, dest, from, list};
+  }).filter(g=>all.includes(g.dest) || g.list.length);
+  const whOpts = sel => SEC_KEYS.map(t=>`<optgroup label="${SECS[t].title}">${all.filter(w=>whType(w)===t).map(w=>`<option value="${w}" ${sel===w?'selected':''}>${w} · ${esc(regionLabel(whRegion(w)))}</option>`).join('')}</optgroup>`).join('') + (all.some(w=>whType(w)==='OTRO')?`<optgroup label="Otros">${all.filter(w=>whType(w)==='OTRO').map(w=>`<option value="${w}" ${sel===w?'selected':''}>${w}</option>`).join('')}</optgroup>`:'');
+  const inf = info(k.code);
+  $('#main').innerHTML = header('Comparativa de almacenes', `Proyectos, incidencias y recuperado, región por región · corte del ${fmtDate(c.date)}`) + staleBanner(c) + `
+  <div class="card"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><h3>Un material en todos los almacenes</h3><p class="hint">Cantidad por región y tipo de almacén. El color indica dónde se concentra.</p></div>
+    <select id="cCode" style="max-width:460px">${cat.map(i=>`<option value="${i.code}" ${i.code===k.code?'selected':''}>${i.code} — ${esc(i.name)}</option>`).join('')}</select></div>
+    <div class="tbl-wrap heat" style="max-height:none"><table><thead><tr><th>Región</th>${SEC_KEYS.map(T=>`<th class="num">${SECS[T].n}. ${SECS[T].short}</th>`).join('')}<th class="num">Total</th></tr></thead><tbody>
+    ${grid.map(g=>`<tr><td><b>${esc(g.r)}</b> <span class="muted">${esc(regionLabel(g.r))}</span></td>${g.v.map((v,i)=>`<td class="hc" style="${rampColor(v/gmax)}" data-tip="<div class='tt'>${esc(whOf(g.r,SEC_KEYS[i]))}</div>${fmt(v)} ${esc(unitEs(inf.unit))}">${v?fmt(v):''}</td>`).join('')}<td class="num"><b>${fmt(g.v.reduce((a,b)=>a+b,0))}</b></td></tr>`).join('')}
+    <tr class="grp"><td>Total</td>${tot.map(v=>`<td class="num">${fmt(v)}</td>`).join('')}<td class="num">${fmt(tot.reduce((a,b)=>a+b,0))}</td></tr></tbody></table></div>
+    <div class="row mt"><button class="btn sm" data-act="mat:${k.code}:GPON">Ver detalle</button><span class="muted" style="font-size:12px">${esc(unitEs(inf.unit))}</span></div>
   </div>
 
-  <div class="card mt"><div class="row" style="justify-content:space-between"><div><h3>Almacén vs. almacén</h3><p class="hint">Compara material por material dos almacenes.</p></div>
-    <div class="row"><select id="whA">${whOpts(A)}</select><span class="muted">vs</span><select id="whB">${whOpts(B)}</select></div></div>
-    <div class="row" style="margin-bottom:10px">${tag('t-info',`${both} en ambos`)} ${tag('t-mute',`${onlyA} solo en ${whShort(A)}`)} ${tag('t-mute',`${onlyB} solo en ${whShort(B)}`)}</div>
-    <div class="tbl-wrap" style="max-height:420px"><table><thead><tr><th>Código</th><th>Material</th><th>Und.</th><th class="num">${whShort(A)}</th><th class="num">${whShort(B)}</th><th class="num">Diferencia</th><th>Situación</th></tr></thead>
-    <tbody>${ab.sort((x,y)=>Math.abs((y.q[A]||0)-(y.q[B]||0))-Math.abs((x.q[A]||0)-(x.q[B]||0))).map(i=>{const a=i.q[A]||0,b=i.q[B]||0;const n=splitName(i.name);
-      return `<tr class="click" data-act="mat:${i.code}"><td class="code">${i.code}</td><td class="wrap"><div class="mname">${esc(n.short)}</div></td><td>${esc(unitEs(i.unit))}</td><td class="num">${a?fmt(a):'<span class="z">·</span>'}</td><td class="num">${b?fmt(b):'<span class="z">·</span>'}</td><td class="num">${fmt(a-b)}</td>
-      <td>${a&&b?tag('t-info','Ambos'):a?tag('t-mute','Solo '+whShort(A)):tag('t-mute','Solo '+whShort(B))}</td></tr>`}).join('')}</tbody></table></div>
+  <div class="card mt"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><h3>Almacén vs. almacén</h3><p class="hint">Cualquier par de almacenes, de cualquier tipo.</p></div>
+    <div class="row"><select id="cA">${whOpts(k.a)}</select><span class="muted">vs</span><select id="cB">${whOpts(k.b)}</select></div></div>
+    <div class="row" style="margin-bottom:10px">${tag('t-info',`${ab.length-onlyA-onlyB} en ambos`)} ${tag('t-mute',`${onlyA} solo en ${k.a}`)} ${tag('t-mute',`${onlyB} solo en ${k.b}`)} <span class="muted" style="font-size:12px">De tu lista faltan ${missingA} en ${esc(k.a)} y ${missingB} en ${esc(k.b)}.</span></div>
+    <div class="tbl-wrap" style="max-height:420px"><table><thead><tr><th>Código</th><th>Material</th><th>Und.</th><th class="num">${esc(k.a)}</th><th class="num">${esc(k.b)}</th><th class="num">Diferencia</th></tr></thead>
+    <tbody>${ab.map(x=>{const i=info(x.code);return `<tr class="click" data-act="mat:${x.code}:${whType(k.a)==='OTRO'?'GPON':whType(k.a)}"><td class="code">${x.code}</td><td class="wrap"><div class="mname">${esc(i.name)}</div>${i.inCat?'':'<div class="mspec">Fuera de la lista</div>'}</td><td>${esc(unitEs(i.unit))}</td><td class="num">${x.a?fmt(x.a):'<span class="z">0</span>'}</td><td class="num">${x.b?fmt(x.b):'<span class="z">0</span>'}</td><td class="num">${fmt(x.a-x.b)}</td></tr>`}).join('')||'<tr><td colspan="6" class="empty">Ninguno de los dos almacenes tiene stock.</td></tr>'}</tbody></table></div>
   </div>
 
-  <div class="card mt"><div class="row" style="justify-content:space-between"><div><h3>Matriz de distribución</h3><p class="hint">Cada celda muestra la cantidad; el color indica qué parte del total del material está en ese almacén.</p></div>
-    <div class="row"><div class="legend-scale">0%<span class="ramp">${RAMP.map(c=>`<i style="background:${c}"></i>`).join('')}</span>100%</div><input type="search" id="hq" placeholder="Filtrar materiales…" value="${esc(S.heatQ)}"></div></div>
-    <div class="tbl-wrap heat"><table><thead><tr><th>Material</th><th class="num">Total</th>${whs.map(w=>`<th class="num" title="${esc(whLabel(w))}">${whShort(w)}</th>`).join('')}</tr></thead>
-    <tbody>${hrows.map(i=>{const n=splitName(i.name);return `<tr class="click" data-act="mat:${i.code}"><td class="wrap"><div class="mname">${esc(n.short)}</div><div class="mspec code">${i.code} · ${esc(unitEs(i.unit))}</div></td><td class="num"><b>${fmt(i.total)}</b></td>
-      ${whs.map(w=>{const v=i.q[w]||0;const f=v/(i.total||1);return `<td class="hc" style="${rampColor(f)}" data-tip="<div class='tt'>${esc(whShort(w))} · ${esc(n.short)}</div>${fmt(v)} ${esc(unitEs(i.unit))} · ${pct(f)} del total">${v?fmt(v):''}</td>`}).join('')}</tr>`}).join('')}</tbody></table></div>
-  </div>
-
-  <div class="card mt"><h3>Sugerencias de reabastecimiento desde ${esc(whShort(central))}</h3><p class="hint">Materiales que un almacén regional no tiene pero que sí hay en el central. Úsalo como punto de partida para programar transferencias.</p>
-    ${sugg.map(g=>`<details style="border-bottom:1px solid var(--line);padding:8px 0"><summary style="cursor:pointer"><b>${whShort(g.w)}</b> <span class="muted">${esc(whLabel(g.w))}</span> — ${g.list.length} material${g.list.length===1?'':'es'}</summary>
-      ${g.list.length?`<div class="list" style="margin-top:6px">${g.list.map(i=>`<div class="li"><div class="body"><div class="t">${esc(splitName(i.name).short)}</div><div class="s"><span class="code">${i.code}</span> · disponible en central: ${fmt(i.q[central])} ${esc(unitEs(i.unit))}</div></div><button class="btn sm edit-only" data-act="xfer:${g.w}:${i.code}">Programar transferencia</button></div>`).join('')}</div>`:'<p class="muted">Sin faltantes.</p>'}</details>`).join('')}
+  <div class="card mt"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><h3>Sugerencias de reabastecimiento</h3><p class="hint">Materiales de tu lista que le faltan a un almacén y que sí hay en otro.</p></div>
+    <div class="row"><select id="sT">${['GPON','NOC'].map(t=>`<option value="${t}" ${T===t?'selected':''}>Faltantes en ${SECS[t].title}</option>`).join('')}</select>
+      <select id="sSrc"><option value="central" ${src==='central'?'selected':''}>Desde el central (${esc(centralW)})</option><option value="recuperado" ${src==='recuperado'?'selected':''}>Desde el recuperado de la misma región</option></select></div></div>
+    ${sugg.map(g=>`<details style="border-bottom:1px solid var(--line);padding:8px 0"><summary style="cursor:pointer"><b>${esc(g.dest)}</b> <span class="muted">${esc(regionLabel(g.r))}</span> — ${g.list.length} material${g.list.length===1?'':'es'} disponible${g.list.length===1?'':'s'} en ${esc(g.from)}</summary>
+      ${g.list.length?`<div class="list" style="margin-top:6px">${g.list.map(x=>`<div class="li"><div class="body"><div class="t">${esc(x.i.name)}</div><div class="s"><span class="code">${x.i.code}</span> · disponible en ${esc(g.from)}: ${fmt(x.av)} ${esc(unitEs(x.i.unit))}</div></div><button class="btn sm edit-only" data-act="xfer:${g.from}:${g.dest}:${x.i.code}">Programar transferencia</button></div>`).join('')}</div>`:'<p class="muted">Nada que sugerir.</p>'}</details>`).join('') || '<p class="muted">Sin sugerencias.</p>'}
   </div>`;
-  $('#whA').onchange=e=>{S.whA=e.target.value; render();};
-  $('#whB').onchange=e=>{S.whB=e.target.value; render();};
-  const hq=$('#hq'); hq.oninput=()=>{S.heatQ=hq.value; const p=hq.selectionStart; render(); const n=$('#hq'); n.focus(); n.setSelectionRange(p,p);};
+  $('#cCode').onchange=e=>{k.code=e.target.value; render();};
+  $('#cA').onchange=e=>{k.a=e.target.value; render();};
+  $('#cB').onchange=e=>{k.b=e.target.value; render();};
+  $('#sT').onchange=e=>{k.sugT=e.target.value; render();};
+  $('#sSrc').onchange=e=>{k.sugSrc=e.target.value; render();};
 }
 
-/* ============ Vista: Calendario ============ */
+/* ============ 5. Movimientos diarios ============ */
+function vMovimientos(){
+  const l = cortesOf('wh');
+  if(!l.length){ $('#main').innerHTML = header('Movimientos diarios','',null) + emptyState(); return; }
+  const mv = S.mov, dates = l.map(x=>x.date);
+  if(!dates.includes(mv.b)) mv.b = dates[dates.length-1];
+  if(!dates.includes(mv.a)) mv.a = dates.length>1 ? dates[dates.length-2] : dates[0];
+  const A = l.find(x=>x.date===mv.a), B = l.find(x=>x.date===mv.b);
+  const catCodes = new Set(catGpon().map(i=>i.code).filter(Boolean));
+  const keys = new Set([...A.rows,...B.rows].map(r=>r.w+'|'+r.c));
+  let moves = [];
+  for(const key of keys){ const [w,code] = key.split('|'); const a = qty(A,code,w), b = qty(B,code,w); if(a!==b) moves.push({w,code,a,b,d:b-a}); }
+  const regions = [...new Set(moves.map(m=>whRegion(m.w)))].sort(regionSort);
+  moves = moves.filter(m=>(!mv.t || whType(m.w)===mv.t) && (!mv.r || whRegion(m.w)===mv.r) && (!mv.onlyCat || catCodes.has(m.code)));
+  moves.sort((x,y)=>whSort(x.w,y.w) || Math.abs(y.d)-Math.abs(x.d));
+  const ins = moves.filter(m=>m.d>0), outs = moves.filter(m=>m.d<0);
+  const byWh = {}; moves.forEach(m=>{ const o = byWh[m.w] = byWh[m.w] || {up:0, dn:0}; if(m.d>0) o.up++; else o.dn++; });
+  const opts = sel => l.slice().reverse().map(x=>`<option value="${x.date}" ${x.date===sel?'selected':''}>${fmtDate(x.date)}</option>`).join('');
+  $('#main').innerHTML = header('Movimientos diarios', 'Qué entró y qué salió de cada almacén entre dos reportes del WMS', null) + `
+  <div class="toolbar">
+    <span>Desde</span><select id="mA">${opts(mv.a)}</select><span>hasta</span><select id="mB">${opts(mv.b)}</select>
+    <select id="mT"><option value="">Todos los tipos</option>${SEC_KEYS.map(t=>`<option value="${t}" ${mv.t===t?'selected':''}>${SECS[t].title}</option>`).join('')}</select>
+    <select id="mR"><option value="">Todas las regiones</option>${regions.map(r=>`<option value="${r}" ${mv.r===r?'selected':''}>${r} · ${esc(regionLabel(r))}</option>`).join('')}</select>
+    <label class="row" style="font-size:13px"><input type="checkbox" id="mC" ${mv.onlyCat?'checked':''}> Solo materiales de la lista</label>
+  </div>
+  ${A===B?`<div class="banner info">${ICON.clock}<div>${l.length<2?'Los movimientos aparecen cuando haya al menos dos reportes cargados. Con el script diario se llenará solo.':'Elige dos fechas distintas.'}</div></div>`:''}
+  <div class="grid g4" style="margin-bottom:14px">
+    <div class="card kpi"><div class="lbl">Aumentos (entradas)</div><div class="val" style="color:var(--good)">${ins.length}</div><div class="foot">material × almacén</div></div>
+    <div class="card kpi"><div class="lbl">Disminuciones (salidas)</div><div class="val" style="color:var(--crit)">${outs.length}</div><div class="foot">material × almacén</div></div>
+    <div class="card kpi"><div class="lbl">Almacenes con movimiento</div><div class="val">${Object.keys(byWh).length}</div><div class="foot">entre ${fmtShort(A.date)} y ${fmtShort(B.date)}</div></div>
+  </div>
+  <div class="tbl-wrap"><table><thead><tr><th>Almacén</th><th>Código</th><th>Material</th><th>Und.</th><th class="num">${fmtShort(A.date)}</th><th class="num">${fmtShort(B.date)}</th><th class="num">Movimiento</th></tr></thead>
+  <tbody>${moves.map(m=>{const i=info(m.code);return `<tr class="click" data-act="mat:${m.code}:${whType(m.w)==='OTRO'?'GPON':whType(m.w)}"><td><b>${esc(m.w)}</b></td><td class="code">${m.code}</td><td class="wrap"><div class="mname">${esc(i.name)}</div></td><td>${esc(unitEs(i.unit))}</td><td class="num">${fmt(m.a)}</td><td class="num">${fmt(m.b)}</td><td class="num ${m.d>0?'delta-up':'delta-dn'}">${m.d>0?'+':''}${fmt(m.d)}</td></tr>`}).join('') || `<tr><td colspan="7" class="empty">${A===B?'—':'Sin movimientos con estos filtros.'}</td></tr>`}</tbody></table></div>`;
+  $('#mA').onchange=e=>{mv.a=e.target.value; render();};
+  $('#mB').onchange=e=>{mv.b=e.target.value; render();};
+  $('#mT').onchange=e=>{mv.t=e.target.value; render();};
+  $('#mR').onchange=e=>{mv.r=e.target.value; render();};
+  $('#mC').onchange=e=>{mv.onlyCat=e.target.checked; render();};
+}
+
+/* ============ 5. Calendario ============ */
+function allWhs(){ const c = curWh(); const s = new Set(whsIn(c)); S.deliveries.forEach(d=>{ if(d.origin) s.add(d.origin); if(d.dest) s.add(d.dest); }); return [...s].sort(whSort); }
+function whSelectOpts(list, sel){
+  return SEC_KEYS.map(t=>{ const ws = list.filter(w=>whType(w)===t); return ws.length?`<optgroup label="${SECS[t].title}">${ws.map(w=>`<option value="${w}" ${sel===w?'selected':''}>${w} · ${esc(regionLabel(whRegion(w)))}</option>`).join('')}</optgroup>`:''; }).join('')
+    + `<optgroup label="Otros">${[...list.filter(w=>whType(w)==='OTRO'), ...(list.includes('BCCS1')?[]:['BCCS1'])].map(w=>`<option value="${w}" ${sel===w?'selected':''}>${w}</option>`).join('')}</optgroup>`;
+}
 function vCalendario(){
   const c = S.cal, t = todayISO();
   const first = new Date(c.y, c.m, 1);
-  const startOffset = (first.getDay()+6)%7;
-  const start = new Date(c.y, c.m, 1-startOffset);
-  const cells = [];
-  for(let i=0;i<42;i++){ const d=new Date(start); d.setDate(start.getDate()+i); cells.push(d); }
+  const start = new Date(c.y, c.m, 1-((first.getDay()+6)%7));
+  const cells = []; for(let i=0;i<42;i++){ const d=new Date(start); d.setDate(start.getDate()+i); cells.push(d); }
   const weeks = cells[35].getMonth()!==c.m ? 5 : 6;
   const filt = d => (!c.wh || d.dest===c.wh || d.origin===c.wh) && (!c.st || (c.st==='vencida'?isOverdue(d):d.status===c.st));
-  const ds = S.deliveries.filter(filt);
-  const byDay = {}; ds.forEach(d=>(byDay[d.date]=byDay[d.date]||[]).push(d));
+  const byDay = {}; S.deliveries.filter(filt).forEach(d=>(byDay[d.date]=byDay[d.date]||[]).push(d));
   Object.values(byDay).forEach(a=>a.sort((x,y)=>(x.time||'').localeCompare(y.time||'')));
   const od = S.deliveries.filter(isOverdue).sort((a,b)=>a.date.localeCompare(b.date));
   const next = S.deliveries.filter(d=>d.date>=t && d.date<=addDays(t,14) && d.status!=='cancelado' && d.status!=='entregado').sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
-  const monthDs = S.deliveries.filter(d=>{const x=parseISO(d.date);return x.getFullYear()===c.y&&x.getMonth()===c.m;});
-  const whs = (snap()?.warehouses) || Object.keys(DEFAULT_WH);
-  const chipLabel = d => { const it=(d.items||[])[0]; const m=it?(itemByCode(it.code)||catalog().get(it.code)):null; return `${d.time?d.time+' ':''}${d.dest?whShort(d.dest)+' · ':''}${m?splitName(m.name).short:(TYPES[d.type]||'Entrega')}`; };
-
-  $('#main').innerHTML = header('Calendario de entregas', `Ingresos, transferencias y despachos de material · ${monthDs.length} en ${MES[c.m]}`) + `
+  const monthN = S.deliveries.filter(d=>{const x=parseISO(d.date);return x.getFullYear()===c.y&&x.getMonth()===c.m;}).length;
+  const chipLabel = d => { const it=(d.items||[])[0]; return `${d.time?d.time+' ':''}${d.dest?whRegion(d.dest)+' · ':''}${it?info(it.code).name:(TYPES[d.type]||'Entrega')}`; };
+  $('#main').innerHTML = header('Calendario de entregas', `Ingresos, transferencias, despachos y devoluciones · ${monthN} en ${MES[c.m]}`, null) + `
   <div class="toolbar">
     <button class="btn" id="cPrev" aria-label="Mes anterior">‹</button>
     <b style="min-width:150px;text-align:center;font-size:16px;text-transform:capitalize">${MES[c.m]} ${c.y}</b>
     <button class="btn" id="cNext" aria-label="Mes siguiente">›</button>
     <button class="btn" id="cToday">Hoy</button>
     <span class="grow"></span>
-    <select id="cWh"><option value="">Todos los almacenes</option>${whs.map(w=>`<option value="${w}" ${c.wh===w?'selected':''}>${whShort(w)} · ${esc(whLabel(w))}</option>`).join('')}</select>
+    <select id="cWh"><option value="">Todos los almacenes</option>${whSelectOpts(allWhs(), c.wh)}</select>
     <select id="cSt"><option value="">Todos los estados</option>${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${c.st===k?'selected':''}>${v.l}</option>`).join('')}<option value="vencida" ${c.st==='vencida'?'selected':''}>Vencida</option></select>
     <button class="btn pri edit-only" id="cNew">+ Nueva entrega</button>
   </div>
@@ -615,7 +773,7 @@ function vCalendario(){
       ${cells.slice(0,weeks*7).map(d=>{const iso=isoDate(d);const list=byDay[iso]||[];
         return `<div class="day ${d.getMonth()!==c.m?'out':''} ${iso===t?'today':''}" data-act="day:${iso}">
           <div class="dn"><span>${d.getDate()}</span>${list.length>3?`<span class="muted" style="font-weight:500">${list.length}</span>`:''}</div>
-          ${list.slice(0,3).map(x=>`<div class="chip st-${x.status} ${isOverdue(x)?'overdue':''}" data-act="del:${x.id}" data-tip="<div class='tt'>${esc(TYPES[x.type]||'')}</div>${esc(chipLabel(x))}<br>${esc((STATUS[x.status]||{}).l||'')}${isOverdue(x)?' · VENCIDA':''}">${esc(chipLabel(x))}</div>`).join('')}
+          ${list.slice(0,3).map(x=>`<div class="chip st-${x.status} ${isOverdue(x)?'overdue':''}" data-act="del:${x.id}" data-tip="<div class='tt'>${esc(TYPES[x.type]||'')}</div>${esc([x.origin,x.dest].filter(Boolean).join(' → '))}<br>${esc(chipLabel(x))}<br>${esc((STATUS[x.status]||{}).l||'')}${isOverdue(x)?' · VENCIDA':''}">${esc(chipLabel(x))}</div>`).join('')}
           ${list.length>3?`<div class="more">+${list.length-3} más</div>`:''}</div>`}).join('')}
     </div>
     <div class="grid">
@@ -633,17 +791,16 @@ function vCalendario(){
   $('#cNew').onclick=()=>openDelivery(null,{});
 }
 
-/* ============ Modal entrega ============ */
 function openDelivery(id, preset){
   const d = id ? S.deliveries.find(x=>x.id===id) : null;
   const v = Object.assign({date:todayISO(), time:'', type:'ingreso', origin:'', dest:'', party:'', doc:'', resp:'', status:'programado', notes:'', items:[{code:'',qty:''}]}, d||{}, preset||{});
   if(!v.items || !v.items.length) v.items=[{code:'',qty:''}];
-  const cat = catalog();
-  const s = snap();
-  const whs = s ? s.warehouses : Object.keys(DEFAULT_WH);
-  const whSel = (name,val,placeholder) => `<select name="${name}"><option value="">${placeholder}</option>${whs.map(w=>`<option value="${w}" ${val===w?'selected':''}>${whShort(w)} · ${esc(whLabel(w))}</option>`).join('')}</select>`;
-  const matOpts = [...cat.values()].map(i=>`<option value="${esc(i.code)}">${esc(i.code)} — ${esc(splitName(i.name).short)}</option>`).join('');
-  const itemRow = (it) => `<tr><td style="width:46%"><input list="matlist" name="icode" value="${esc(it.code)}" placeholder="Código de material"><div class="muted iname" style="font-size:11.5px"></div></td>
+  const c = curWh();
+  const whs = allWhs();
+  const whSel = (name,val,ph) => `<select name="${name}"><option value="">${ph}</option>${whSelectOpts(whs, val)}</select>`;
+  const known = new Map(); [...catGpon(), ...catBccs()].forEach(i=>{ if(i.code) known.set(i.code, i.name); }); S.cortes.forEach(x=>Object.entries(x.names).forEach(([k,n])=>{ if(!known.has(k)) known.set(k, n[0]); }));
+  const matOpts = [...known].map(([k,n])=>`<option value="${esc(k)}">${esc(k)} — ${esc(n)}</option>`).join('');
+  const itemRow = it => `<tr><td style="width:46%"><input list="matlist" name="icode" value="${esc(it.code)}" placeholder="Código de material"><div class="muted iname" style="font-size:11.5px"></div></td>
       <td style="width:22%"><input type="number" min="0" step="any" name="iqty" value="${esc(it.qty)}" placeholder="Cantidad"><div class="warnline iwarn"></div></td>
       <td class="muted iunit" style="width:12%;font-size:12px"></td><td><button type="button" class="btn ghost sm edit-only" data-rm>${ICON.x}</button></td></tr>`;
   openModal(`<form id="dForm"><div class="mh"><div><h3>${!S.canWrite?'Detalle de entrega':d?'Editar entrega':'Nueva entrega'}</h3>${d?`<div class="muted" style="font-size:12px">Registrada ${d.createdAt?fmtDate(d.createdAt.slice(0,10)):''}${d.createdBy?' por '+esc(d.createdBy):''}</div>`:''}</div><button type="button" class="btn ghost" data-act="close">${ICON.x}</button></div>
@@ -668,183 +825,182 @@ function openDelivery(id, preset){
   </form>`);
   const form = $('#dForm'), body = $('#itBody');
   const refresh = () => {
-    const origin = form.origin.value; const type = form.type.value;
+    const origin = form.origin.value, type = form.type.value;
     body.querySelectorAll('tr').forEach(tr=>{
-      const code = tr.querySelector('[name=icode]').value.trim(); const qty = Number(tr.querySelector('[name=iqty]').value||0);
-      const m = itemByCode(code) || cat.get(code);
-      tr.querySelector('.iname').textContent = m ? splitName(m.name).short : (code?'Código no encontrado en el catálogo':'');
-      tr.querySelector('.iunit').textContent = m ? unitEs(m.unit) : '';
-      let w=''; if(m && origin && type!=='ingreso'){ const av=(itemByCode(code)?.q[origin])||0; if(qty>av) w=`Stock en ${whShort(origin)}: ${fmt(av)}`; }
+      const code = normCode(tr.querySelector('[name=icode]').value), q = Number(tr.querySelector('[name=iqty]').value||0);
+      const has = known.has(code), inf = info(code);
+      tr.querySelector('.iname').textContent = code ? (has ? inf.name : 'Código no encontrado') : '';
+      tr.querySelector('.iunit').textContent = has ? unitEs(inf.unit) : '';
+      let w=''; if(has && origin && type!=='ingreso' && c && whsIn(c).includes(origin)){ const av = qty(c,code,origin); if(q>av) w=`Stock en ${origin}: ${fmt(av)}`; }
       tr.querySelector('.iwarn').textContent = w;
     });
   };
-  if(!S.canWrite) form.querySelectorAll('input,select,textarea,#addIt,[data-rm]').forEach(el=>el.disabled=true);
+  if(!S.canWrite) form.querySelectorAll('input,select,textarea').forEach(el=>el.disabled=true);
   form.addEventListener('input', refresh); form.addEventListener('change', refresh); refresh();
   $('#addIt').onclick = () => { body.insertAdjacentHTML('beforeend', itemRow({code:'',qty:''})); refresh(); };
   body.addEventListener('click', e=>{ if(e.target.closest('[data-rm]')){ if(body.children.length>1) e.target.closest('tr').remove(); else { body.querySelector('[name=icode]').value=''; body.querySelector('[name=iqty]').value=''; } refresh(); }});
   form.onsubmit = async e => {
     e.preventDefault();
-    const items = [...body.querySelectorAll('tr')].map(tr=>({code:tr.querySelector('[name=icode]').value.trim(), qty:Number(tr.querySelector('[name=iqty]').value||0)})).filter(x=>x.code);
+    const items = [...body.querySelectorAll('tr')].map(tr=>({code:normCode(tr.querySelector('[name=icode]').value), qty:Number(tr.querySelector('[name=iqty]').value||0)})).filter(x=>x.code);
     if(!items.length){ toast('Agrega al menos un material'); return; }
     const rec = {date:form.date.value, time:form.time.value, type:form.type.value, status:form.status.value, origin:form.origin.value, dest:form.dest.value,
-      party:form.party.value.trim(), doc:form.doc.value.trim(), resp:form.resp.value.trim(), notes:form.notes.value.trim(), items,
-      createdAt: d?.createdAt || new Date().toISOString(), createdBy: d?.createdBy || S.email || null, updatedAt:new Date().toISOString(), updatedBy:S.email||null};
+      party:form.party.value.trim(), doc:form.doc.value.trim(), resp:form.resp.value.trim(), notes:form.notes.value.trim(), items, createdAt:d?.createdAt, createdBy:d?.createdBy};
     $('#dSave').disabled = true;
-    const ok = await saveDelivery(id, rec);
-    if(ok){ toast(d?'Entrega actualizada':'Entrega registrada'); closeModal(); const dt=parseISO(rec.date); S.cal.y=dt.getFullYear(); S.cal.m=dt.getMonth(); render(); }
+    if(await saveDelivery(id, rec)){ toast(d?'Entrega actualizada':'Entrega registrada'); closeModal(); const dt=parseISO(rec.date); S.cal.y=dt.getFullYear(); S.cal.m=dt.getMonth(); render(); }
     else $('#dSave').disabled = false;
   };
   if(d){ const b=$('#dDel'); b.onclick=async()=>{ if(!b.dataset.c){ b.dataset.c=1; b.textContent='¿Confirmar eliminación?'; return; } if(await removeDelivery(id)){ toast('Entrega eliminada'); closeModal(); render(); } }; }
 }
 
-/* ============ Vista: Historial ============ */
-function vHistorial(){
-  if(!S.snaps.length){ $('#main').innerHTML = header('Historial y variaciones','') + emptyState(); return; }
-  const list = S.snaps.slice().reverse();
-  const dates = S.snaps.map(s=>s.date);
-  if(!dates.includes(S.cmp.b)) S.cmp.b = dates[dates.length-1];
-  if(!dates.includes(S.cmp.a)) S.cmp.a = dates.length>1 ? dates[dates.length-2] : dates[0];
-  const A = S.snaps.find(s=>s.date===S.cmp.a), B = S.snaps.find(s=>s.date===S.cmp.b);
-  const am = new Map(A.items.map(i=>[i.code,i])), bm = new Map(B.items.map(i=>[i.code,i]));
-  const codes = [...new Set([...am.keys(),...bm.keys()])];
-  let diff = codes.map(c=>{const a=am.get(c),b=bm.get(c); const x=a?a.total:0,y=b?b.total:0; return {c, it:b||a, a:x, b:y, d:y-x, r:x?(y-x)/x:null};});
-  if(S.cmp.only) diff = diff.filter(x=>x.d!==0);
-  diff.sort((x,y)=>Math.abs(y.r??1e9)-Math.abs(x.r??1e9));
-  const cat = catalog();
-  if(!S.trend.code) S.trend.code = (snap().items[0]||{}).code || '';
-  const tItem = cat.get(S.trend.code);
-  const pts = S.snaps.map(x=>{const m=x.items.find(i=>i.code===S.trend.code);return {x:fmtDate(x.date).slice(0,6), y:m?m.total:0, tip:`<div class='tt'>${fmtDate(x.date)}</div>${fmt(m?m.total:0)} ${tItem?esc(unitEs(tItem.unit)):''}`};});
-  const opts = sel => list.map(s=>`<option value="${s.date}" ${s.date===sel?'selected':''}>${fmtDate(s.date)}</option>`).join('');
-
-  $('#main').innerHTML = header('Historial y variaciones', `${S.snaps.length} corte${S.snaps.length>1?'s':''} de stock guardado${S.snaps.length>1?'s':''}`) + `
-  <div class="card"><div class="row" style="justify-content:space-between"><div><h3>Variación entre cortes</h3><p class="hint">Diferencia en el stock total de cada material entre dos fechas.</p></div>
-    <div class="row"><select id="hA">${opts(S.cmp.a)}</select><span class="muted">→</span><select id="hB">${opts(S.cmp.b)}</select>
-      <label class="row" style="font-size:13px"><input type="checkbox" id="hOnly" ${S.cmp.only?'checked':''}> Solo con cambios</label></div></div>
-    ${A===B?'<div class="banner info">Elige dos fechas distintas para ver variaciones.</div>':''}
-    <div class="tbl-wrap" style="max-height:440px"><table><thead><tr><th>Código</th><th>Material</th><th>Und.</th><th class="num">${fmtDate(A.date)}</th><th class="num">${fmtDate(B.date)}</th><th class="num">Variación</th><th class="num">%</th></tr></thead>
-    <tbody>${diff.map(x=>`<tr class="click" data-act="mat:${x.c}"><td class="code">${x.c}</td><td class="wrap"><div class="mname">${esc(splitName(x.it.name).short)}</div></td><td>${esc(unitEs(x.it.unit))}</td><td class="num">${fmt(x.a)}</td><td class="num">${fmt(x.b)}</td>
-      <td class="num ${x.d>0?'delta-up':x.d<0?'delta-dn':''}">${x.d>0?'+':''}${fmt(x.d)}</td><td class="num">${x.r===null?(x.b?'nuevo':'—'):(x.r>0?'+':'')+pct(x.r)}</td></tr>`).join('') || `<tr><td colspan="7" class="empty">${S.snaps.length<2?'Carga un segundo corte para comparar.':'Sin variaciones entre estas fechas.'}</td></tr>`}</tbody></table></div>
-  </div>
-  <div class="card mt"><div class="row" style="justify-content:space-between"><div><h3>Tendencia por material</h3><p class="hint">Stock total en cada corte.</p></div>
-    <select id="tSel" style="max-width:420px">${[...cat.values()].map(i=>`<option value="${i.code}" ${i.code===S.trend.code?'selected':''}>${i.code} — ${esc(splitName(i.name).short)}</option>`).join('')}</select></div>
-    ${lineChart(pts)}</div>
-  <div class="card mt"><h3>Cortes guardados</h3><p class="hint">Cada carga del reporte del WMS queda guardada por fecha de corte.</p>
-    <div class="tbl-wrap" style="max-height:none"><table><thead><tr><th>Fecha de corte</th><th>Archivo</th><th>Cargado</th><th class="num">Materiales</th><th></th></tr></thead>
-    <tbody>${list.map(s=>`<tr><td><b>${fmtDate(s.date)}</b>${s.date===snap().date?' '+tag('t-info','En pantalla'):''}</td><td class="muted" style="white-space:normal">${esc(s.fileName||'')}</td>
-      <td>${esc(s.uploadedBy||'')} <span class="muted">${s.uploadedAt?fmtDate(s.uploadedAt.slice(0,10)):''}</span></td>
-      <td class="num">${s.items.length}</td><td class="num"><button class="btn sm" data-act="view:${s.date}">Ver</button> <button class="btn sm danger edit-only" data-act="delsnap:${s.date}">Eliminar</button></td></tr>`).join('')}</tbody></table></div></div>`;
-  $('#hA').onchange=e=>{S.cmp.a=e.target.value; render();};
-  $('#hB').onchange=e=>{S.cmp.b=e.target.value; render();};
-  $('#hOnly').onchange=e=>{S.cmp.only=e.target.checked; render();};
-  $('#tSel').onchange=e=>{S.trend.code=e.target.value; render();};
-}
-
-/* ============ Vista: Actualizar ============ */
+/* ============ Actualizar stock ============ */
 const WMS_URL = 'https://auth.viettel.vn/auth/login?appCode=PT08014_NC&service=http%3A%2F%2F10.121.6.132%3A8087%2FWMS';
 function vActualizar(){
-  const p = S.pending;
-  const s = snap();
-  const whs = s ? s.warehouses : Object.keys(DEFAULT_WH);
-  $('#main').innerHTML = header('Actualizar stock', 'Carga el reporte de inventario exportado desde el WMS') + `
+  const all = S.cortes.slice().sort((a,b)=>b.date.localeCompare(a.date) || a.kind.localeCompare(b.kind));
+  const c = curWh();
+  const regions = [...new Set([...Object.keys(REGION), ...whsIn(c).map(whRegion)])].sort(regionSort);
+  $('#main').innerHTML = header('Actualizar stock', 'Carga de reportes diarios y de la lista de materiales', null) + `
   <div class="grid g2">
-    <div class="card"><h3>Cómo obtener el reporte</h3><p class="hint">El WMS está en la red interna de Viettel, así que la descarga se hace desde una PC conectada a esa red.</p>
+    <div class="card"><h3>Qué archivos acepta</h3><p class="hint">El tipo de archivo se reconoce solo.</p>
       <ol class="steps">
-        <li><div>Abre el WMS: <a href="${WMS_URL}" target="_blank" rel="noopener">auth.viettel.vn → WMS</a><br><span class="muted" style="font-size:12px;word-break:break-all">Copia el enlace si no abre: ${esc(WMS_URL)}</span></div></li>
-        <li><div>Inicia sesión con tu usuario y contraseña del WMS. <span class="muted">(La plataforma no guarda credenciales.)</span></div></li>
-        <li><div>Genera el <b>reporte general de saldos</b> (“Báo cáo tổng hợp tồn kho” / <i>General report on remainders</i>) y expórtalo a Excel.</div></li>
-        <li><div>Arrastra el archivo <span class="code">.xls</span> aquí al lado. La fecha de corte se lee del propio reporte.</div></li>
+        <li><div><b>Inventory Report diario del WMS</b> (<span class="code">Bao_cao_ton_kho_*.xls</span>): llena las secciones 1, 2 y 3. Los almacenes se clasifican por su código: <span class="code">*_GPON</span>, <span class="code">*_NOC_GPON</span> y <span class="code">*_ROTATIONAL_GPON</span>.</div></li>
+        <li><div><b>Reporte de BCCS1</b> (“Reporte detallado de inventario de canales”): llena la sección 4, Lastmile.</div></li>
+        <li><div><b>Lista de materiales</b> (<span class="code">STOCK_MATERIAL.xlsx</span>, hojas GPON y BCCS1): reemplaza la lista de materiales que se muestran siempre, aunque tengan stock 0.</div></li>
       </ol>
-      <p class="muted" style="font-size:12.5px;margin:12px 0 0">Si el script automático <span class="code">actualizar_stock.py</span> está programado, el corte se carga solo y no hace falta este paso.</p>
+      <p class="muted" style="font-size:12.5px;margin:12px 0 0">WMS: <a href="${WMS_URL}" target="_blank" rel="noopener">auth.viettel.vn → WMS</a> (solo desde la red de Viettel). Si el script <span class="code">actualizar_stock.py</span> está programado, el reporte diario se carga solo.</p>
     </div>
     <div class="card ro-only"><h3>Carga restringida</h3><p class="hint">Solo el equipo FBB puede cargar reportes y cambiar la configuración.</p><button class="btn pri" data-act="login">Acceso equipo</button></div>
-    <div class="card edit-only"><h3>Subir reporte</h3><p class="hint">Formatos aceptados: .xls y .xlsx del WMS.</p>
+    <div class="card edit-only"><h3>Subir archivo</h3><p class="hint">Formatos .xls y .xlsx.</p>
       <label class="drop" id="drop"><input type="file" id="file" accept=".xls,.xlsx" hidden>
         <div style="font-size:15px;font-weight:650">Arrastra el archivo aquí</div><div class="muted">o haz clic para elegirlo</div></label>
       <div id="pv"></div>
     </div>
   </div>
-  <div class="card mt edit-only"><h3>Configuración de almacenes</h3><p class="hint">Nombres que se muestran junto a cada código y almacén central usado para las sugerencias de reabastecimiento.</p>
-    <div class="form" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
-      ${whs.map(w=>`<label>${w}<input type="text" data-wh="${w}" value="${esc(whLabel(w))}"></label>`).join('')}
-      <label>Almacén central<select id="cen">${whs.map(w=>`<option value="${w}" ${(S.cfg.central||whs[0])===w?'selected':''}>${w}</option>`).join('')}</select></label>
-    </div>
-    <div class="row mt"><button class="btn pri" id="cfgSave">Guardar configuración</button></div>
-  </div>`;
+  <div class="card mt"><h3>Reportes guardados</h3><p class="hint">Un reporte por fecha y tipo. Lista de materiales: ${S.catalogFromDb?'cargada por el equipo':'la incluida por defecto en la página'} (${catGpon().length} ODN · ${catBccs().length} BCCS1).</p>
+    <div class="tbl-wrap" style="max-height:360px"><table><thead><tr><th>Fecha</th><th>Tipo</th><th>Archivo</th><th>Cargado por</th><th class="num">Filas</th><th class="num">Almacenes</th><th></th></tr></thead>
+    <tbody>${all.map(x=>`<tr><td><b>${fmtDate(x.date)}</b></td><td>${x.kind==='wh'?'WMS (ODN)':'BCCS1'}</td><td class="muted" style="white-space:normal">${esc(x.fileName)}</td><td>${esc(x.uploadedBy||'')}</td><td class="num">${x.rows.length}</td><td class="num">${whsIn(x).length}</td>
+      <td class="num"><button class="btn sm danger edit-only" data-act="delcorte:${x.id}">Eliminar</button></td></tr>`).join('') || '<tr><td colspan="7" class="empty">Aún no hay reportes.</td></tr>'}</tbody></table></div></div>
+  <div class="card mt edit-only"><h3>Nombres de regiones</h3><p class="hint">Se muestran junto al código de cada almacén.</p>
+    <div class="form" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">${regions.map(r=>`<label>${esc(r)}<input type="text" data-reg="${esc(r)}" value="${esc(regionLabel(r))}"></label>`).join('')}</div>
+    <div class="row mt"><button class="btn pri" id="cfgSave">Guardar nombres</button></div></div>`;
   const drop=$('#drop'), file=$('#file');
   file.onchange=()=>file.files[0]&&readFile(file.files[0]);
   drop.ondragover=e=>{e.preventDefault(); drop.classList.add('over');};
   drop.ondragleave=()=>drop.classList.remove('over');
   drop.ondrop=e=>{e.preventDefault(); drop.classList.remove('over'); const f=e.dataTransfer.files[0]; if(f) readFile(f);};
-  $('#cfgSave').onclick=async()=>{ const wh={}; document.querySelectorAll('[data-wh]').forEach(i=>wh[i.dataset.wh]=i.value.trim()); if(await saveCfg({wh, central:$('#cen').value})) toast('Configuración guardada'); };
+  $('#cfgSave').onclick=async()=>{ const wh={}; document.querySelectorAll('[data-reg]').forEach(i=>wh[i.dataset.reg]=i.value.trim()); if(await saveCfg({wh})) toast('Nombres guardados'); };
   renderPreview();
 }
 function readFile(f){
   if(!window.XLSX){ S.pending={error:'El lector de Excel aún no terminó de cargar. Intenta de nuevo en unos segundos.'}; renderPreview(); return; }
   const r = new FileReader();
-  r.onload = () => {
-    try{ S.pending = parseReport(new Uint8Array(r.result), f.name); }
-    catch(err){ S.pending = {error: err.message || String(err)}; }
-    renderPreview();
-  };
+  r.onload = () => { try{ S.pending = parseWorkbook(XLSX.read(new Uint8Array(r.result), {type:'array'}), f.name); } catch(err){ S.pending = {error: err.message || String(err)}; } renderPreview(); };
   r.readAsArrayBuffer(f);
 }
-function parseReport(buf, fileName){
-  const wb = XLSX.read(buf, {type:'array'});
-  const ws = wb.Sheets[wb.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:true});
-  let date = null;
-  for(const r of rows.slice(0,15)){ for(const c of r){ const m=String(c).match(/(\d{2})\/(\d{2})\/(\d{4})/); if(m && /date|ngày/i.test(String(c))){ date=`${m[3]}-${m[2]}-${m[1]}`; break; } } if(date) break; }
-  const h = rows.findIndex(r=>r.some(c=>/code of materials|mã vật tư/i.test(String(c))));
-  if(h<0) throw new Error('No se encontró la fila de encabezados (“Code of materials”). ¿Es el reporte general de saldos del WMS?');
-  const hdr = rows[h].map(c=>String(c).trim());
-  const ci = hdr.findIndex(c=>/code of materials|mã vật tư/i.test(c));
-  const ni = hdr.findIndex(c=>/name of materials|tên vật tư/i.test(c));
-  const ui = hdr.findIndex(c=>/^unit|đơn vị/i.test(c));
-  const ti = hdr.findIndex(c=>/total/i.test(c));
-  if(ti<0) throw new Error('No se encontró la columna “Total remainders”.');
-  const whCols = []; for(let k=ti+1;k<hdr.length;k++) if(hdr[k]) whCols.push([k,hdr[k]]);
-  const num = v => { if(v===''||v===null||v===undefined) return 0; const n = typeof v==='number'?v:Number(String(v).replace(/,/g,'')); return isNaN(n)?0:n; };
-  const items = [];
+const sheetRows = (wb, name) => XLSX.utils.sheet_to_json(wb.Sheets[name], {header:1, defval:'', raw:true});
+function findDate(rows){
+  for(const r of rows.slice(0,15)) for(const c of r){ const s=String(c); const m = s.match(/(\d{2})[\/-](\d{2})[\/-](\d{4})/); if(m && /date|fecha|ngày|report/i.test(s)) return `${m[3]}-${m[2]}-${m[1]}`; }
+  return null;
+}
+const numv = v => { if(v===''||v===null||v===undefined) return 0; const n = typeof v==='number' ? v : Number(String(v).replace(/,/g,'')); return isNaN(n) ? 0 : n; };
+function parseCatalogSheet(rows){
+  const h = rows.findIndex(r=>r.some(c=>String(c).trim().toLowerCase()==='wh_code'));
+  if(h<0) return null;
+  const hdr = rows[h].map(c=>String(c).trim().toLowerCase());
+  const ci = hdr.indexOf('wh_code'), si = hdr.indexOf('section'), mi = hdr.indexOf('material'), ti = hdr.indexOf('type'), ui = hdr.indexOf('unit');
+  let grp = ''; const items = [];
   for(const r of rows.slice(h+1)){
-    const code = String(r[ci]??'').trim(); if(!code) continue;
-    const full = String(r[ni]??'').trim();
-    const parts = full.split('|');
-    const vi = parts.length>1 ? parts[0].trim() : '';
-    const en = parts.length>1 ? parts.slice(1).join('|').trim() : full;
-    const q = {}; whCols.forEach(([k,w])=>{ const v=num(r[k]); if(v) q[w]=v; });
-    items.push({code, name:en, nameVi:vi, unit:String(r[ui]??'').trim(), total:num(r[ti]), q});
+    const first = String(r[0]??'').trim(), mat = String(r[mi]??'').trim();
+    if(/^[A-Z]$/.test(first) && mat && !String(r[ci]??'').trim()){ grp = mat.replace(/\s*section\s*$/i,''); continue; }
+    if(!mat) continue;
+    items.push({code:normCode(r[ci]), sub:String(r[si]??'').trim(), name:mat, type:String(r[ti]??'').trim(), unit:String(r[ui]??'').trim(), grp});
   }
-  if(!items.length) throw new Error('El archivo no tiene filas de materiales.');
-  return {date: date || todayISO(), dateFound: !!date, warehouses: whCols.map(x=>x[1]), items, fileName};
+  return items;
+}
+function parseWorkbook(wb, fileName){
+  // 1) Lista de materiales
+  const catNames = wb.SheetNames.filter(n=>/^(gpon|bccs1)$/i.test(n.trim()));
+  if(catNames.length){
+    const out = {};
+    for(const n of catNames){ const items = parseCatalogSheet(sheetRows(wb,n)); if(items) out[n.trim().toLowerCase()] = items; }
+    if(Object.keys(out).length) return {kind:'catalog', catalog:out, fileName};
+  }
+  const rows = sheetRows(wb, wb.SheetNames[0]);
+  const date = findDate(rows);
+  const names = {}, whNames = {}, out = [];
+  const add = (w, code, name, unit, g, b) => { if(!names[code]) names[code] = [cleanName(name), String(unit||'').trim()]; out.push([w, code, g, b]); };
+  // 2) Inventory Report (una fila por almacén y material)
+  let h = rows.findIndex(r=>r.some(c=>/^warehouse code$/i.test(String(c).trim())));
+  if(h>=0){
+    const hdr = rows[h].map(c=>String(c).trim());
+    const wi = hdr.findIndex(c=>/^warehouse code$/i.test(c));
+    const wn = hdr.findIndex((c,i)=>i!==wi && /^ware.?v?house$/i.test(c));
+    const pi = hdr.findIndex(c=>/product name/i.test(c)), ci = hdr.findIndex(c=>/^code$/i.test(c)), ui = hdr.findIndex(c=>/^unit$/i.test(c)), qi = hdr.findIndex(c=>/quantity/i.test(c));
+    const sub = (rows[h+1]||[]).map(c=>String(c).trim().toLowerCase());
+    const gi = sub.indexOf('good')>=0 ? sub.indexOf('good') : qi, bi = sub.indexOf('broken');
+    for(const r of rows.slice(h+1)){
+      const w = String(r[wi]??'').trim(), code = normCode(r[ci]);
+      if(!/^[A-Z0-9]+(_[A-Z0-9]+)+$/i.test(w) || !/^\d+$/.test(code)) continue;
+      if(wn>=0 && r[wn]) whNames[w] = String(r[wn]).trim();
+      add(w.toUpperCase(), code, r[pi], r[ui], numv(r[gi]), bi>=0 ? numv(r[bi]) : 0);
+    }
+    if(!out.length) throw new Error('El reporte no tiene filas de materiales.');
+    return {kind:'wh', date:date||todayISO(), dateFound:!!date, rows:out, names, whNames, fileName};
+  }
+  // 3) General report on remainders (formato anterior: una columna por almacén)
+  h = rows.findIndex(r=>r.some(c=>/code of materials/i.test(String(c))));
+  if(h>=0){
+    const hdr = rows[h].map(c=>String(c).trim());
+    const ci = hdr.findIndex(c=>/code of materials/i.test(c)), ni = hdr.findIndex(c=>/name of materials/i.test(c)), ui = hdr.findIndex(c=>/^unit/i.test(c)), ti = hdr.findIndex(c=>/total/i.test(c));
+    const whc = []; for(let k=ti+1;k<hdr.length;k++) if(hdr[k]) whc.push([k,hdr[k]]);
+    for(const r of rows.slice(h+1)){ const code = normCode(r[ci]); if(!code) continue; whc.forEach(([k,w])=>{ const v=numv(r[k]); if(v) add(w, code, r[ni], r[ui], v, 0); }); if(!names[code]) names[code]=[cleanName(r[ni]), String(r[ui]||'').trim()]; }
+    return {kind:'wh', date:date||todayISO(), dateFound:!!date, rows:out, names, whNames, fileName};
+  }
+  // 4) Reporte BCCS1
+  h = rows.findIndex(r=>r.some(c=>/c[oó]digo de producto/i.test(String(c))));
+  if(h>=0){
+    const hdr = rows[h].map(c=>String(c).trim());
+    const ci = hdr.findIndex(c=>/c[oó]digo de producto/i.test(c)), ni = hdr.findIndex(c=>/nombre de producto/i.test(c)), ui = hdr.findIndex(c=>/^unidad$/i.test(c));
+    const ti = hdr.findIndex(c=>/^total/i.test(c)), si = hdr.findIndex(c=>/situaci/i.test(c)), wi = hdr.findIndex(c=>/wh code/i.test(c));
+    for(const r of rows.slice(h+1)){
+      const code = normCode(r[ci]); if(!/^\d+$/.test(code)) continue;
+      const w = (String(r[wi>=0?wi:1]??'').trim() || 'BCCS1').toUpperCase();
+      const v = numv(r[ti]); const ok = si<0 || /new|nuevo|good/i.test(String(r[si]));
+      add(w==='VTP'?'BCCS1':w, code, r[ni], r[ui], ok?v:0, ok?0:v);
+    }
+    return {kind:'bccs1', date:date||todayISO(), dateFound:!!date, rows:out, names, whNames, fileName};
+  }
+  throw new Error('No reconozco este archivo. Debe ser el Inventory Report del WMS, el reporte de BCCS1 o la lista de materiales (hojas GPON / BCCS1).');
 }
 function renderPreview(){
   const el = $('#pv'); if(!el) return; const p = S.pending;
   if(!p){ el.innerHTML=''; return; }
   if(p.error){ el.innerHTML = `<div class="banner crit mt">${ICON.crit}<div>${esc(p.error)}</div></div>`; return; }
-  const exists = S.snaps.find(s=>s.date===p.date);
-  const last = S.snaps[S.snaps.length-1];
-  let cmp = '';
-  if(last){
-    const lm = new Map(last.items.map(i=>[i.code,i]));
-    const nuevos = p.items.filter(i=>!lm.has(i.code)).length;
-    const pm = new Set(p.items.map(i=>i.code));
-    const fuera = last.items.filter(i=>!pm.has(i.code)).length;
-    const cambia = p.items.filter(i=>lm.has(i.code) && lm.get(i.code).total!==i.total).length;
-    cmp = `<div class="row" style="margin-top:8px">${tag('t-info',`${cambia} con cambios`)} ${tag('t-mute',`${nuevos} nuevos`)} ${tag('t-mute',`${fuera} ya no aparecen`)} <span class="muted" style="font-size:12px">vs. corte ${fmtDate(last.date)}</span></div>`;
+  if(p.kind==='catalog'){
+    el.innerHTML = `<div class="card mt" style="background:var(--surface-2)"><div class="row" style="justify-content:space-between"><b>${esc(p.fileName)}</b>${tag('t-good','Lista de materiales','ok')}</div>
+      <div style="margin-top:8px">${Object.entries(p.catalog).map(([k,v])=>`${k.toUpperCase()}: <b>${v.length}</b> materiales (${[...new Set(v.map(i=>i.grp).filter(Boolean))].join(', ')})`).join('<br>')}</div>
+      <div class="banner warn mt" style="margin-bottom:0">${ICON.warn}<div>Reemplazará la lista actual de esas hojas.</div></div>
+      <div class="row mt"><button class="btn pri" id="pSave">Guardar lista</button><button class="btn" id="pCancel">Descartar</button></div></div>`;
+  } else {
+    const prevL = cortesOf(p.kind), exists = prevL.find(x=>x.date===p.date), last = prevL[prevL.length-1];
+    const whs = [...new Set(p.rows.map(r=>r[0]))];
+    const byT = {}; whs.forEach(w=>{ const t = p.kind==='bccs1' ? 'BCCS1' : whType(w); byT[t]=(byT[t]||0)+1; });
+    el.innerHTML = `<div class="card mt" style="background:var(--surface-2)">
+      <div class="row" style="justify-content:space-between"><b>${esc(p.fileName)}</b>${tag('t-good', p.kind==='wh'?'Reporte del WMS':'Reporte BCCS1','ok')}</div>
+      <div class="row mt"><label class="row">Fecha del reporte <input type="date" id="pDate" value="${p.date}"></label>${p.dateFound?'':'<span class="muted" style="font-size:12px">No se detectó la fecha; revísala.</span>'}</div>
+      <div style="margin-top:8px">${p.rows.length} filas · ${Object.keys(p.names).length} materiales · ${whs.length} almacenes</div>
+      <div class="row" style="margin-top:6px">${Object.entries(byT).map(([t,n])=>tag('t-info', `${SECS[t]?SECS[t].title:t}: ${n}`)).join(' ')}</div>
+      ${last?`<div class="muted" style="font-size:12px;margin-top:6px">Reporte anterior: ${fmtDate(last.date)}</div>`:''}
+      ${exists?`<div class="banner warn mt" style="margin-bottom:0">${ICON.warn}<div>Ya existe un reporte del ${fmtDate(p.date)}; se reemplazará.</div></div>`:''}
+      <div class="row mt"><button class="btn pri" id="pSave">Guardar reporte</button><button class="btn" id="pCancel">Descartar</button></div></div>`;
+    $('#pDate').onchange=e=>{p.date=e.target.value; renderPreview();};
   }
-  el.innerHTML = `<div class="card mt" style="background:var(--surface-2)">
-    <div class="row" style="justify-content:space-between"><b>${esc(p.fileName)}</b>${tag('t-good','Leído correctamente','ok')}</div>
-    <div class="row mt"><label class="row">Fecha de corte <input type="date" id="pDate" value="${p.date}"></label>${p.dateFound?'':'<span class="muted" style="font-size:12px">No se detectó la fecha en el archivo; revísala.</span>'}</div>
-    <div style="margin-top:8px">${p.items.length} materiales · ${p.warehouses.length} almacenes (${p.warehouses.map(whShort).join(', ')})</div>
-    ${cmp}
-    ${exists?`<div class="banner warn mt" style="margin-bottom:0">${ICON.warn}<div>Ya existe un corte del ${fmtDate(p.date)}; se reemplazará.</div></div>`:''}
-    <div class="row mt"><button class="btn pri" id="pSave">Guardar corte</button><button class="btn" id="pCancel">Descartar</button></div></div>`;
-  $('#pDate').onchange=e=>{p.date=e.target.value; renderPreview();};
   $('#pCancel').onclick=()=>{S.pending=null; renderPreview();};
   $('#pSave').onclick=async()=>{
     $('#pSave').disabled=true;
-    const rec = {date:p.date, warehouses:p.warehouses, items:p.items, fileName:p.fileName, uploadedAt:new Date().toISOString(), uploadedBy:S.email||null};
-    if(await saveSnapshot(rec)){ S.pending=null; S.sel=null; toast(`Corte del ${fmtDate(rec.date)} guardado`); location.hash='#stock'; render(); }
+    let ok;
+    if(p.kind==='catalog') ok = await saveCatalog(p.catalog);
+    else ok = await saveCorte({id:`${p.kind}_${p.date}`, kind:p.kind, date:p.date, data:{rows:p.rows, names:p.names, whNames:p.whNames}, file_name:p.fileName});
+    if(ok){ toast(p.kind==='catalog'?'Lista de materiales guardada':`Reporte del ${fmtDate(p.date)} guardado`); const k=p.kind; S.pending=null; if(k==='wh'){ S.sel=null; location.hash='#proyectos'; } else if(k==='bccs1'){ S.selLm=null; location.hash='#lastmile'; } render(); }
     else $('#pSave').disabled=false;
   };
 }
@@ -856,17 +1012,15 @@ $('#scrim').addEventListener('mousedown', e=>{ if(e.target.id==='scrim') closeMo
 document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
 document.addEventListener('click', async e=>{
   const a = e.target.closest('[data-act]'); if(!a) return;
-  const [k, x, y] = a.dataset.act.split(':');
+  const [k, x, y, z] = a.dataset.act.split(':');
   if(k==='close'){ closeModal(); return; }
   if(k==='login'){ openLogin(); return; }
   if(k==='logout'){ if(sb) await sb.auth.signOut(); return; }
-  if(k==='mat'){ e.stopPropagation(); openMaterial(x); }
+  if(k==='mat'){ e.stopPropagation(); openMaterial(x, y||'GPON'); }
   else if(k==='del'){ e.stopPropagation(); openDelivery(x); }
   else if(k==='day'){ if(S.canWrite) openDelivery(null,{date:x}); }
-  else if(k==='wh'){ S.stock.wh=x; location.hash='#stock'; }
-  else if(k==='xfer'){ const s=snap(); openDelivery(null,{type:'transferencia', origin:S.cfg.central||s.warehouses[0], dest:x, items:[{code:y,qty:''}], date:addDays(todayISO(),1)}); }
-  else if(k==='view'){ S.sel=x; location.hash='#stock'; render(); }
-  else if(k==='delsnap'){ if(!a.dataset.c){ a.dataset.c=1; a.textContent='¿Confirmar?'; return; } if(await removeSnapshot(x)) toast('Corte eliminado'); }
+  else if(k==='xfer'){ openDelivery(null,{type:'transferencia', origin:x, dest:y, items:[{code:z,qty:''}], date:addDays(todayISO(),1)}); }
+  else if(k==='delcorte'){ if(!a.dataset.c){ a.dataset.c=1; a.textContent='¿Confirmar?'; return; } if(await removeCorte(x)){ toast('Reporte eliminado'); render(); } }
 });
 
 /* ============ Persistencia (Supabase) ============ */
@@ -885,45 +1039,55 @@ function writeErr(e){
   return false;
 }
 async function run(p){ const {data, error} = await p; if(error) throw error; return data; }
-const rowToSnap = r => ({date:r.date, warehouses:r.warehouses||[], items:r.items||[], fileName:r.file_name||'', uploadedAt:r.uploaded_at||'', uploadedBy:r.uploaded_by||''});
+const rowToCorte = r => { const d = r.data||{}; return {id:r.id, kind:r.kind, date:String(r.date).slice(0,10), rows:(d.rows||[]).map(x=>({w:x[0], c:x[1], g:+x[2]||0, b:+x[3]||0})), names:d.names||{}, whNames:d.whNames||{}, fileName:r.file_name||'', uploadedAt:r.uploaded_at||'', uploadedBy:r.uploaded_by||''}; };
 const rowToDel = r => ({id:String(r.id), date:r.date, time:r.time||'', type:r.type||'ingreso', status:r.status||'programado', origin:r.origin||'', dest:r.dest||'',
   party:r.party||'', doc:r.doc||'', resp:r.resp||'', notes:r.notes||'', items:r.items||[], createdAt:r.created_at||'', createdBy:r.created_by_email||'', updatedAt:r.updated_at||''});
 const delToRow = d => ({date:d.date, time:d.time||null, type:d.type, status:d.status, origin:d.origin||null, dest:d.dest||null, party:d.party||null,
   doc:d.doc||null, resp:d.resp||null, notes:d.notes||null, items:d.items, updated_at:new Date().toISOString(), updated_by_email:S.email||null});
 
-async function loadSnaps(){
-  const rows = await run(sb.from('snapshots').select('*').order('date',{ascending:false}).limit(120));
-  S.snaps = rows.map(rowToSnap).filter(x=>x.date && Array.isArray(x.items)).sort((a,b)=>a.date.localeCompare(b.date));
-  if(S.sel && !S.snaps.some(s=>s.date===S.sel)) S.sel = null;
+async function loadCortes(){
+  const rows = await run(sb.from('cortes').select('*').order('date',{ascending:false}).limit(200));
+  S.cortes = rows.map(rowToCorte);
+  if(S.sel && !cortesOf('wh').some(c=>c.date===S.sel)) S.sel = null;
+  if(S.selLm && !cortesOf('bccs1').some(c=>c.date===S.selLm)) S.selLm = null;
+}
+async function loadCatalog(){
+  const rows = await run(sb.from('catalogo').select('*'));
+  S.catalog = {gpon:DEFAULT_CATALOG.gpon, bccs1:DEFAULT_CATALOG.bccs1}; S.catalogFromDb = false;
+  for(const r of rows){ if(Array.isArray(r.items) && r.items.length){ S.catalog[r.id] = r.items; S.catalogFromDb = true; } }
 }
 async function loadDels(){ S.deliveries = (await run(sb.from('deliveries').select('*'))).map(rowToDel).filter(d=>d.date); }
 async function loadCfg(){
   const r = await run(sb.from('settings').select('*').eq('id',1).maybeSingle());
-  S.cfg = {min:(r&&r.min)||{}, wh:(r&&r.wh)||{}, central:(r&&r.central)||'VTP_GPON'};
+  S.cfg = {min:(r&&r.min)||{}, wh:(r&&r.wh)||{}};
 }
+const LOADERS = {cortes:loadCortes, catalogo:loadCatalog, deliveries:loadDels, settings:loadCfg};
 let reloadT = {};
 function reload(which){
   clearTimeout(reloadT[which]);
   reloadT[which] = setTimeout(async ()=>{
-    try{ await ({s:loadSnaps, d:loadDels, c:loadCfg}[which])(); setConn('ok','Datos actualizados'); scheduleRender(); }
+    try{ await LOADERS[which](); setConn('ok','Datos al día'); scheduleRender(); }
     catch(e){ console.error(e); setConn('off','Error al actualizar datos'); }
   }, 300);
 }
 
-const local = { snaps:new Map(), dels:new Map() }; // modo demo sin Supabase
-async function saveSnapshot(rec){
-  if(!sb){ local.snaps.set(rec.date, rec); S.snaps=[...local.snaps.values()].sort((a,b)=>a.date.localeCompare(b.date)); return true; }
-  try{
-    await run(sb.from('snapshots').upsert({date:rec.date, warehouses:rec.warehouses, items:rec.items, file_name:rec.fileName, uploaded_at:new Date().toISOString(), uploaded_by:S.email||'web'}));
-    await loadSnaps(); return true;
-  }catch(e){ return writeErr(e); }
+const local = { dels:new Map() }; // modo demo sin Supabase
+async function saveCorte(rec){
+  const row = {...rec, uploaded_at:new Date().toISOString(), uploaded_by:S.email||'web'};
+  if(!sb){ S.cortes = S.cortes.filter(c=>c.id!==rec.id).concat([rowToCorte(row)]); return true; }
+  try{ await run(sb.from('cortes').upsert(row)); await loadCortes(); return true; }catch(e){ return writeErr(e); }
 }
-async function removeSnapshot(date){
-  if(!sb){ local.snaps.delete(date); S.snaps=S.snaps.filter(s=>s.date!==date); render(); return true; }
-  try{ await run(sb.from('snapshots').delete().eq('date',date)); await loadSnaps(); render(); return true; }catch(e){ return writeErr(e); }
+async function removeCorte(id){
+  if(!sb){ S.cortes = S.cortes.filter(c=>c.id!==id); return true; }
+  try{ await run(sb.from('cortes').delete().eq('id',id)); await loadCortes(); return true; }catch(e){ return writeErr(e); }
+}
+async function saveCatalog(cat){
+  if(!sb){ Object.assign(S.catalog, cat); S.catalogFromDb = true; return true; }
+  try{ await run(sb.from('catalogo').upsert(Object.entries(cat).map(([id,items])=>({id, items, updated_at:new Date().toISOString(), updated_by:S.email||null})))); await loadCatalog(); return true; }
+  catch(e){ return writeErr(e); }
 }
 async function saveDelivery(id, rec){
-  if(!sb){ const nid=id||('d'+Date.now()); local.dels.set(nid,{...rec,id:nid,createdBy:rec.createdBy||'demo'}); S.deliveries=[...local.dels.values()]; return true; }
+  if(!sb){ const nid=id||('d'+Date.now()); local.dels.set(nid,{...rec,id:nid,createdAt:rec.createdAt||new Date().toISOString(),createdBy:rec.createdBy||'demo'}); S.deliveries=[...local.dels.values()]; return true; }
   try{
     if(id) await run(sb.from('deliveries').update(delToRow(rec)).eq('id',id));
     else await run(sb.from('deliveries').insert({...delToRow(rec), created_by_email:S.email||null}));
@@ -939,7 +1103,7 @@ function saveCfg(patch){
   const next = {...S.cfg, ...patch};
   const go = async () => {
     if(!sb){ S.cfg=next; render(); return true; }
-    try{ await run(sb.from('settings').upsert({id:1, min:next.min||{}, wh:next.wh||{}, central:next.central||'VTP_GPON', updated_at:new Date().toISOString()})); S.cfg=next; render(); return true; }
+    try{ await run(sb.from('settings').upsert({id:1, min:next.min||{}, wh:next.wh||{}, updated_at:new Date().toISOString()})); S.cfg=next; render(); return true; }
     catch(e){ return writeErr(e); }
   };
   cfgBusy = cfgBusy.then(go, go); return cfgBusy;
@@ -990,17 +1154,19 @@ async function init(){
   const {data} = await sb.auth.getSession();
   applySession(data.session);
   sb.auth.onAuthStateChange((_e, session)=>{ applySession(session); render(); });
-  try{
-    await Promise.all([loadSnaps(), loadDels(), loadCfg()]);
-    setConn('ok','Datos al día'); S.conn = 'ok';
-  }catch(e){ console.error(e); setConn('off','No se pudo cargar la base de datos'); S.conn='off'; }
+  const results = await Promise.allSettled([loadCortes(), loadCatalog(), loadDels(), loadCfg()]);
+  const failed = results.map((r,i)=>r.status==='rejected'?[['cortes','catalogo','deliveries','settings'][i], r.reason]:null).filter(Boolean);
+  if(failed.length){
+    failed.forEach(([t,e])=>console.error('Error cargando', t, e));
+    const msg = failed.map(([t,e])=>`${t}: ${(e&&e.message)||e}`).join(' | ');
+    setConn('off','No se pudo cargar: ' + failed.map(f=>f[0]).join(', '));
+    S.loadError = msg; S.conn = 'off';
+  } else { setConn('ok','Datos al día'); S.conn = 'ok'; }
   render();
-  sb.channel('cambios')
-    .on('postgres_changes',{event:'*',schema:'public',table:'snapshots'},()=>reload('s'))
-    .on('postgres_changes',{event:'*',schema:'public',table:'deliveries'},()=>reload('d'))
-    .on('postgres_changes',{event:'*',schema:'public',table:'settings'},()=>reload('c'))
-    .subscribe();
-  setInterval(()=>{ if(document.visibilityState==='visible'){ reload('s'); reload('d'); reload('c'); } }, 5*60*1000);
+  const ch = sb.channel('cambios');
+  Object.keys(LOADERS).forEach(t=>ch.on('postgres_changes',{event:'*',schema:'public',table:t},()=>reload(t)));
+  ch.subscribe();
+  setInterval(()=>{ if(document.visibilityState==='visible') Object.keys(LOADERS).forEach(reload); }, 5*60*1000);
 }
 init();
 </script>
