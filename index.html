@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Control General de Materiales FBB Dept.</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f4f4f2; --surface:#fcfcfb; --surface-2:#f0efec; --line:rgba(11,11,11,.10); --line-2:rgba(11,11,11,.18);
+  --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#7a7974;
+  --accent:#2a78d6; --accent-ink:#fff; --accent-soft:#e3eefb;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --good-soft:#e2f4e2; --warn-soft:#fdf1d6; --serious-soft:#fbe6dd; --crit-soft:#f8e0e0; --mute-soft:#ecebe7;
+  --s100:#cde2fb; --s200:#9ec5f4; --s300:#6da7ec; --s400:#3987e5; --s500:#256abf; --s600:#184f95; --s700:#0d366b;
+  --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.06);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    color-scheme:dark;
+    --bg:#121211; --surface:#1a1a19; --surface-2:#232321; --line:rgba(255,255,255,.10); --line-2:rgba(255,255,255,.18);
+    --ink:#f0efec; --ink-2:#c3c2b7; --ink-3:#8f8e86;
+    --accent:#3987e5; --accent-soft:#1d2d42;
+    --good-soft:#18301a; --warn-soft:#3a2f12; --serious-soft:#3a2418; --crit-soft:#3a1c1c; --mute-soft:#2a2a28;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
+  }
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.45;font-variant-numeric:tabular-nums}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+.app{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+aside{background:var(--surface);border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:18px}
+.brand{padding:0 8px}
+.brand .logo{width:38px;height:38px;border-radius:10px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:800;letter-spacing:.5px;margin-bottom:10px}
+.brand h1{font-size:15px;margin:0;line-height:1.25}
+.brand p{margin:4px 0 0;color:var(--ink-3);font-size:12px}
+nav{display:flex;flex-direction:column;gap:2px}
+nav a{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;color:var(--ink-2);text-decoration:none;font-weight:500}
+nav a:hover{background:var(--surface-2);color:var(--ink)}
+nav a.on{background:var(--accent-soft);color:var(--accent);font-weight:650}
+nav svg{width:18px;height:18px;flex:none}
+nav .badge{margin-left:auto;background:var(--crit);color:#fff;border-radius:99px;font-size:11px;padding:0 7px;font-weight:700}
+.side-foot{margin-top:auto;font-size:12px;color:var(--ink-3);padding:0 8px;display:flex;flex-direction:column;gap:8px}
+body.ro .edit-only{display:none!important}
+body:not(.ro) .ro-only{display:none!important}
+#authBox .btn{width:100%;justify-content:center}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--ink-3);margin-right:6px;vertical-align:middle}
+main{padding:24px 28px 60px;min-width:0}
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.top h2{margin:0;font-size:22px;letter-spacing:-.2px}
+.top .sub{color:var(--ink-2);margin-top:2px}
+.cutpill{display:flex;align-items:center;gap:8px;background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:6px 8px 6px 14px;font-size:13px}
+.cutpill select{border:0;background:var(--surface-2);border-radius:99px;padding:4px 8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px 18px}
+.card h3{margin:0 0 2px;font-size:15px}
+.card .hint{color:var(--ink-3);font-size:12.5px;margin:0 0 12px}
+.grid{display:grid;gap:14px}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.g2{grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+.kpi .lbl{color:var(--ink-2);font-size:12.5px;font-weight:550}
+.kpi .val{font-size:28px;font-weight:700;letter-spacing:-.5px;margin-top:4px}
+.kpi .foot{font-size:12px;color:var(--ink-3);margin-top:2px}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+.toolbar .grow{flex:1}
+input:not([type]),input[type=text],input[type=search],input[type=number],input[type=date],input[type=time],select,textarea{background:var(--surface);border:1px solid var(--line-2);border-radius:8px;padding:7px 10px;min-height:34px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.btn{border:1px solid var(--line-2);background:var(--surface);border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:550;min-height:34px;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{background:var(--surface-2)}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.pri:hover{filter:brightness(1.07)}
+.btn.danger{color:var(--crit);border-color:color-mix(in srgb,var(--crit) 40%,transparent)}
+.btn.ghost{border-color:transparent;background:transparent}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sm{padding:3px 8px;min-height:26px;font-size:12.5px}
+.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:8px;overflow:hidden}
+.seg button{border:0;background:var(--surface);padding:6px 12px;cursor:pointer;font-weight:550}
+.seg button.on{background:var(--accent);color:#fff}
+.tbl-wrap{overflow:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface);max-height:70vh}
+table{border-collapse:separate;border-spacing:0;width:100%}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top;white-space:nowrap}
+th{position:sticky;top:0;background:var(--surface-2);font-size:12px;color:var(--ink-2);font-weight:650;z-index:1;cursor:default}
+th.sort{cursor:pointer;user-select:none}
+th.sort:hover{color:var(--ink)}
+td.num,th.num{text-align:right}
+td.wrap{white-space:normal;min-width:260px;max-width:420px}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--surface-2)}
+.mname{font-weight:600}
+.mspec{color:var(--ink-3);font-size:12px;margin-top:1px}
+.code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;color:var(--ink-2)}
+.z{color:var(--ink-3)}
+.tag{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap}
+.tag svg{width:12px;height:12px}
+.t-good{background:var(--good-soft);color:var(--ink)} .t-good svg{color:var(--good)}
+.t-warn{background:var(--warn-soft);color:var(--ink)} .t-warn svg{color:#b97f00}
+.t-serious{background:var(--serious-soft);color:var(--ink)} .t-serious svg{color:var(--serious)}
+.t-crit{background:var(--crit-soft);color:var(--ink)} .t-crit svg{color:var(--crit)}
+.t-mute{background:var(--mute-soft);color:var(--ink-2)}
+.t-info{background:var(--accent-soft);color:var(--ink)} .t-info svg{color:var(--accent)}
+.empty{padding:40px 20px;text-align:center;color:var(--ink-2)}
+.empty b{display:block;color:var(--ink);font-size:16px;margin-bottom:6px}
+.banner{border-radius:10px;padding:10px 14px;margin-bottom:14px;font-size:13.5px;display:flex;gap:10px;align-items:flex-start}
+.banner svg{width:18px;height:18px;flex:none;margin-top:1px}
+.banner.warn{background:var(--warn-soft)} .banner.crit{background:var(--crit-soft)} .banner.info{background:var(--accent-soft)}
+.list{display:flex;flex-direction:column}
+.li{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.li:last-child{border-bottom:0}
+.li .when{width:58px;flex:none;text-align:center;border-radius:8px;background:var(--surface-2);padding:4px 0;line-height:1.1}
+.li .when b{display:block;font-size:17px}
+.li .when span{font-size:11px;color:var(--ink-2);text-transform:uppercase}
+.li .body{flex:1;min-width:0}
+.li .body .t{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li .body .s{font-size:12.5px;color:var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.li.click{cursor:pointer} .li.click:hover{background:var(--surface-2)}
+/* charts */
+.bars{display:flex;flex-direction:column;gap:6px}
+.bar-row{display:grid;grid-template-columns:170px 1fr 104px;align-items:center;gap:10px;font-size:13px;padding:2px 0;border-radius:6px}
+.bar-row:hover{background:var(--surface-2)}
+.bar-row .bl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink-2)}
+.bar-row .bl b{color:var(--ink);font-weight:600}
+.bar-track{height:14px;position:relative}
+.bar-fill{position:absolute;left:0;top:0;bottom:0;background:var(--s400);border-radius:0 4px 4px 0}
+.bar-row .bv{text-align:right;font-weight:600;white-space:nowrap}
+.tip{position:fixed;pointer-events:none;background:var(--ink);color:var(--surface);padding:7px 10px;border-radius:8px;font-size:12.5px;z-index:100;max-width:300px;box-shadow:var(--shadow);display:none}
+.tip .tt{font-weight:700;margin-bottom:2px}
+/* heatmap */
+.heat td.hc{text-align:right;min-width:74px;font-size:12.5px}
+.legend-scale{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2)}
+.legend-scale .ramp{display:flex;height:10px;width:180px;border-radius:3px;overflow:hidden}
+.legend-scale .ramp i{flex:1}
+/* calendar */
+.cal{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--line);gap:1px}
+.cal .dh{background:var(--surface-2);padding:8px;font-size:12px;font-weight:650;color:var(--ink-2);text-align:center}
+.cal .day{background:var(--surface);min-height:112px;padding:6px;display:flex;flex-direction:column;gap:3px;cursor:pointer;min-width:0}
+.cal .day:hover{background:var(--surface-2)}
+.cal .day.out{background:var(--bg)} .cal .day.out .dn{color:var(--ink-3)}
+.cal .dn{font-size:12.5px;font-weight:650;color:var(--ink-2);display:flex;justify-content:space-between}
+.cal .day.today .dn span{background:var(--accent);color:#fff;border-radius:99px;padding:0 7px}
+.chip{font-size:11.5px;border-radius:5px;padding:2px 6px;background:var(--surface-2);border-left:3px solid var(--ink-3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.chip:hover{filter:brightness(.95)}
+.chip.st-programado{border-left-color:var(--accent);background:var(--accent-soft)}
+.chip.st-transito{border-left-color:var(--warn);background:var(--warn-soft)}
+.chip.st-entregado{border-left-color:var(--good);background:var(--good-soft)}
+.chip.st-cancelado{border-left-color:var(--ink-3);background:var(--mute-soft);text-decoration:line-through;color:var(--ink-3)}
+.chip.overdue{border-left-color:var(--crit);background:var(--crit-soft)}
+.more{font-size:11.5px;color:var(--ink-2);padding-left:4px}
+.cal-wrap>*{min-width:0}
+.cal-wrap .grid{grid-template-columns:minmax(0,1fr)}
+.cal-wrap{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:start}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--ink-2)}
+.legend span{display:inline-flex;align-items:center;gap:5px}
+.legend i{width:10px;height:10px;border-radius:3px;display:inline-block}
+/* modal */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:40px 16px;overflow:auto}
+.scrim.on{display:flex}
+.modal{background:var(--surface);border-radius:14px;box-shadow:var(--shadow);width:min(760px,100%);padding:20px 22px}
+.modal h3{margin:0 0 4px;font-size:18px}
+.modal .mh{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:14px}
+.form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:600;color:var(--ink-2)}
+.form .full{grid-column:1/-1}
+.items-tbl td{padding:4px 4px;border:0}
+.items-tbl input{width:100%}
+.mfoot{display:flex;justify-content:space-between;gap:8px;margin-top:18px;flex-wrap:wrap}
+.warnline{font-size:12px;color:var(--crit);margin-top:2px}
+/* upload */
+.drop{display:block;border:2px dashed var(--line-2);border-radius:12px;padding:34px;text-align:center;cursor:pointer;background:var(--surface)}
+.drop.over{border-color:var(--accent);background:var(--accent-soft)}
+.steps{counter-reset:s;list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:s;display:flex;gap:10px;align-items:flex-start}
+.steps li::before{content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:700;display:grid;place-items:center;font-size:12.5px}
+.delta-up{color:var(--good);font-weight:600} .delta-dn{color:var(--crit);font-weight:600}
+.svgchart text{fill:var(--ink-3);font-size:11px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:10px 16px;border-radius:10px;z-index:200;display:none;font-weight:550}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.muted{color:var(--ink-3)}
+.mt{margin-top:14px}
+.whname{font-size:11px;color:var(--ink-3);font-weight:500;display:block}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;padding:12px}
+  nav{flex-direction:row;flex-wrap:wrap}
+  .side-foot{margin-top:0;flex-direction:row;align-items:center}
+  main{padding:16px}
+  .cal-wrap{grid-template-columns:1fr}
+  .cal .day{min-height:70px}
+  .form{grid-template-columns:1fr}
+  .g2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body class="ro">
+<div class="app">
+  <aside>
+    <div class="brand">
+      <div class="logo">FBB</div>
+      <h1>Control General de Materiales FBB Dept.</h1>
+      <p>Fixed &amp; Broadband Services Center</p>
+    </div>
+    <nav id="nav"></nav>
+    <div class="side-foot"><div id="authBox"></div><div id="syncState"><span class="dot"></span>Conectando…</div></div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div class="scrim" id="scrim"><div class="modal" id="modal"></div></div>
+<div class="tip" id="tip"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ Utilidades ============ */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf = new Intl.NumberFormat('es-PE',{maximumFractionDigits:2});
+const fmt = n => (n===null||n===undefined||isNaN(n)) ? '—' : nf.format(n);
+const pct = n => (isNaN(n)||!isFinite(n)) ? '—' : (n*100).toLocaleString('es-PE',{maximumFractionDigits:1})+'%';
+const MES = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const MES3 = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const DOW = ['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const pad = n => String(n).padStart(2,'0');
+const isoDate = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseISO = s => { const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d); };
+const todayISO = () => isoDate(new Date());
+const fmtDate = s => { if(!s) return '—'; const d = parseISO(s); return `${pad(d.getDate())} ${MES3[d.getMonth()]} ${d.getFullYear()}`; };
+const daysBetween = (a,b) => Math.round((parseISO(b)-parseISO(a))/86400000);
+const addDays = (s,n) => { const d = parseISO(s); d.setDate(d.getDate()+n); return isoDate(d); };
+const UNIT = {'sợi':'pza','cái':'pza','pcs':'pza','bộ/ set':'jgo','bộ':'jgo','hộp':'caja','m':'m'};
+const unitEs = u => UNIT[String(u||'').trim().toLowerCase()] || u || '';
+function splitName(name){
+  const parts = String(name||'').split('|')[0].split('_').map(s=>s.trim()).filter(Boolean);
+  return {short: parts[0] || name, spec: parts.slice(1).join(' · ')};
+}
+const ICON = {
+  ok:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M3 8.5l3 3 7-7"/></svg>',
+  warn:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 1l7.5 13H.5z"/><rect x="7.2" y="5.5" width="1.6" height="4.5" fill="#fff"/><rect x="7.2" y="11" width="1.6" height="1.6" fill="#fff"/></svg>',
+  crit:'<svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="7.5"/><rect x="7.1" y="3.8" width="1.8" height="5.4" fill="#fff"/><rect x="7.1" y="10.6" width="1.8" height="1.8" fill="#fff"/></svg>',
+  clock:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="8" r="6.5"/><path d="M8 4.5V8l2.5 1.5"/></svg>',
+  truck:'<svg viewBox="0 0 16 16" fill="currentColor"><path d="M1 3h9v7H1zM10 6h3l2 2.5V10h-5z"/><circle cx="4" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/></svg>',
+  x:'<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 4l8 8M12 4l-8 8"/></svg>',
+};
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.style.display='block'; clearTimeout(toast._t); toast._t=setTimeout(()=>t.style.display='none',2600); }
+
+/* ============ Estado ============ */
+const DEFAULT_WH = {VTP_GPON:'Lima · Central',LAL_GPON:'La Libertad',ARE_GPON:'Arequipa',CAJ_GPON:'Cajamarca',CUS_GPON:'Cusco',HUN_GPON:'Huánuco',JUN_GPON:'Junín',PIU_GPON:'Piura',SAN_GPON:'San Martín'};
+const STATUS = {
+  programado:{l:'Programado',cls:'t-info',ic:'clock'},
+  transito:{l:'En tránsito',cls:'t-warn',ic:'truck'},
+  entregado:{l:'Entregado',cls:'t-good',ic:'ok'},
+  cancelado:{l:'Cancelado',cls:'t-mute',ic:'x'},
+};
+const TYPES = {ingreso:'Ingreso de proveedor',transferencia:'Transferencia entre almacenes',despacho:'Despacho a contrata / obra'};
+const S = {
+  email:null, canWrite:false, conn:'connecting',
+  snaps:[], sel:null, deliveries:[], cfg:{min:{},wh:{},central:'VTP_GPON'},
+  view:'resumen', stock:{q:'',wh:'',st:'',sort:'code',dir:1}, heatQ:'',
+  cmp:{a:null,b:null,only:true}, trend:{code:''}, whA:'', whB:'',
+  cal:{y:new Date().getFullYear(), m:new Date().getMonth(), wh:'', st:''},
+  pending:null, names:{}
+};
+const snap = () => S.snaps.find(s=>s.date===S.sel) || S.snaps[S.snaps.length-1] || null;
+const prevSnap = () => { const c=snap(); if(!c) return null; const i=S.snaps.indexOf(c); return i>0?S.snaps[i-1]:null; };
+const whLabel = w => (S.cfg.wh && S.cfg.wh[w]) || DEFAULT_WH[w] || w;
+const whShort = w => String(w).replace(/_GPON$/,'');
+const minOf = code => { const v = S.cfg.min && S.cfg.min[code]; return (v===undefined||v===null||v==='') ? null : Number(v); };
+function stockStatus(it){
+  const m = minOf(it.code);
+  if(it.total<=0) return {k:'crit',l:'Sin stock',cls:'t-crit',ic:'crit'};
+  if(m===null) return {k:'none',l:'Sin mínimo',cls:'t-mute',ic:null};
+  if(it.total<m) return {k:'crit',l:'Bajo mínimo',cls:'t-crit',ic:'crit'};
+  if(it.total<m*1.25) return {k:'warn',l:'Cerca del mínimo',cls:'t-warn',ic:'warn'};
+  return {k:'ok',l:'OK',cls:'t-good',ic:'ok'};
+}
+const tag = (cls,label,ic) => `<span class="tag ${cls}">${ic?ICON[ic]:''}${esc(label)}</span>`;
+const isOverdue = d => d.date < todayISO() && (d.status==='programado'||d.status==='transito');
+function delivTag(d){ if(isOverdue(d)) return tag('t-crit','Vencida','crit'); const s=STATUS[d.status]||STATUS.programado; return tag(s.cls,s.l,s.ic); }
+function itemByCode(code){ const s=snap(); return s ? s.items.find(i=>i.code===code) : null; }
+function catalog(){ // todos los materiales conocidos en cualquier corte
+  const m = new Map(); for(const s of S.snaps) for(const i of s.items) m.set(i.code,i); return m;
+}
+
+/* ============ Navegación ============ */
+const VIEWS = [
+  ['resumen','Resumen','<path d="M3 13h4v8H3zM10 3h4v18h-4zM17 9h4v12h-4z"/>'],
+  ['stock','Stock','<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10" fill="none" stroke="currentColor" stroke-width="1.6"/>'],
+  ['comparacion','Comparación de almacenes','<path d="M4 4h6v16H4zM14 8h6v12h-6z"/>'],
+  ['calendario','Calendario de entregas','<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4" stroke="var(--surface)" stroke-width="1.8"/>'],
+  ['historial','Historial y variaciones','<path d="M12 3a9 9 0 1 1-9 9h3a6 6 0 1 0 6-6z"/><path d="M11 7h2v6h-2z"/>'],
+  ['actualizar','Actualizar stock','<path d="M12 3l5 5h-3v7h-4V8H7zM4 17h16v4H4z"/>'],
+];
+function renderNav(){
+  const od = S.deliveries.filter(isOverdue).length;
+  $('#nav').innerHTML = VIEWS.map(([k,l,p]) =>
+    `<a href="#${k}" class="${S.view===k?'on':''}"><svg viewBox="0 0 24 24" fill="currentColor">${p}</svg>${l}${k==='calendario'&&od?`<span class="badge" title="Entregas vencidas">${od}</span>`:''}</a>`).join('');
+}
+function route(){
+  const h = location.hash.replace('#','');
+  S.view = VIEWS.some(v=>v[0]===h) ? h : 'resumen';
+  render();
+}
+window.addEventListener('hashchange', route);
+
+function header(title, sub){
+  const s = snap();
+  const opts = S.snaps.slice().reverse().map(x=>`<option value="${x.date}" ${s&&x.date===s.date?'selected':''}>${fmtDate(x.date)}</option>`).join('');
+  return `<div class="top"><div><h2>${esc(title)}</h2><div class="sub">${sub}</div></div>
+    ${S.snaps.length?`<div class="cutpill">Corte de stock <select id="cutSel">${opts}</select></div>`:''}</div>`;
+}
+function bindHeader(){ const c=$('#cutSel'); if(c) c.onchange=()=>{S.sel=c.value; render();}; }
+function staleBanner(){
+  const s = snap(); if(!s) return '';
+  const latest = S.snaps[S.snaps.length-1];
+  if(s!==latest) return `<div class="banner info">${ICON.clock}<div>Estás viendo el corte del <b>${fmtDate(s.date)}</b>, no el más reciente (${fmtDate(latest.date)}).</div></div>`;
+  const age = daysBetween(s.date, todayISO());
+  if(age>=3) return `<div class="banner warn">${ICON.warn}<div>El último corte de stock tiene <b>${age} días</b>. <a href="#actualizar">Carga el reporte más reciente del WMS</a> para mantener las cifras al día.</div></div>`;
+  return '';
+}
+function emptyState(){
+  if(S.conn==='connecting') return `<div class="card empty"><b>Cargando datos…</b>Conectando con la base de datos de la plataforma.</div>`;
+  return `<div class="card empty"><b>Aún no hay cortes de stock cargados</b>Descarga el reporte “Báo cáo tổng hợp tồn kho” del WMS y súbelo en <a href="#actualizar">Actualizar stock</a>.</div>`;
+}
+
+function render(){
+  renderNav();
+  const fn = {resumen:vResumen, stock:vStock, comparacion:vComparacion, calendario:vCalendario, historial:vHistorial, actualizar:vActualizar}[S.view];
+  fn();
+  bindHeader();
+}
+
+/* ============ Tooltip ============ */
+const tip = $('#tip');
+document.addEventListener('mousemove', e => {
+  const t = e.target.closest('[data-tip]');
+  if(!t){ tip.style.display='none'; return; }
+  tip.innerHTML = esc(t.getAttribute('data-tip')) // solo se permiten <div class='tt'>, </div> y <br>
+    .replace(/&lt;div class=&#39;tt&#39;&gt;/g,"<div class='tt'>").replace(/&lt;\/div&gt;/g,'</div>').replace(/&lt;br&gt;/g,'<br>');
+  tip.style.display='block';
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let x = e.clientX+14, y = e.clientY+14;
+  if(x+w>innerWidth-8) x = e.clientX-w-14;
+  if(y+h>innerHeight-8) y = e.clientY-h-14;
+  tip.style.left=x+'px'; tip.style.top=y+'px';
+});
+
+/* ============ Gráficos ============ */
+function hbars(rows, opt={}){ // rows: [{label, sub, value, tip, fmt}]
+  const max = Math.max(1, ...rows.map(r=>r.value));
+  return `<div class="bars">${rows.map(r=>`<div class="bar-row" data-tip="${esc(r.tip||'')}" ${r.onclick?`style="cursor:pointer" data-act="${r.onclick}"`:''}>
+    <div class="bl"><b>${esc(r.label)}</b>${r.sub?` <span class="muted">${esc(r.sub)}</span>`:''}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${(r.value/max*100).toFixed(2)}%;${r.value>0?'min-width:2px':''}"></div></div>
+    <div class="bv">${r.text ?? fmt(r.value)}</div></div>`).join('')}</div>`;
+}
+function lineChart(points, opt={}){ // points [{x:label, y:number, tip}]
+  if(points.length<2) return `<div class="empty" style="padding:24px">Se necesitan al menos dos cortes para ver la tendencia.</div>`;
+  const W=640,H=220,L=56,R=16,T=14,B=28;
+  const ys = points.map(p=>p.y); let lo=Math.min(0,...ys), hi=Math.max(...ys); if(hi===lo) hi=lo+1;
+  const nice = v => { const p=Math.pow(10,Math.floor(Math.log10(Math.max(1,v)))); return Math.ceil(v/p)*p; }; hi = nice(hi);
+  const X = i => L + i*(W-L-R)/(points.length-1);
+  const Y = v => T + (1-(v-lo)/(hi-lo))*(H-T-B);
+  const ticks = [0,.25,.5,.75,1].map(f=>lo+f*(hi-lo));
+  const path = points.map((p,i)=>`${i?'L':'M'}${X(i).toFixed(1)},${Y(p.y).toFixed(1)}`).join('');
+  const step = Math.max(1, Math.ceil(points.length/8));
+  return `<svg class="svgchart" viewBox="0 0 ${W} ${H}" width="100%" style="max-height:260px">
+    ${ticks.map(t=>`<line x1="${L}" x2="${W-R}" y1="${Y(t)}" y2="${Y(t)}" stroke="var(--line)"/><text x="${L-8}" y="${Y(t)+4}" text-anchor="end">${fmt(Math.round(t))}</text>`).join('')}
+    ${points.map((p,i)=> i%step===0||i===points.length-1 ? `<text x="${X(i)}" y="${H-8}" text-anchor="middle">${esc(p.x)}</text>`:'').join('')}
+    <path d="${path}" fill="none" stroke="var(--s400)" stroke-width="2" stroke-linejoin="round"/>
+    ${points.map((p,i)=>`<circle cx="${X(i)}" cy="${Y(p.y)}" r="4" fill="var(--s400)" stroke="var(--surface)" stroke-width="2"/>
+      <rect x="${X(i)-14}" y="${T}" width="28" height="${H-T-B}" fill="transparent" data-tip="${esc(p.tip||`<div class='tt'>${p.x}</div>${fmt(p.y)}`)}"/>`).join('')}
+  </svg>`;
+}
+const RAMP = ['var(--s100)','var(--s200)','var(--s300)','var(--s400)','var(--s500)','var(--s600)','var(--s700)'];
+function rampColor(f){ if(!(f>0)) return ''; const i = Math.min(RAMP.length-1, Math.floor(f*RAMP.length)); return `background:${RAMP[i]};color:${i>=3?'#fff':'var(--ink)'}`; }
+
+/* ============ Vista: Resumen ============ */
+function vResumen(){
+  const s = snap();
+  if(!s){ $('#main').innerHTML = header('Resumen','Visión general del stock y las entregas') + emptyState(); return; }
+  const t = todayISO();
+  const items = s.items;
+  const withStock = items.filter(i=>i.total>0).length;
+  const crit = items.filter(i=>stockStatus(i).k==='crit');
+  const warn = items.filter(i=>stockStatus(i).k==='warn');
+  const minsSet = items.filter(i=>minOf(i.code)!==null).length;
+  const up7 = S.deliveries.filter(d=>d.date>=t && d.date<=addDays(t,7) && d.status!=='cancelado' && d.status!=='entregado');
+  const od = S.deliveries.filter(isOverdue);
+  const age = daysBetween(s.date, t);
+  const cov = s.warehouses.map(w=>({w, n:items.filter(i=>(i.q[w]||0)>0).length}));
+  const central = S.cfg.central || s.warehouses[0];
+  const onlyCentral = items.filter(i=>Object.keys(i.q).length===1 && i.q[central]>0).length;
+  const prev = prevSnap();
+  let moves = [];
+  if(prev){
+    const pm = new Map(prev.items.map(i=>[i.code,i]));
+    moves = items.map(i=>{ const p=pm.get(i.code); const a=p?p.total:0; return {i, a, d:i.total-a, r:a?(i.total-a)/a:null}; })
+      .filter(x=>x.d!==0).sort((x,y)=>Math.abs(y.r??1)-Math.abs(x.r??1)).slice(0,6);
+  }
+  const upcoming = S.deliveries.filter(d=>d.date>=t && d.status!=='cancelado' && d.status!=='entregado').sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time)).slice(0,6);
+
+  $('#main').innerHTML = header('Resumen', `Corte del ${fmtDate(s.date)} · ${s.warehouses.length} almacenes · ${items.length} materiales`) + staleBanner() + `
+  <div class="grid g4">
+    <div class="card kpi"><div class="lbl">Último corte de stock</div><div class="val">${fmtDate(s.date)}</div><div class="foot">${age===0?'Hoy':age===1?'Hace 1 día':`Hace ${age} días`}</div></div>
+    <div class="card kpi"><div class="lbl">Materiales con stock</div><div class="val">${withStock}<span class="muted" style="font-size:16px"> / ${items.length}</span></div><div class="foot">${onlyCentral} solo en ${esc(whShort(central))}</div></div>
+    <div class="card kpi"><div class="lbl">Bajo o cerca del mínimo</div><div class="val" style="color:${crit.length?'var(--crit)':'inherit'}">${crit.length}<span class="muted" style="font-size:16px"> + ${warn.length}</span></div><div class="foot">${minsSet?`${minsSet} materiales con mínimo definido`:'Define mínimos en la sección Stock'}</div></div>
+    <div class="card kpi"><div class="lbl">Entregas próximos 7 días</div><div class="val">${up7.length}</div><div class="foot">${od.length?`<span style="color:var(--crit);font-weight:600">${od.length} vencida${od.length>1?'s':''}</span>`:'Ninguna vencida'}</div></div>
+  </div>
+  <div class="grid g2 mt">
+    <div class="card"><h3>Cobertura por almacén</h3><p class="hint">Cantidad de materiales distintos con stock en cada almacén (de ${items.length}). Clic para ver su stock.</p>
+      ${hbars(cov.sort((a,b)=>b.n-a.n).map(c=>({label:whShort(c.w), sub:whLabel(c.w), value:c.n, text:`${c.n} <span class="muted" style="font-weight:400">(${pct(c.n/items.length)})</span>`, tip:`<div class='tt'>${esc(c.w)} · ${esc(whLabel(c.w))}</div>${c.n} de ${items.length} materiales con stock`, onclick:'wh:'+c.w})))}
+    </div>
+    <div class="card"><h3>Próximas entregas</h3><p class="hint">Entregas programadas o en tránsito.</p>
+      ${upcoming.length?`<div class="list">${upcoming.map(delivLi).join('')}</div>`:`<div class="empty" style="padding:20px">No hay entregas programadas. <a href="#calendario">Abrir calendario</a></div>`}
+      ${od.length?`<div class="banner crit mt" style="margin-bottom:0">${ICON.crit}<div><b>${od.length} entrega${od.length>1?'s':''} vencida${od.length>1?'s':''}</b> sin marcar como entregada. <a href="#calendario">Revisar</a></div></div>`:''}
+    </div>
+  </div>
+  <div class="grid g2 mt">
+    <div class="card"><h3>Alertas de stock</h3><p class="hint">Materiales sin stock o por debajo del mínimo definido.</p>
+      ${crit.length+warn.length ? `<div class="list">${[...crit,...warn].slice(0,10).map(i=>{const st=stockStatus(i);const n=splitName(i.name);return `<div class="li click" data-act="mat:${i.code}"><div class="body"><div class="t">${esc(n.short)}</div><div class="s"><span class="code">${i.code}</span> · Total ${fmt(i.total)} ${unitEs(i.unit)}${minOf(i.code)!==null?` · Mín. ${fmt(minOf(i.code))}`:''}</div></div>${tag(st.cls,st.l,st.ic)}</div>`}).join('')}</div>`
+        : `<div class="empty" style="padding:20px">${minsSet?'Todo el stock está por encima de los mínimos.':'Aún no hay mínimos definidos. Abre un material en <a href="#stock">Stock</a> para fijar su stock mínimo y recibir alertas aquí.'}</div>`}
+    </div>
+    <div class="card"><h3>Mayores variaciones vs. corte anterior</h3><p class="hint">${prev?`Comparado con el ${fmtDate(prev.date)}.`:'Disponible cuando haya al menos dos cortes cargados.'}</p>
+      ${moves.length?`<div class="list">${moves.map(m=>{const n=splitName(m.i.name);return `<div class="li click" data-act="mat:${m.i.code}"><div class="body"><div class="t">${esc(n.short)}</div><div class="s">${fmt(m.a)} → ${fmt(m.i.total)} ${unitEs(m.i.unit)}</div></div><span class="${m.d>0?'delta-up':'delta-dn'}">${m.d>0?'+':''}${fmt(m.d)}${m.r!==null?` (${m.d>0?'+':''}${pct(m.r)})`:''}</span></div>`}).join('')}</div>`
+        : `<div class="empty" style="padding:20px">${prev?'Sin cambios entre ambos cortes.':'—'}</div>`}
+    </div>
+  </div>`;
+}
+function delivLi(d){
+  const dt = parseISO(d.date);
+  const items = (d.items||[]);
+  const first = items[0] ? (itemByCode(items[0].code)||catalog().get(items[0].code)) : null;
+  const title = first ? splitName(first.name).short + (items.length>1?` +${items.length-1}`:'') : (TYPES[d.type]||'Entrega');
+  const route = [d.origin?whShort(d.origin):'', d.dest?whShort(d.dest):''].filter(Boolean).join(' → ');
+  return `<div class="li click" data-act="del:${d.id}"><div class="when"><b>${dt.getDate()}</b><span>${MES3[dt.getMonth()]}</span></div>
+    <div class="body"><div class="t">${esc(title)}</div><div class="s">${esc(TYPES[d.type]||'')}${route?' · '+esc(route):''}${d.party?' · '+esc(d.party):''}${d.time?' · '+esc(d.time):''}</div></div>${delivTag(d)}</div>`;
+}
+
+/* ============ Vista: Stock ============ */
+function vStock(){
+  const s = snap();
+  if(!s){ $('#main').innerHTML = header('Stock','Inventario por material y almacén') + emptyState(); return; }
+  const f = S.stock;
+  const q = f.q.trim().toLowerCase();
+  let rows = s.items.filter(i => (!q || (i.code+' '+i.name+' '+(i.nameVi||'')).toLowerCase().includes(q))
+    && (!f.wh || (i.q[f.wh]||0)>0)
+    && (!f.st || (f.st==='alert' ? ['crit','warn'].includes(stockStatus(i).k) : f.st==='nomin' ? minOf(i.code)===null : stockStatus(i).k===f.st)));
+  const key = f.sort;
+  const val = i => key==='code'?i.code : key==='name'?i.name.toLowerCase() : key==='total'?i.total : key==='min'?(minOf(i.code)??-1) : key==='st'?stockStatus(i).k : (i.q[key]||0);
+  rows.sort((a,b)=>{ const x=val(a), y=val(b); return (x<y?-1:x>y?1:0)*f.dir; });
+  const arrow = k => f.sort===k ? (f.dir>0?' ▲':' ▼') : '';
+  const whs = s.warehouses;
+  $('#main').innerHTML = header('Stock', `Corte del ${fmtDate(s.date)} · ${rows.length} de ${s.items.length} materiales`) + staleBanner() + `
+  <div class="toolbar">
+    <input type="search" id="sq" placeholder="Buscar por código o nombre…" value="${esc(f.q)}" style="min-width:260px" class="grow">
+    <select id="swh"><option value="">Todos los almacenes</option>${whs.map(w=>`<option value="${w}" ${f.wh===w?'selected':''}>Con stock en ${whShort(w)} · ${esc(whLabel(w))}</option>`).join('')}</select>
+    <select id="sst"><option value="">Todos los estados</option><option value="alert" ${f.st==='alert'?'selected':''}>Con alerta</option><option value="crit" ${f.st==='crit'?'selected':''}>Bajo mínimo / sin stock</option><option value="warn" ${f.st==='warn'?'selected':''}>Cerca del mínimo</option><option value="ok" ${f.st==='ok'?'selected':''}>OK</option><option value="nomin" ${f.st==='nomin'?'selected':''}>Sin mínimo definido</option></select>
+    <button class="btn" id="xlsxBtn" title="Descarga la tabla filtrada como Excel">Descargar Excel</button>
+  </div>
+  <div class="tbl-wrap"><table>
+    <thead><tr>
+      <th class="sort" data-sort="code">Código${arrow('code')}</th>
+      <th class="sort" data-sort="name">Material${arrow('name')}</th>
+      <th>Und.</th>
+      <th class="sort num" data-sort="total">Total${arrow('total')}</th>
+      ${whs.map(w=>`<th class="sort num" data-sort="${w}" title="${esc(whLabel(w))}">${whShort(w)}${arrow(w)}<span class="whname">${esc(whLabel(w))}</span></th>`).join('')}
+      <th class="sort num" data-sort="min">Mínimo${arrow('min')}</th>
+      <th class="sort" data-sort="st">Estado${arrow('st')}</th>
+    </tr></thead>
+    <tbody>${rows.map(i=>{ const n=splitName(i.name); const st=stockStatus(i);
+      return `<tr class="click" data-act="mat:${i.code}">
+        <td class="code">${esc(i.code)}</td>
+        <td class="wrap"><div class="mname">${esc(n.short)}</div>${n.spec?`<div class="mspec">${esc(n.spec)}</div>`:''}</td>
+        <td>${esc(unitEs(i.unit))}</td>
+        <td class="num"><b>${fmt(i.total)}</b></td>
+        ${whs.map(w=>`<td class="num">${i.q[w]?fmt(i.q[w]):'<span class="z">·</span>'}</td>`).join('')}
+        <td class="num">${minOf(i.code)!==null?fmt(minOf(i.code)):'<span class="z">—</span>'}</td>
+        <td>${tag(st.cls,st.l,st.ic)}</td></tr>`; }).join('') || `<tr><td colspan="${whs.length+6}" class="empty">Ningún material coincide con los filtros.</td></tr>`}
+    </tbody></table></div>
+  <p class="muted" style="font-size:12px">Clic en una fila para ver el detalle, la tendencia, fijar el stock mínimo o programar una entrega.</p>`;
+  const sq=$('#sq'); sq.oninput=()=>{ f.q=sq.value; const pos=sq.selectionStart; vStock(); bindHeader(); const n=$('#sq'); n.focus(); n.setSelectionRange(pos,pos); };
+  $('#swh').onchange=e=>{f.wh=e.target.value; render();};
+  $('#sst').onchange=e=>{f.st=e.target.value; render();};
+  document.querySelectorAll('th.sort').forEach(th=>th.onclick=()=>{ const k=th.dataset.sort; if(f.sort===k) f.dir*=-1; else {f.sort=k; f.dir=(k==='code'||k==='name'||k==='st')?1:-1;} render(); });
+  $('#xlsxBtn').onclick=()=>{
+    if(!window.XLSX){ toast('El generador de Excel aún está cargando.'); return; }
+    const data=rows.map(i=>{ const r={'Código':i.code,'Material':i.name,'Unidad':unitEs(i.unit),'Total':i.total}; whs.forEach(w=>r[w]=i.q[w]||0); r['Mínimo']=minOf(i.code)??''; r['Estado']=stockStatus(i).l; return r; });
+    const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), 'Stock');
+    XLSX.writeFile(wb, `Stock_FBB_${s.date}.xlsx`);
+  };
+}
+
+/* ============ Detalle de material ============ */
+function openMaterial(code){
+  const s = snap(); const it = s && s.items.find(i=>i.code===code) || catalog().get(code);
+  if(!it) return;
+  const n = splitName(it.name);
+  const whs = s ? s.warehouses : [];
+  const hist = S.snaps.map(x=>{ const m=x.items.find(i=>i.code===code); return {x:fmtDate(x.date).slice(0,6), y:m?m.total:0, tip:`<div class='tt'>${fmtDate(x.date)}</div>${fmt(m?m.total:0)} ${unitEs(it.unit)}`}; });
+  const dels = S.deliveries.filter(d=>(d.items||[]).some(x=>x.code===code)).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
+  const m = minOf(code); const st = stockStatus(it);
+  openModal(`<div class="mh"><div><div class="code">${esc(code)} · ${esc(unitEs(it.unit))}</div><h3>${esc(n.short)}</h3>
+      ${n.spec?`<div class="muted" style="font-size:12.5px">${esc(n.spec)}</div>`:''}${it.nameVi?`<div class="muted" style="font-size:12px;margin-top:4px">${esc(it.nameVi)}</div>`:''}</div>
+      <button class="btn ghost" data-act="close">${ICON.x}</button></div>
+    <div class="grid g4" style="margin-bottom:14px">
+      <div class="card kpi"><div class="lbl">Stock total</div><div class="val">${fmt(it.total)}</div><div class="foot">${esc(unitEs(it.unit))} · corte ${s?fmtDate(s.date):''}</div></div>
+      <div class="card kpi"><div class="lbl">Stock mínimo</div><div class="row" style="margin-top:6px"><input type="number" min="0" id="minIn" ${S.canWrite?'':'disabled'} value="${m??''}" placeholder="Sin definir" style="width:120px"><button class="btn pri sm edit-only" id="minSave">Guardar</button></div><div class="foot">${tag(st.cls,st.l,st.ic)}</div></div>
+    </div>
+    <h3 style="font-size:14px">Distribución por almacén</h3>
+    ${hbars(whs.map(w=>({label:whShort(w), sub:whLabel(w), value:it.q[w]||0, tip:`<div class='tt'>${esc(w)}</div>${fmt(it.q[w]||0)} ${esc(unitEs(it.unit))} · ${pct((it.q[w]||0)/(it.total||1))} del total`})))}
+    <h3 style="font-size:14px;margin-top:18px">Tendencia del stock total</h3>
+    ${lineChart(hist)}
+    <div class="row" style="justify-content:space-between;margin-top:14px"><h3 style="font-size:14px;margin:0">Entregas relacionadas</h3><button class="btn sm edit-only" id="newDelMat">+ Programar entrega</button></div>
+    ${dels.length?`<div class="list">${dels.map(delivLi).join('')}</div>`:'<p class="muted">No hay entregas registradas con este material.</p>'}`);
+  $('#minSave').onclick = async () => {
+    const v = $('#minIn').value.trim();
+    const min = {...(S.cfg.min||{})}; if(v==='') delete min[code]; else min[code]=Number(v);
+    if(await saveCfg({min})){ toast('Stock mínimo guardado'); closeModal(); }
+  };
+  $('#newDelMat').onclick = () => openDelivery(null, {items:[{code, qty:''}]});
+}
+
+/* ============ Vista: Comparación ============ */
+function vComparacion(){
+  const s = snap();
+  if(!s){ $('#main').innerHTML = header('Comparación de almacenes','') + emptyState(); return; }
+  const whs = s.warehouses, items = s.items;
+  const central = S.cfg.central && whs.includes(S.cfg.central) ? S.cfg.central : whs[0];
+  if(!S.whA || !whs.includes(S.whA)) S.whA = central;
+  if(!S.whB || !whs.includes(S.whB)) S.whB = whs.find(w=>w!==central) || whs[0];
+  const cov = whs.map(w=>{
+    const has = items.filter(i=>(i.q[w]||0)>0);
+    const excl = has.filter(i=>Object.keys(i.q).filter(k=>i.q[k]>0).length===1);
+    const share = items.reduce((a,i)=>a+((i.q[w]||0)/(i.total||1)),0)/items.length;
+    const fromCentral = w===central?0:items.filter(i=>!(i.q[w]>0) && i.q[central]>0).length;
+    return {w,n:has.length,excl:excl.length,share,fromCentral};
+  });
+  const q = S.heatQ.trim().toLowerCase();
+  const hrows = items.filter(i=>!q || (i.code+' '+i.name).toLowerCase().includes(q));
+  const A=S.whA, B=S.whB;
+  const ab = items.filter(i=>(i.q[A]||0)>0||(i.q[B]||0)>0);
+  const onlyA = ab.filter(i=>i.q[A]>0 && !(i.q[B]>0)).length, onlyB = ab.filter(i=>i.q[B]>0 && !(i.q[A]>0)).length, both = ab.length-onlyA-onlyB;
+  const regional = whs.filter(w=>w!==central);
+  const sugg = regional.map(w=>({w, list:items.filter(i=>!(i.q[w]>0) && i.q[central]>0)}));
+  const whOpts = sel => whs.map(w=>`<option value="${w}" ${sel===w?'selected':''}>${whShort(w)} · ${esc(whLabel(w))}</option>`).join('');
+
+  $('#main').innerHTML = header('Comparación de almacenes', `Corte del ${fmtDate(s.date)} · almacén central: ${esc(whShort(central))}`) + staleBanner() + `
+  <div class="card"><h3>Resumen por almacén</h3><p class="hint">Cobertura del catálogo, materiales que solo existen en ese almacén y faltantes que sí hay en el central.</p>
+    <div class="tbl-wrap" style="max-height:none"><table><thead><tr><th>Almacén</th><th class="num">Materiales con stock</th><th>Cobertura</th><th class="num">Exclusivos</th><th class="num">Participación media</th><th class="num">Faltantes disponibles en central</th></tr></thead>
+    <tbody>${cov.map(c=>`<tr><td><b>${whShort(c.w)}</b> <span class="muted">${esc(whLabel(c.w))}</span>${c.w===central?' '+tag('t-info','Central'):''}</td>
+      <td class="num">${c.n} / ${items.length}</td>
+      <td style="min-width:160px"><div class="bar-track" data-tip="${pct(c.n/items.length)} del catálogo"><div class="bar-fill" style="width:${c.n/items.length*100}%"></div></div></td>
+      <td class="num">${c.excl}</td><td class="num">${pct(c.share)}</td><td class="num">${c.w===central?'<span class="z">—</span>':c.fromCentral}</td></tr>`).join('')}</tbody></table></div>
+    <p class="muted" style="font-size:12px;margin:8px 0 0">Participación media: en promedio, qué porcentaje del stock total de cada material está en ese almacén.</p>
+  </div>
+
+  <div class="card mt"><div class="row" style="justify-content:space-between"><div><h3>Almacén vs. almacén</h3><p class="hint">Compara material por material dos almacenes.</p></div>
+    <div class="row"><select id="whA">${whOpts(A)}</select><span class="muted">vs</span><select id="whB">${whOpts(B)}</select></div></div>
+    <div class="row" style="margin-bottom:10px">${tag('t-info',`${both} en ambos`)} ${tag('t-mute',`${onlyA} solo en ${whShort(A)}`)} ${tag('t-mute',`${onlyB} solo en ${whShort(B)}`)}</div>
+    <div class="tbl-wrap" style="max-height:420px"><table><thead><tr><th>Código</th><th>Material</th><th>Und.</th><th class="num">${whShort(A)}</th><th class="num">${whShort(B)}</th><th class="num">Diferencia</th><th>Situación</th></tr></thead>
+    <tbody>${ab.sort((x,y)=>Math.abs((y.q[A]||0)-(y.q[B]||0))-Math.abs((x.q[A]||0)-(x.q[B]||0))).map(i=>{const a=i.q[A]||0,b=i.q[B]||0;const n=splitName(i.name);
+      return `<tr class="click" data-act="mat:${i.code}"><td class="code">${i.code}</td><td class="wrap"><div class="mname">${esc(n.short)}</div></td><td>${esc(unitEs(i.unit))}</td><td class="num">${a?fmt(a):'<span class="z">·</span>'}</td><td class="num">${b?fmt(b):'<span class="z">·</span>'}</td><td class="num">${fmt(a-b)}</td>
+      <td>${a&&b?tag('t-info','Ambos'):a?tag('t-mute','Solo '+whShort(A)):tag('t-mute','Solo '+whShort(B))}</td></tr>`}).join('')}</tbody></table></div>
+  </div>
+
+  <div class="card mt"><div class="row" style="justify-content:space-between"><div><h3>Matriz de distribución</h3><p class="hint">Cada celda muestra la cantidad; el color indica qué parte del total del material está en ese almacén.</p></div>
+    <div class="row"><div class="legend-scale">0%<span class="ramp">${RAMP.map(c=>`<i style="background:${c}"></i>`).join('')}</span>100%</div><input type="search" id="hq" placeholder="Filtrar materiales…" value="${esc(S.heatQ)}"></div></div>
+    <div class="tbl-wrap heat"><table><thead><tr><th>Material</th><th class="num">Total</th>${whs.map(w=>`<th class="num" title="${esc(whLabel(w))}">${whShort(w)}</th>`).join('')}</tr></thead>
+    <tbody>${hrows.map(i=>{const n=splitName(i.name);return `<tr class="click" data-act="mat:${i.code}"><td class="wrap"><div class="mname">${esc(n.short)}</div><div class="mspec code">${i.code} · ${esc(unitEs(i.unit))}</div></td><td class="num"><b>${fmt(i.total)}</b></td>
+      ${whs.map(w=>{const v=i.q[w]||0;const f=v/(i.total||1);return `<td class="hc" style="${rampColor(f)}" data-tip="<div class='tt'>${esc(whShort(w))} · ${esc(n.short)}</div>${fmt(v)} ${esc(unitEs(i.unit))} · ${pct(f)} del total">${v?fmt(v):''}</td>`}).join('')}</tr>`}).join('')}</tbody></table></div>
+  </div>
+
+  <div class="card mt"><h3>Sugerencias de reabastecimiento desde ${esc(whShort(central))}</h3><p class="hint">Materiales que un almacén regional no tiene pero que sí hay en el central. Úsalo como punto de partida para programar transferencias.</p>
+    ${sugg.map(g=>`<details style="border-bottom:1px solid var(--line);padding:8px 0"><summary style="cursor:pointer"><b>${whShort(g.w)}</b> <span class="muted">${esc(whLabel(g.w))}</span> — ${g.list.length} material${g.list.length===1?'':'es'}</summary>
+      ${g.list.length?`<div class="list" style="margin-top:6px">${g.list.map(i=>`<div class="li"><div class="body"><div class="t">${esc(splitName(i.name).short)}</div><div class="s"><span class="code">${i.code}</span> · disponible en central: ${fmt(i.q[central])} ${esc(unitEs(i.unit))}</div></div><button class="btn sm edit-only" data-act="xfer:${g.w}:${i.code}">Programar transferencia</button></div>`).join('')}</div>`:'<p class="muted">Sin faltantes.</p>'}</details>`).join('')}
+  </div>`;
+  $('#whA').onchange=e=>{S.whA=e.target.value; render();};
+  $('#whB').onchange=e=>{S.whB=e.target.value; render();};
+  const hq=$('#hq'); hq.oninput=()=>{S.heatQ=hq.value; const p=hq.selectionStart; render(); const n=$('#hq'); n.focus(); n.setSelectionRange(p,p);};
+}
+
+/* ============ Vista: Calendario ============ */
+function vCalendario(){
+  const c = S.cal, t = todayISO();
+  const first = new Date(c.y, c.m, 1);
+  const startOffset = (first.getDay()+6)%7;
+  const start = new Date(c.y, c.m, 1-startOffset);
+  const cells = [];
+  for(let i=0;i<42;i++){ const d=new Date(start); d.setDate(start.getDate()+i); cells.push(d); }
+  const weeks = cells[35].getMonth()!==c.m ? 5 : 6;
+  const filt = d => (!c.wh || d.dest===c.wh || d.origin===c.wh) && (!c.st || (c.st==='vencida'?isOverdue(d):d.status===c.st));
+  const ds = S.deliveries.filter(filt);
+  const byDay = {}; ds.forEach(d=>(byDay[d.date]=byDay[d.date]||[]).push(d));
+  Object.values(byDay).forEach(a=>a.sort((x,y)=>(x.time||'').localeCompare(y.time||'')));
+  const od = S.deliveries.filter(isOverdue).sort((a,b)=>a.date.localeCompare(b.date));
+  const next = S.deliveries.filter(d=>d.date>=t && d.date<=addDays(t,14) && d.status!=='cancelado' && d.status!=='entregado').sort((a,b)=>(a.date+(a.time||'')).localeCompare(b.date+(b.time||'')));
+  const monthDs = S.deliveries.filter(d=>{const x=parseISO(d.date);return x.getFullYear()===c.y&&x.getMonth()===c.m;});
+  const whs = (snap()?.warehouses) || Object.keys(DEFAULT_WH);
+  const chipLabel = d => { const it=(d.items||[])[0]; const m=it?(itemByCode(it.code)||catalog().get(it.code)):null; return `${d.time?d.time+' ':''}${d.dest?whShort(d.dest)+' · ':''}${m?splitName(m.name).short:(TYPES[d.type]||'Entrega')}`; };
+
+  $('#main').innerHTML = header('Calendario de entregas', `Ingresos, transferencias y despachos de material · ${monthDs.length} en ${MES[c.m]}`) + `
+  <div class="toolbar">
+    <button class="btn" id="cPrev" aria-label="Mes anterior">‹</button>
+    <b style="min-width:150px;text-align:center;font-size:16px;text-transform:capitalize">${MES[c.m]} ${c.y}</b>
+    <button class="btn" id="cNext" aria-label="Mes siguiente">›</button>
+    <button class="btn" id="cToday">Hoy</button>
+    <span class="grow"></span>
+    <select id="cWh"><option value="">Todos los almacenes</option>${whs.map(w=>`<option value="${w}" ${c.wh===w?'selected':''}>${whShort(w)} · ${esc(whLabel(w))}</option>`).join('')}</select>
+    <select id="cSt"><option value="">Todos los estados</option>${Object.entries(STATUS).map(([k,v])=>`<option value="${k}" ${c.st===k?'selected':''}>${v.l}</option>`).join('')}<option value="vencida" ${c.st==='vencida'?'selected':''}>Vencida</option></select>
+    <button class="btn pri edit-only" id="cNew">+ Nueva entrega</button>
+  </div>
+  <div class="legend" style="margin-bottom:10px"><span><i style="background:var(--accent)"></i>Programado</span><span><i style="background:var(--warn)"></i>En tránsito</span><span><i style="background:var(--good)"></i>Entregado</span><span><i style="background:var(--crit)"></i>Vencida</span><span><i style="background:var(--ink-3)"></i>Cancelado</span></div>
+  <div class="cal-wrap">
+    <div class="cal">${DOW.map(d=>`<div class="dh">${d}</div>`).join('')}
+      ${cells.slice(0,weeks*7).map(d=>{const iso=isoDate(d);const list=byDay[iso]||[];
+        return `<div class="day ${d.getMonth()!==c.m?'out':''} ${iso===t?'today':''}" data-act="day:${iso}">
+          <div class="dn"><span>${d.getDate()}</span>${list.length>3?`<span class="muted" style="font-weight:500">${list.length}</span>`:''}</div>
+          ${list.slice(0,3).map(x=>`<div class="chip st-${x.status} ${isOverdue(x)?'overdue':''}" data-act="del:${x.id}" data-tip="<div class='tt'>${esc(TYPES[x.type]||'')}</div>${esc(chipLabel(x))}<br>${esc((STATUS[x.status]||{}).l||'')}${isOverdue(x)?' · VENCIDA':''}">${esc(chipLabel(x))}</div>`).join('')}
+          ${list.length>3?`<div class="more">+${list.length-3} más</div>`:''}</div>`}).join('')}
+    </div>
+    <div class="grid">
+      <div class="card"><h3 style="color:${od.length?'var(--crit)':'inherit'}">Vencidas (${od.length})</h3><p class="hint">Fecha pasada y aún no entregadas.</p>
+        ${od.length?`<div class="list">${od.map(delivLi).join('')}</div>`:'<p class="muted" style="margin:0">Ninguna. ¡Todo al día!</p>'}</div>
+      <div class="card"><h3>Próximos 14 días (${next.length})</h3>
+        ${next.length?`<div class="list">${next.map(delivLi).join('')}</div>`:'<p class="muted" style="margin:0">Sin entregas programadas.</p>'}</div>
+    </div>
+  </div>`;
+  $('#cPrev').onclick=()=>{ if(--c.m<0){c.m=11;c.y--;} render(); };
+  $('#cNext').onclick=()=>{ if(++c.m>11){c.m=0;c.y++;} render(); };
+  $('#cToday').onclick=()=>{ const d=new Date(); c.y=d.getFullYear(); c.m=d.getMonth(); render(); };
+  $('#cWh').onchange=e=>{c.wh=e.target.value; render();};
+  $('#cSt').onchange=e=>{c.st=e.target.value; render();};
+  $('#cNew').onclick=()=>openDelivery(null,{});
+}
+
+/* ============ Modal entrega ============ */
+function openDelivery(id, preset){
+  const d = id ? S.deliveries.find(x=>x.id===id) : null;
+  const v = Object.assign({date:todayISO(), time:'', type:'ingreso', origin:'', dest:'', party:'', doc:'', resp:'', status:'programado', notes:'', items:[{code:'',qty:''}]}, d||{}, preset||{});
+  if(!v.items || !v.items.length) v.items=[{code:'',qty:''}];
+  const cat = catalog();
+  const s = snap();
+  const whs = s ? s.warehouses : Object.keys(DEFAULT_WH);
+  const whSel = (name,val,placeholder) => `<select name="${name}"><option value="">${placeholder}</option>${whs.map(w=>`<option value="${w}" ${val===w?'selected':''}>${whShort(w)} · ${esc(whLabel(w))}</option>`).join('')}</select>`;
+  const matOpts = [...cat.values()].map(i=>`<option value="${esc(i.code)}">${esc(i.code)} — ${esc(splitName(i.name).short)}</option>`).join('');
+  const itemRow = (it) => `<tr><td style="width:46%"><input list="matlist" name="icode" value="${esc(it.code)}" placeholder="Código de material"><div class="muted iname" style="font-size:11.5px"></div></td>
+      <td style="width:22%"><input type="number" min="0" step="any" name="iqty" value="${esc(it.qty)}" placeholder="Cantidad"><div class="warnline iwarn"></div></td>
+      <td class="muted iunit" style="width:12%;font-size:12px"></td><td><button type="button" class="btn ghost sm edit-only" data-rm>${ICON.x}</button></td></tr>`;
+  openModal(`<form id="dForm"><div class="mh"><div><h3>${!S.canWrite?'Detalle de entrega':d?'Editar entrega':'Nueva entrega'}</h3>${d?`<div class="muted" style="font-size:12px">Registrada ${d.createdAt?fmtDate(d.createdAt.slice(0,10)):''}${d.createdBy?' por '+esc(d.createdBy):''}</div>`:''}</div><button type="button" class="btn ghost" data-act="close">${ICON.x}</button></div>
+    <div class="form">
+      <label>Fecha<input type="date" name="date" value="${esc(v.date)}" required></label>
+      <label>Hora (opcional)<input type="time" name="time" value="${esc(v.time)}"></label>
+      <label>Tipo<select name="type">${Object.entries(TYPES).map(([k,l])=>`<option value="${k}" ${v.type===k?'selected':''}>${l}</option>`).join('')}</select></label>
+      <label>Estado<select name="status">${Object.entries(STATUS).map(([k,s])=>`<option value="${k}" ${v.status===k?'selected':''}>${s.l}</option>`).join('')}</select></label>
+      <label>Almacén origen${whSel('origin',v.origin,'— Externo / proveedor —')}</label>
+      <label>Almacén destino${whSel('dest',v.dest,'— Externo / contrata / obra —')}</label>
+      <label>Proveedor / contrata / obra<input type="text" name="party" value="${esc(v.party)}" placeholder="Ej. ZTE, contrata, proyecto…"></label>
+      <label>N° guía / OC / pedido<input type="text" name="doc" value="${esc(v.doc)}" placeholder="Ej. GR-000123"></label>
+      <label class="full">Responsable<input type="text" name="resp" value="${esc(v.resp)}" placeholder="Nombre de quien recibe o despacha"></label>
+      <div class="full"><div style="font-size:12.5px;font-weight:600;color:var(--ink-2);margin-bottom:4px">Materiales</div>
+        <table class="items-tbl"><tbody id="itBody">${v.items.map(itemRow).join('')}</tbody></table>
+        <button type="button" class="btn sm edit-only" id="addIt">+ Agregar material</button>
+        <datalist id="matlist">${matOpts}</datalist></div>
+      <label class="full">Notas<textarea name="notes" rows="2">${esc(v.notes)}</textarea></label>
+    </div>
+    <div class="mfoot"><div>${d?`<button type="button" class="btn danger edit-only" id="dDel">Eliminar</button>`:''}</div>
+      <div class="row"><button type="button" class="btn" data-act="close">${S.canWrite?'Cancelar':'Cerrar'}</button><button type="submit" class="btn pri edit-only" id="dSave">${d?'Guardar cambios':'Registrar entrega'}</button></div></div>
+  </form>`);
+  const form = $('#dForm'), body = $('#itBody');
+  const refresh = () => {
+    const origin = form.origin.value; const type = form.type.value;
+    body.querySelectorAll('tr').forEach(tr=>{
+      const code = tr.querySelector('[name=icode]').value.trim(); const qty = Number(tr.querySelector('[name=iqty]').value||0);
+      const m = itemByCode(code) || cat.get(code);
+      tr.querySelector('.iname').textContent = m ? splitName(m.name).short : (code?'Código no encontrado en el catálogo':'');
+      tr.querySelector('.iunit').textContent = m ? unitEs(m.unit) : '';
+      let w=''; if(m && origin && type!=='ingreso'){ const av=(itemByCode(code)?.q[origin])||0; if(qty>av) w=`Stock en ${whShort(origin)}: ${fmt(av)}`; }
+      tr.querySelector('.iwarn').textContent = w;
+    });
+  };
+  if(!S.canWrite) form.querySelectorAll('input,select,textarea,#addIt,[data-rm]').forEach(el=>el.disabled=true);
+  form.addEventListener('input', refresh); form.addEventListener('change', refresh); refresh();
+  $('#addIt').onclick = () => { body.insertAdjacentHTML('beforeend', itemRow({code:'',qty:''})); refresh(); };
+  body.addEventListener('click', e=>{ if(e.target.closest('[data-rm]')){ if(body.children.length>1) e.target.closest('tr').remove(); else { body.querySelector('[name=icode]').value=''; body.querySelector('[name=iqty]').value=''; } refresh(); }});
+  form.onsubmit = async e => {
+    e.preventDefault();
+    const items = [...body.querySelectorAll('tr')].map(tr=>({code:tr.querySelector('[name=icode]').value.trim(), qty:Number(tr.querySelector('[name=iqty]').value||0)})).filter(x=>x.code);
+    if(!items.length){ toast('Agrega al menos un material'); return; }
+    const rec = {date:form.date.value, time:form.time.value, type:form.type.value, status:form.status.value, origin:form.origin.value, dest:form.dest.value,
+      party:form.party.value.trim(), doc:form.doc.value.trim(), resp:form.resp.value.trim(), notes:form.notes.value.trim(), items,
+      createdAt: d?.createdAt || new Date().toISOString(), createdBy: d?.createdBy || S.email || null, updatedAt:new Date().toISOString(), updatedBy:S.email||null};
+    $('#dSave').disabled = true;
+    const ok = await saveDelivery(id, rec);
+    if(ok){ toast(d?'Entrega actualizada':'Entrega registrada'); closeModal(); const dt=parseISO(rec.date); S.cal.y=dt.getFullYear(); S.cal.m=dt.getMonth(); render(); }
+    else $('#dSave').disabled = false;
+  };
+  if(d){ const b=$('#dDel'); b.onclick=async()=>{ if(!b.dataset.c){ b.dataset.c=1; b.textContent='¿Confirmar eliminación?'; return; } if(await removeDelivery(id)){ toast('Entrega eliminada'); closeModal(); render(); } }; }
+}
+
+/* ============ Vista: Historial ============ */
+function vHistorial(){
+  if(!S.snaps.length){ $('#main').innerHTML = header('Historial y variaciones','') + emptyState(); return; }
+  const list = S.snaps.slice().reverse();
+  const dates = S.snaps.map(s=>s.date);
+  if(!dates.includes(S.cmp.b)) S.cmp.b = dates[dates.length-1];
+  if(!dates.includes(S.cmp.a)) S.cmp.a = dates.length>1 ? dates[dates.length-2] : dates[0];
+  const A = S.snaps.find(s=>s.date===S.cmp.a), B = S.snaps.find(s=>s.date===S.cmp.b);
+  const am = new Map(A.items.map(i=>[i.code,i])), bm = new Map(B.items.map(i=>[i.code,i]));
+  const codes = [...new Set([...am.keys(),...bm.keys()])];
+  let diff = codes.map(c=>{const a=am.get(c),b=bm.get(c); const x=a?a.total:0,y=b?b.total:0; return {c, it:b||a, a:x, b:y, d:y-x, r:x?(y-x)/x:null};});
+  if(S.cmp.only) diff = diff.filter(x=>x.d!==0);
+  diff.sort((x,y)=>Math.abs(y.r??1e9)-Math.abs(x.r??1e9));
+  const cat = catalog();
+  if(!S.trend.code) S.trend.code = (snap().items[0]||{}).code || '';
+  const tItem = cat.get(S.trend.code);
+  const pts = S.snaps.map(x=>{const m=x.items.find(i=>i.code===S.trend.code);return {x:fmtDate(x.date).slice(0,6), y:m?m.total:0, tip:`<div class='tt'>${fmtDate(x.date)}</div>${fmt(m?m.total:0)} ${tItem?esc(unitEs(tItem.unit)):''}`};});
+  const opts = sel => list.map(s=>`<option value="${s.date}" ${s.date===sel?'selected':''}>${fmtDate(s.date)}</option>`).join('');
+
+  $('#main').innerHTML = header('Historial y variaciones', `${S.snaps.length} corte${S.snaps.length>1?'s':''} de stock guardado${S.snaps.length>1?'s':''}`) + `
+  <div class="card"><div class="row" style="justify-content:space-between"><div><h3>Variación entre cortes</h3><p class="hint">Diferencia en el stock total de cada material entre dos fechas.</p></div>
+    <div class="row"><select id="hA">${opts(S.cmp.a)}</select><span class="muted">→</span><select id="hB">${opts(S.cmp.b)}</select>
+      <label class="row" style="font-size:13px"><input type="checkbox" id="hOnly" ${S.cmp.only?'checked':''}> Solo con cambios</label></div></div>
+    ${A===B?'<div class="banner info">Elige dos fechas distintas para ver variaciones.</div>':''}
+    <div class="tbl-wrap" style="max-height:440px"><table><thead><tr><th>Código</th><th>Material</th><th>Und.</th><th class="num">${fmtDate(A.date)}</th><th class="num">${fmtDate(B.date)}</th><th class="num">Variación</th><th class="num">%</th></tr></thead>
+    <tbody>${diff.map(x=>`<tr class="click" data-act="mat:${x.c}"><td class="code">${x.c}</td><td class="wrap"><div class="mname">${esc(splitName(x.it.name).short)}</div></td><td>${esc(unitEs(x.it.unit))}</td><td class="num">${fmt(x.a)}</td><td class="num">${fmt(x.b)}</td>
+      <td class="num ${x.d>0?'delta-up':x.d<0?'delta-dn':''}">${x.d>0?'+':''}${fmt(x.d)}</td><td class="num">${x.r===null?(x.b?'nuevo':'—'):(x.r>0?'+':'')+pct(x.r)}</td></tr>`).join('') || `<tr><td colspan="7" class="empty">${S.snaps.length<2?'Carga un segundo corte para comparar.':'Sin variaciones entre estas fechas.'}</td></tr>`}</tbody></table></div>
+  </div>
+  <div class="card mt"><div class="row" style="justify-content:space-between"><div><h3>Tendencia por material</h3><p class="hint">Stock total en cada corte.</p></div>
+    <select id="tSel" style="max-width:420px">${[...cat.values()].map(i=>`<option value="${i.code}" ${i.code===S.trend.code?'selected':''}>${i.code} — ${esc(splitName(i.name).short)}</option>`).join('')}</select></div>
+    ${lineChart(pts)}</div>
+  <div class="card mt"><h3>Cortes guardados</h3><p class="hint">Cada carga del reporte del WMS queda guardada por fecha de corte.</p>
+    <div class="tbl-wrap" style="max-height:none"><table><thead><tr><th>Fecha de corte</th><th>Archivo</th><th>Cargado</th><th class="num">Materiales</th><th></th></tr></thead>
+    <tbody>${list.map(s=>`<tr><td><b>${fmtDate(s.date)}</b>${s.date===snap().date?' '+tag('t-info','En pantalla'):''}</td><td class="muted" style="white-space:normal">${esc(s.fileName||'')}</td>
+      <td>${esc(s.uploadedBy||'')} <span class="muted">${s.uploadedAt?fmtDate(s.uploadedAt.slice(0,10)):''}</span></td>
+      <td class="num">${s.items.length}</td><td class="num"><button class="btn sm" data-act="view:${s.date}">Ver</button> <button class="btn sm danger edit-only" data-act="delsnap:${s.date}">Eliminar</button></td></tr>`).join('')}</tbody></table></div></div>`;
+  $('#hA').onchange=e=>{S.cmp.a=e.target.value; render();};
+  $('#hB').onchange=e=>{S.cmp.b=e.target.value; render();};
+  $('#hOnly').onchange=e=>{S.cmp.only=e.target.checked; render();};
+  $('#tSel').onchange=e=>{S.trend.code=e.target.value; render();};
+}
+
+/* ============ Vista: Actualizar ============ */
+const WMS_URL = 'https://auth.viettel.vn/auth/login?appCode=PT08014_NC&service=http%3A%2F%2F10.121.6.132%3A8087%2FWMS';
+function vActualizar(){
+  const p = S.pending;
+  const s = snap();
+  const whs = s ? s.warehouses : Object.keys(DEFAULT_WH);
+  $('#main').innerHTML = header('Actualizar stock', 'Carga el reporte de inventario exportado desde el WMS') + `
+  <div class="grid g2">
+    <div class="card"><h3>Cómo obtener el reporte</h3><p class="hint">El WMS está en la red interna de Viettel, así que la descarga se hace desde una PC conectada a esa red.</p>
+      <ol class="steps">
+        <li><div>Abre el WMS: <a href="${WMS_URL}" target="_blank" rel="noopener">auth.viettel.vn → WMS</a><br><span class="muted" style="font-size:12px;word-break:break-all">Copia el enlace si no abre: ${esc(WMS_URL)}</span></div></li>
+        <li><div>Inicia sesión con tu usuario y contraseña del WMS. <span class="muted">(La plataforma no guarda credenciales.)</span></div></li>
+        <li><div>Genera el <b>reporte general de saldos</b> (“Báo cáo tổng hợp tồn kho” / <i>General report on remainders</i>) y expórtalo a Excel.</div></li>
+        <li><div>Arrastra el archivo <span class="code">.xls</span> aquí al lado. La fecha de corte se lee del propio reporte.</div></li>
+      </ol>
+      <p class="muted" style="font-size:12.5px;margin:12px 0 0">Si el script automático <span class="code">actualizar_stock.py</span> está programado, el corte se carga solo y no hace falta este paso.</p>
+    </div>
+    <div class="card ro-only"><h3>Carga restringida</h3><p class="hint">Solo el equipo FBB puede cargar reportes y cambiar la configuración.</p><button class="btn pri" data-act="login">Acceso equipo</button></div>
+    <div class="card edit-only"><h3>Subir reporte</h3><p class="hint">Formatos aceptados: .xls y .xlsx del WMS.</p>
+      <label class="drop" id="drop"><input type="file" id="file" accept=".xls,.xlsx" hidden>
+        <div style="font-size:15px;font-weight:650">Arrastra el archivo aquí</div><div class="muted">o haz clic para elegirlo</div></label>
+      <div id="pv"></div>
+    </div>
+  </div>
+  <div class="card mt edit-only"><h3>Configuración de almacenes</h3><p class="hint">Nombres que se muestran junto a cada código y almacén central usado para las sugerencias de reabastecimiento.</p>
+    <div class="form" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">
+      ${whs.map(w=>`<label>${w}<input type="text" data-wh="${w}" value="${esc(whLabel(w))}"></label>`).join('')}
+      <label>Almacén central<select id="cen">${whs.map(w=>`<option value="${w}" ${(S.cfg.central||whs[0])===w?'selected':''}>${w}</option>`).join('')}</select></label>
+    </div>
+    <div class="row mt"><button class="btn pri" id="cfgSave">Guardar configuración</button></div>
+  </div>`;
+  const drop=$('#drop'), file=$('#file');
+  file.onchange=()=>file.files[0]&&readFile(file.files[0]);
+  drop.ondragover=e=>{e.preventDefault(); drop.classList.add('over');};
+  drop.ondragleave=()=>drop.classList.remove('over');
+  drop.ondrop=e=>{e.preventDefault(); drop.classList.remove('over'); const f=e.dataTransfer.files[0]; if(f) readFile(f);};
+  $('#cfgSave').onclick=async()=>{ const wh={}; document.querySelectorAll('[data-wh]').forEach(i=>wh[i.dataset.wh]=i.value.trim()); if(await saveCfg({wh, central:$('#cen').value})) toast('Configuración guardada'); };
+  renderPreview();
+}
+function readFile(f){
+  if(!window.XLSX){ S.pending={error:'El lector de Excel aún no terminó de cargar. Intenta de nuevo en unos segundos.'}; renderPreview(); return; }
+  const r = new FileReader();
+  r.onload = () => {
+    try{ S.pending = parseReport(new Uint8Array(r.result), f.name); }
+    catch(err){ S.pending = {error: err.message || String(err)}; }
+    renderPreview();
+  };
+  r.readAsArrayBuffer(f);
+}
+function parseReport(buf, fileName){
+  const wb = XLSX.read(buf, {type:'array'});
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:true});
+  let date = null;
+  for(const r of rows.slice(0,15)){ for(const c of r){ const m=String(c).match(/(\d{2})\/(\d{2})\/(\d{4})/); if(m && /date|ngày/i.test(String(c))){ date=`${m[3]}-${m[2]}-${m[1]}`; break; } } if(date) break; }
+  const h = rows.findIndex(r=>r.some(c=>/code of materials|mã vật tư/i.test(String(c))));
+  if(h<0) throw new Error('No se encontró la fila de encabezados (“Code of materials”). ¿Es el reporte general de saldos del WMS?');
+  const hdr = rows[h].map(c=>String(c).trim());
+  const ci = hdr.findIndex(c=>/code of materials|mã vật tư/i.test(c));
+  const ni = hdr.findIndex(c=>/name of materials|tên vật tư/i.test(c));
+  const ui = hdr.findIndex(c=>/^unit|đơn vị/i.test(c));
+  const ti = hdr.findIndex(c=>/total/i.test(c));
+  if(ti<0) throw new Error('No se encontró la columna “Total remainders”.');
+  const whCols = []; for(let k=ti+1;k<hdr.length;k++) if(hdr[k]) whCols.push([k,hdr[k]]);
+  const num = v => { if(v===''||v===null||v===undefined) return 0; const n = typeof v==='number'?v:Number(String(v).replace(/,/g,'')); return isNaN(n)?0:n; };
+  const items = [];
+  for(const r of rows.slice(h+1)){
+    const code = String(r[ci]??'').trim(); if(!code) continue;
+    const full = String(r[ni]??'').trim();
+    const parts = full.split('|');
+    const vi = parts.length>1 ? parts[0].trim() : '';
+    const en = parts.length>1 ? parts.slice(1).join('|').trim() : full;
+    const q = {}; whCols.forEach(([k,w])=>{ const v=num(r[k]); if(v) q[w]=v; });
+    items.push({code, name:en, nameVi:vi, unit:String(r[ui]??'').trim(), total:num(r[ti]), q});
+  }
+  if(!items.length) throw new Error('El archivo no tiene filas de materiales.');
+  return {date: date || todayISO(), dateFound: !!date, warehouses: whCols.map(x=>x[1]), items, fileName};
+}
+function renderPreview(){
+  const el = $('#pv'); if(!el) return; const p = S.pending;
+  if(!p){ el.innerHTML=''; return; }
+  if(p.error){ el.innerHTML = `<div class="banner crit mt">${ICON.crit}<div>${esc(p.error)}</div></div>`; return; }
+  const exists = S.snaps.find(s=>s.date===p.date);
+  const last = S.snaps[S.snaps.length-1];
+  let cmp = '';
+  if(last){
+    const lm = new Map(last.items.map(i=>[i.code,i]));
+    const nuevos = p.items.filter(i=>!lm.has(i.code)).length;
+    const pm = new Set(p.items.map(i=>i.code));
+    const fuera = last.items.filter(i=>!pm.has(i.code)).length;
+    const cambia = p.items.filter(i=>lm.has(i.code) && lm.get(i.code).total!==i.total).length;
+    cmp = `<div class="row" style="margin-top:8px">${tag('t-info',`${cambia} con cambios`)} ${tag('t-mute',`${nuevos} nuevos`)} ${tag('t-mute',`${fuera} ya no aparecen`)} <span class="muted" style="font-size:12px">vs. corte ${fmtDate(last.date)}</span></div>`;
+  }
+  el.innerHTML = `<div class="card mt" style="background:var(--surface-2)">
+    <div class="row" style="justify-content:space-between"><b>${esc(p.fileName)}</b>${tag('t-good','Leído correctamente','ok')}</div>
+    <div class="row mt"><label class="row">Fecha de corte <input type="date" id="pDate" value="${p.date}"></label>${p.dateFound?'':'<span class="muted" style="font-size:12px">No se detectó la fecha en el archivo; revísala.</span>'}</div>
+    <div style="margin-top:8px">${p.items.length} materiales · ${p.warehouses.length} almacenes (${p.warehouses.map(whShort).join(', ')})</div>
+    ${cmp}
+    ${exists?`<div class="banner warn mt" style="margin-bottom:0">${ICON.warn}<div>Ya existe un corte del ${fmtDate(p.date)}; se reemplazará.</div></div>`:''}
+    <div class="row mt"><button class="btn pri" id="pSave">Guardar corte</button><button class="btn" id="pCancel">Descartar</button></div></div>`;
+  $('#pDate').onchange=e=>{p.date=e.target.value; renderPreview();};
+  $('#pCancel').onclick=()=>{S.pending=null; renderPreview();};
+  $('#pSave').onclick=async()=>{
+    $('#pSave').disabled=true;
+    const rec = {date:p.date, warehouses:p.warehouses, items:p.items, fileName:p.fileName, uploadedAt:new Date().toISOString(), uploadedBy:S.email||null};
+    if(await saveSnapshot(rec)){ S.pending=null; S.sel=null; toast(`Corte del ${fmtDate(rec.date)} guardado`); location.hash='#stock'; render(); }
+    else $('#pSave').disabled=false;
+  };
+}
+
+/* ============ Modal genérico y acciones ============ */
+function openModal(html){ tip.style.display='none'; $('#modal').innerHTML=html; $('#scrim').classList.add('on'); }
+function closeModal(){ $('#scrim').classList.remove('on'); $('#modal').innerHTML=''; }
+$('#scrim').addEventListener('mousedown', e=>{ if(e.target.id==='scrim') closeModal(); });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape') closeModal(); });
+document.addEventListener('click', async e=>{
+  const a = e.target.closest('[data-act]'); if(!a) return;
+  const [k, x, y] = a.dataset.act.split(':');
+  if(k==='close'){ closeModal(); return; }
+  if(k==='login'){ openLogin(); return; }
+  if(k==='logout'){ if(sb) await sb.auth.signOut(); return; }
+  if(k==='mat'){ e.stopPropagation(); openMaterial(x); }
+  else if(k==='del'){ e.stopPropagation(); openDelivery(x); }
+  else if(k==='day'){ if(S.canWrite) openDelivery(null,{date:x}); }
+  else if(k==='wh'){ S.stock.wh=x; location.hash='#stock'; }
+  else if(k==='xfer'){ const s=snap(); openDelivery(null,{type:'transferencia', origin:S.cfg.central||s.warehouses[0], dest:x, items:[{code:y,qty:''}], date:addDays(todayISO(),1)}); }
+  else if(k==='view'){ S.sel=x; location.hash='#stock'; render(); }
+  else if(k==='delsnap'){ if(!a.dataset.c){ a.dataset.c=1; a.textContent='¿Confirmar?'; return; } if(await removeSnapshot(x)) toast('Corte eliminado'); }
+});
+
+/* ============ Persistencia (Supabase) ============ */
+const APP = window.APP_CONFIG || {};
+let sb = null;
+function setConn(state, msg){
+  S.conn = state;
+  const color = {ok:'var(--good)', connecting:'var(--warn)', off:'var(--crit)', demo:'var(--warn)'}[state];
+  $('#syncState').innerHTML = `<span class="dot" style="background:${color}"></span>${esc(msg)}`;
+}
+function writeErr(e){
+  console.error(e);
+  const m = (e && (e.message||e.error_description)) || '';
+  if(/row-level security|permission|not authorized|JWT|401|403/i.test(m)) toast('Tu cuenta no tiene permiso para modificar datos.');
+  else toast('No se pudo guardar. ' + m);
+  return false;
+}
+async function run(p){ const {data, error} = await p; if(error) throw error; return data; }
+const rowToSnap = r => ({date:r.date, warehouses:r.warehouses||[], items:r.items||[], fileName:r.file_name||'', uploadedAt:r.uploaded_at||'', uploadedBy:r.uploaded_by||''});
+const rowToDel = r => ({id:String(r.id), date:r.date, time:r.time||'', type:r.type||'ingreso', status:r.status||'programado', origin:r.origin||'', dest:r.dest||'',
+  party:r.party||'', doc:r.doc||'', resp:r.resp||'', notes:r.notes||'', items:r.items||[], createdAt:r.created_at||'', createdBy:r.created_by_email||'', updatedAt:r.updated_at||''});
+const delToRow = d => ({date:d.date, time:d.time||null, type:d.type, status:d.status, origin:d.origin||null, dest:d.dest||null, party:d.party||null,
+  doc:d.doc||null, resp:d.resp||null, notes:d.notes||null, items:d.items, updated_at:new Date().toISOString(), updated_by_email:S.email||null});
+
+async function loadSnaps(){
+  const rows = await run(sb.from('snapshots').select('*').order('date',{ascending:false}).limit(120));
+  S.snaps = rows.map(rowToSnap).filter(x=>x.date && Array.isArray(x.items)).sort((a,b)=>a.date.localeCompare(b.date));
+  if(S.sel && !S.snaps.some(s=>s.date===S.sel)) S.sel = null;
+}
+async function loadDels(){ S.deliveries = (await run(sb.from('deliveries').select('*'))).map(rowToDel).filter(d=>d.date); }
+async function loadCfg(){
+  const r = await run(sb.from('settings').select('*').eq('id',1).maybeSingle());
+  S.cfg = {min:(r&&r.min)||{}, wh:(r&&r.wh)||{}, central:(r&&r.central)||'VTP_GPON'};
+}
+let reloadT = {};
+function reload(which){
+  clearTimeout(reloadT[which]);
+  reloadT[which] = setTimeout(async ()=>{
+    try{ await ({s:loadSnaps, d:loadDels, c:loadCfg}[which])(); setConn('ok','Datos actualizados'); scheduleRender(); }
+    catch(e){ console.error(e); setConn('off','Error al actualizar datos'); }
+  }, 300);
+}
+
+const local = { snaps:new Map(), dels:new Map() }; // modo demo sin Supabase
+async function saveSnapshot(rec){
+  if(!sb){ local.snaps.set(rec.date, rec); S.snaps=[...local.snaps.values()].sort((a,b)=>a.date.localeCompare(b.date)); return true; }
+  try{
+    await run(sb.from('snapshots').upsert({date:rec.date, warehouses:rec.warehouses, items:rec.items, file_name:rec.fileName, uploaded_at:new Date().toISOString(), uploaded_by:S.email||'web'}));
+    await loadSnaps(); return true;
+  }catch(e){ return writeErr(e); }
+}
+async function removeSnapshot(date){
+  if(!sb){ local.snaps.delete(date); S.snaps=S.snaps.filter(s=>s.date!==date); render(); return true; }
+  try{ await run(sb.from('snapshots').delete().eq('date',date)); await loadSnaps(); render(); return true; }catch(e){ return writeErr(e); }
+}
+async function saveDelivery(id, rec){
+  if(!sb){ const nid=id||('d'+Date.now()); local.dels.set(nid,{...rec,id:nid,createdBy:rec.createdBy||'demo'}); S.deliveries=[...local.dels.values()]; return true; }
+  try{
+    if(id) await run(sb.from('deliveries').update(delToRow(rec)).eq('id',id));
+    else await run(sb.from('deliveries').insert({...delToRow(rec), created_by_email:S.email||null}));
+    await loadDels(); return true;
+  }catch(e){ return writeErr(e); }
+}
+async function removeDelivery(id){
+  if(!sb){ local.dels.delete(id); S.deliveries=[...local.dels.values()]; return true; }
+  try{ await run(sb.from('deliveries').delete().eq('id',id)); await loadDels(); return true; }catch(e){ return writeErr(e); }
+}
+let cfgBusy = Promise.resolve();
+function saveCfg(patch){
+  const next = {...S.cfg, ...patch};
+  const go = async () => {
+    if(!sb){ S.cfg=next; render(); return true; }
+    try{ await run(sb.from('settings').upsert({id:1, min:next.min||{}, wh:next.wh||{}, central:next.central||'VTP_GPON', updated_at:new Date().toISOString()})); S.cfg=next; render(); return true; }
+    catch(e){ return writeErr(e); }
+  };
+  cfgBusy = cfgBusy.then(go, go); return cfgBusy;
+}
+
+/* ============ Acceso del equipo ============ */
+function renderAuth(){
+  const box = $('#authBox'); if(!box) return;
+  if(!sb){ box.innerHTML = ''; return; }
+  box.innerHTML = S.email
+    ? `<div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(S.email)}">Equipo: <b style="color:var(--ink)">${esc(S.email)}</b></div><button class="btn sm" data-act="logout">Cerrar sesión</button>`
+    : `<button class="btn sm" data-act="login">Acceso equipo</button>`;
+}
+function applySession(session){
+  S.email = session?.user?.email || null;
+  S.canWrite = !!session;
+  document.body.classList.toggle('ro', !S.canWrite);
+  renderAuth();
+}
+function openLogin(){
+  if(!sb){ toast('Configura Supabase en config.js para activar el acceso.'); return; }
+  openModal(`<form id="lForm" style="max-width:380px;margin:0 auto"><div class="mh"><div><h3>Acceso equipo FBB</h3><div class="muted" style="font-size:12.5px">Para registrar entregas, cargar reportes y fijar mínimos.</div></div><button type="button" class="btn ghost" data-act="close">${ICON.x}</button></div>
+    <div class="form" style="grid-template-columns:1fr"><label>Correo<input type="email" name="email" required autocomplete="username"></label>
+    <label>Contraseña<input type="password" name="pass" required autocomplete="current-password"></label><div class="warnline" id="lErr"></div></div>
+    <div class="mfoot"><span></span><button type="submit" class="btn pri" id="lBtn">Ingresar</button></div></form>`);
+  const f = $('#lForm');
+  f.onsubmit = async e => {
+    e.preventDefault(); $('#lBtn').disabled = true; $('#lErr').textContent='';
+    const {error} = await sb.auth.signInWithPassword({email:f.email.value.trim(), password:f.pass.value});
+    if(error){ $('#lErr').textContent = 'Correo o contraseña incorrectos.'; $('#lBtn').disabled=false; return; }
+    closeModal(); toast('Sesión iniciada');
+  };
+}
+
+let rT = null;
+function scheduleRender(){ cancelAnimationFrame(rT); rT = requestAnimationFrame(()=>{ if(!$('#scrim').classList.contains('on')) render(); else renderNav(); }); }
+
+async function init(){
+  route();
+  const configured = APP.SUPABASE_URL && APP.SUPABASE_ANON_KEY && !/TU-PROYECTO|PEGA_AQUI/.test(APP.SUPABASE_URL + APP.SUPABASE_ANON_KEY);
+  if(!configured || !window.supabase){
+    S.canWrite = true; document.body.classList.remove('ro');
+    setConn('demo', window.supabase ? 'Modo demo: configura config.js' : 'Sin conexión a la base de datos');
+    S.conn = 'off'; render(); return;
+  }
+  sb = window.supabase.createClient(APP.SUPABASE_URL, APP.SUPABASE_ANON_KEY);
+  setConn('connecting','Conectando…');
+  const {data} = await sb.auth.getSession();
+  applySession(data.session);
+  sb.auth.onAuthStateChange((_e, session)=>{ applySession(session); render(); });
+  try{
+    await Promise.all([loadSnaps(), loadDels(), loadCfg()]);
+    setConn('ok','Datos al día'); S.conn = 'ok';
+  }catch(e){ console.error(e); setConn('off','No se pudo cargar la base de datos'); S.conn='off'; }
+  render();
+  sb.channel('cambios')
+    .on('postgres_changes',{event:'*',schema:'public',table:'snapshots'},()=>reload('s'))
+    .on('postgres_changes',{event:'*',schema:'public',table:'deliveries'},()=>reload('d'))
+    .on('postgres_changes',{event:'*',schema:'public',table:'settings'},()=>reload('c'))
+    .subscribe();
+  setInterval(()=>{ if(document.visibilityState==='visible'){ reload('s'); reload('d'); reload('c'); } }, 5*60*1000);
+}
+init();
+</script>
+</body>
+</html>
