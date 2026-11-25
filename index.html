@@ -237,6 +237,8 @@ td.tot,th.tot{background:#f1f6fe}
   input.cellin{background:#2a2614;border-color:#6b5a1e}
   td.tot,th.tot{background:#17233a}
 }
+table.kv th{position:static;background:none;text-transform:none;font-size:12.5px;letter-spacing:0;color:var(--ink-3);width:170px;border-bottom:1px solid var(--line)}
+table.kv td{white-space:normal}
 </style>
 </head>
 <body class="ro">
@@ -373,6 +375,7 @@ const NAV = [
   {k:'movimientos', l:'Movimientos diarios', i:'<path d="M4 7h13l-3-3 1.4-1.4L21 8l-5.6 5.4L14 12l3-3H4zM20 17H7l3 3-1.4 1.4L3 16l5.6-5.4L10 12l-3 3h13z"/>'},
   {k:'calendario', l:'Calendario de entregas', i:'<rect x="3" y="5" width="18" height="16" rx="2"/>'},
   {g:'Administración'},
+  {k:'fuentes', l:'Fuentes de datos', i:'<path d="M12 3C7 3 3 4.6 3 6.5v11C3 19.4 7 21 12 21s9-1.6 9-3.5v-11C21 4.6 17 3 12 3zm0 2c4.4 0 7 1.3 7 1.5S16.4 8 12 8 5 6.7 5 6.5 7.6 5 12 5z"/>'},
   {k:'actualizar', l:'Actualizar stock', i:'<path d="M12 3l5 5h-3v7h-4V8H7zM4 17h16v4H4z"/>'},
 ];
 function renderNav(){
@@ -421,6 +424,7 @@ function render(){
   else if(v==='movimientos') vMovimientos();
   else if(v==='calendario') vCalendario();
   else if(v==='actualizar') vActualizar();
+  else if(v==='fuentes') vFuentes();
   document.querySelectorAll('[data-cut]').forEach(sel=>sel.onchange=()=>{ if(sel.dataset.cut==='wh') S.sel=sel.value; else S.selLm=sel.value; render(); });
 }
 
@@ -989,6 +993,49 @@ function openDelivery(id, preset){
   if(d){ const b=$('#dDel'); b.onclick=async()=>{ if(!b.dataset.c){ b.dataset.c=1; b.textContent='¿Confirmar eliminación?'; return; } if(await removeDelivery(id)){ toast('Entrega eliminada'); closeModal(); render(); } }; }
 }
 
+/* ============ Fuentes de datos ============ */
+const SOURCES = [
+  {k:'wms', name:'WMS (almacenes ODN)', feeds:'Secciones 1, 2 y 3', url:'https://auth.viettel.vn/auth/login?appCode=PT08014_NC&service=http%3A%2F%2F10.121.6.132%3A8087%2FWMS', kind:'wh',
+   steps:['Login en auth.viettel.vn (Iniciar sesión con contraseña)','Responder la pregunta inicial del WMS','Menú Report on remainders','Remove warehouse → Add new warehouse → buscar “GPON” → Select all → agregar','Exportar el reporte (.xls)']},
+  {k:'bccs1', name:'BCCS1 (Lastmile)', feeds:'Sección 4 · Total BCCS1', url:'https://10.121.7.24:8666/passportv3/login?appCode=BCCS_SM_REPORT&service=http%3A%2F%2F10.121.4.33%3A8002%2FSM', kind:'bccs1',
+   steps:['Login en passportv3 (BCCS SM)','Reporte detallado de inventario por cantidad y por canal','Tienda VTP · Bienes nuevos · Actualmente restante · 3 canales','Pulsar Reporte y descargar el .xls']},
+];
+const SCHEDULE = ['06:00','07:59','12:40'];
+function nextRun(){
+  const now = new Date();
+  for(let d=0; d<2; d++) for(const t of SCHEDULE){ const [h,m]=t.split(':').map(Number); const x=new Date(now); x.setDate(now.getDate()+d); x.setHours(h,m,0,0); if(x>now) return x; }
+  return null;
+}
+const fmtDT = s => { if(!s) return '—'; const d = new Date(s); return `${pad(d.getDate())} ${MES3[d.getMonth()]} ${pad(d.getHours())}:${pad(d.getMinutes())}`; };
+function vFuentes(){
+  const nr = nextRun();
+  const logs = (S.sync||[]).slice().sort((a,b)=>String(b.finished_at).localeCompare(String(a.finished_at)));
+  $('#main').innerHTML = header('Fuentes de datos', `Actualización automática desde la PC de la red Viettel · ${SCHEDULE.join(' · ')} todos los días`, null) +
+  (S.syncMissing?`<div class="banner warn">${ICON.warn}<div>Falta crear la tabla <span class="code">sync_log</span> en Supabase. Ejecuta el <span class="code">supabase_schema.sql</span> actualizado para ver aquí el estado del script.</div></div>`:'') + `
+  <div class="grid g2">
+  ${SOURCES.map(src=>{
+    const mine = logs.filter(l=>l.source===src.k), last = mine[0], lastOk = mine.find(l=>l.ok);
+    const lc = cortesOf(src.kind); const lastCorte = lc[lc.length-1];
+    const st = !last ? tag('t-mute','Sin ejecuciones aún') : last.ok ? tag('t-good','Última ejecución correcta','ok') : tag('t-crit','Falló la última ejecución','crit');
+    return `<div class="card"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><h3>${esc(src.name)}</h3><p class="hint">${esc(src.feeds)}</p></div>${st}</div>
+      <table class="kv"><tbody>
+        <tr><th>Enlace</th><td><a href="${src.url}" target="_blank" rel="noopener">${esc(src.url.split('?')[0])}</a><div class="muted" style="font-size:11.5px">Solo desde la red de Viettel</div></td></tr>
+        <tr><th>Cuenta</th><td>${esc(last?.account||'—')} <span class="muted" style="font-size:11.5px">· la contraseña se guarda solo en la PC (archivo .env)</span></td></tr>
+        <tr><th>Última carga correcta</th><td>${lastOk?fmtDT(lastOk.finished_at):'—'}${lastOk?.host?` <span class="muted">desde ${esc(lastOk.host)}</span>`:''}</td></tr>
+        <tr><th>Reporte más reciente</th><td>${lastCorte?fmtDate(lastCorte.date):'—'}</td></tr>
+        <tr><th>Próxima ejecución</th><td>${nr?fmtDT(nr.toISOString()):'—'}</td></tr>
+        ${last&&!last.ok?`<tr><th>Error</th><td><div class="errbox" style="margin:0">${esc(last.message||'')}</div></td></tr>`:''}
+      </tbody></table>
+      <details class="mt"><summary style="cursor:pointer;font-weight:600">Pasos que hace el script</summary><ol class="steps mt">${src.steps.map(s=>`<li><div>${esc(s)}</div></li>`).join('')}</ol></details>
+    </div>`;}).join('')}
+  </div>
+  <div class="card mt"><h3>Historial de ejecuciones</h3><p class="hint">Las últimas ${Math.min(logs.length,30)} ejecuciones del script.</p>
+    <div class="tbl-wrap" style="max-height:420px"><table><thead><tr><th>Fecha y hora</th><th>Fuente</th><th>Resultado</th><th>Detalle</th><th>Reporte</th></tr></thead><tbody>
+    ${logs.slice(0,30).map(l=>`<tr><td>${fmtDT(l.finished_at)}</td><td>${esc((SOURCES.find(s=>s.k===l.source)||{}).name||l.source)}</td><td>${l.ok?tag('t-good','OK','ok'):tag('t-crit','Error','crit')}</td>
+      <td class="wrap muted">${esc(l.message||'')}</td><td>${l.corte_date?fmtDate(l.corte_date):'—'}</td></tr>`).join('') || '<tr><td colspan="5" class="empty">Todavía no hay ejecuciones registradas. Aparecerán cuando el script corra por primera vez.</td></tr>'}
+    </tbody></table></div></div>`;
+}
+
 /* ============ Actualizar stock ============ */
 const WMS_URL = 'https://auth.viettel.vn/auth/login?appCode=PT08014_NC&service=http%3A%2F%2F10.121.6.132%3A8087%2FWMS';
 function vActualizar(){
@@ -1201,7 +1248,12 @@ async function loadCfg(){
   const r = await run(sb.from('settings').select('*').eq('id',1).maybeSingle());
   S.cfg = {min:(r&&r.min)||{}, wh:(r&&r.wh)||{}};
 }
-const LOADERS = {cortes:loadCortes, catalogo:loadCatalog, deliveries:loadDels, settings:loadCfg};
+async function loadSync(){
+  const {data, error} = await sb.from('sync_log').select('*').order('finished_at',{ascending:false}).limit(60);
+  if(error){ S.syncMissing = true; S.sync = []; return; }
+  S.syncMissing = false; S.sync = data || [];
+}
+const LOADERS = {cortes:loadCortes, catalogo:loadCatalog, deliveries:loadDels, settings:loadCfg, sync_log:loadSync};
 let reloadT = {};
 function reload(which){
   clearTimeout(reloadT[which]);
@@ -1299,6 +1351,7 @@ async function init(){
   const {data} = await sb.auth.getSession();
   applySession(data.session);
   sb.auth.onAuthStateChange((_e, session)=>{ applySession(session); render(); });
+  loadSync().then(()=>scheduleRender()).catch(()=>{});
   const results = await Promise.allSettled([loadCortes(), loadCatalog(), loadDels(), loadCfg()]);
   const failed = results.map((r,i)=>r.status==='rejected'?[['cortes','catalogo','deliveries','settings'][i], r.reason]:null).filter(Boolean);
   if(failed.length){
