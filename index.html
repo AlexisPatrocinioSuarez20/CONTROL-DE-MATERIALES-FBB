@@ -10,19 +10,22 @@
 <style>
 :root{
   color-scheme:light;
-  --bg:#f4f4f2; --surface:#fcfcfb; --surface-2:#f0efec; --line:rgba(11,11,11,.10); --line-2:rgba(11,11,11,.18);
-  --ink:#0b0b0b; --ink-2:#52514e; --ink-3:#7a7974;
+  --bg:#e9edf3; --surface:#ffffff; --surface-2:#f3f6fa; --line:rgba(16,34,64,.10); --line-2:rgba(16,34,64,.20);
+  --ink:#0f1b2d; --ink-2:#46546a; --ink-3:#7c889b;
+  --nav-bg:#0e1f3a; --nav-bg-2:#16294a; --nav-ink:#c9d4e5; --nav-ink-2:#8193ad; --head:#0e1f3a;
   --accent:#2a78d6; --accent-ink:#fff; --accent-soft:#e3eefb;
   --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
   --good-soft:#e2f4e2; --warn-soft:#fdf1d6; --serious-soft:#fbe6dd; --crit-soft:#f8e0e0; --mute-soft:#ecebe7;
   --s100:#cde2fb; --s200:#9ec5f4; --s300:#6da7ec; --s400:#3987e5; --s500:#256abf; --s600:#184f95; --s700:#0d366b;
-  --shadow:0 1px 2px rgba(0,0,0,.06),0 8px 24px rgba(0,0,0,.06);
+  --shadow:0 1px 2px rgba(16,24,40,.06),0 8px 24px rgba(16,24,40,.08);
+  --card-shadow:0 1px 2px rgba(16,24,40,.05),0 1px 3px rgba(16,24,40,.06);
 }
 @media (prefers-color-scheme:dark){
   :root{
     color-scheme:dark;
-    --bg:#121211; --surface:#1a1a19; --surface-2:#232321; --line:rgba(255,255,255,.10); --line-2:rgba(255,255,255,.18);
-    --ink:#f0efec; --ink-2:#c3c2b7; --ink-3:#8f8e86;
+    --bg:#0b1220; --surface:#131c2e; --surface-2:#1a2539; --line:rgba(255,255,255,.09); --line-2:rgba(255,255,255,.18);
+    --ink:#eef2f8; --ink-2:#b7c2d3; --ink-3:#7f8ca1;
+    --nav-bg:#08101d; --nav-bg-2:#121d31; --head:#eef2f8; --card-shadow:none;
     --accent:#3987e5; --accent-soft:#1d2d42;
     --good-soft:#18301a; --warn-soft:#3a2f12; --serious-soft:#3a2418; --crit-soft:#3a1c1c; --mute-soft:#2a2a28;
     --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.3);
@@ -202,6 +205,38 @@ tr.zero td{color:var(--ink-3)} tr.zero .mname{color:var(--ink-2)}
 .brk{font-size:11px;color:var(--crit);font-weight:600}
 .mini{display:flex;align-items:center;gap:8px}.mini .bar-track{flex:1;height:10px}.mini span{min-width:22px;text-align:right;font-weight:600}
 .errbox{font-family:ui-monospace,monospace;font-size:12px;white-space:pre-wrap;word-break:break-all;margin-top:6px}
+
+/* ---- Tema corporativo ---- */
+aside{background:linear-gradient(180deg,var(--nav-bg) 0%,#0b1830 100%);border-right:0;color:var(--nav-ink)}
+.brand h1{color:#fff}
+.brand p{color:var(--nav-ink-2)}
+.brand .logo{background:linear-gradient(135deg,#3b8cf0,#1d5fc4);box-shadow:0 4px 12px rgba(29,95,196,.45)}
+nav a{color:var(--nav-ink)}
+nav a:hover{background:var(--nav-bg-2);color:#fff}
+nav a.on{background:rgba(59,140,240,.18);color:#fff;box-shadow:inset 3px 0 0 #3b8cf0}
+.navg{color:var(--nav-ink-2)}
+.side-foot{color:var(--nav-ink-2)}
+.side-foot b{color:#fff!important}
+#authBox .btn{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.16);color:#fff}
+#authBox .btn:hover{background:rgba(255,255,255,.12)}
+main{background:linear-gradient(180deg,#dfe6f0 0,var(--bg) 220px)}
+.top h2{color:var(--head);font-size:24px;letter-spacing:-.3px}
+.card{box-shadow:var(--card-shadow);border-color:var(--line)}
+.kpi{border-top:3px solid #3b8cf0}
+.kpi .val{color:var(--head)}
+th{background:#eef2f8;color:#3a4a63;text-transform:uppercase;font-size:11px;letter-spacing:.3px}
+tr.grp td{background:#e4ebf5;color:#16335f}
+.tbl-wrap{box-shadow:var(--card-shadow)}
+.cutpill{box-shadow:var(--card-shadow)}
+input.cellin{width:86px;min-height:28px;padding:3px 6px;text-align:right;background:#fffbea;border-color:#e6cf7a}
+td.tot,th.tot{background:#f1f6fe}
+@media (prefers-color-scheme:dark){
+  main{background:var(--bg)}
+  th{background:var(--surface-2);color:var(--ink-2)}
+  tr.grp td{background:#1d2b45;color:#cfe0ff}
+  input.cellin{background:#2a2614;border-color:#6b5a1e}
+  td.tot,th.tot{background:#17233a}
+}
 </style>
 </head>
 <body class="ro">
@@ -222,7 +257,7 @@ tr.zero td{color:var(--ink-3)} tr.zero .mname{color:var(--ink-2)}
 <div class="toast" id="toast"></div>
 <script>
 /* Lista de materiales por defecto (STOCK_MATERIAL.xlsx). Se reemplaza al subir una nueva lista en "Actualizar stock". */
-const DEFAULT_CATALOG = {"gpon":[{"code":"291368","sub":"OLT","name":"OLT GPON ZTE C610 - 16 port DC","type":"Equipo","unit":"Set","grp":"OLT"},{"code":"294701","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP GPON-OLT class C+","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"283866","sub":"OLT","name":"Single Channel Dual Fiber Bidirectional Optical Module ZTE 10Km/1.25Gb","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"294702","sub":"PATCH CORD","name":"Patch Cord SC/UPC-SC/UPC 3mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000089","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 3mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000087","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 15mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000086","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 10mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"267990","sub":"ODF","name":"ODF 48 Ports SC/UPC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"002925","sub":"ODF","name":"ODF 24 Ports SC/UPC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"265191","sub":"GABINETE","name":"Cabinet Outdoor for OLT and ODF","type":"Gabinete Exterior","unit":"Unit","grp":"ODF"},{"code":"299798","sub":"MUFA","name":"Clousure 48Fo Dome, 8 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"299799","sub":"MUFA","name":"Clousure 24Fo Dome, 8 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"000424","sub":"MUFA","name":"Clousure 24Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"000423","sub":"MUFA","name":"Clousure 12Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"008810","sub":"MUFA","name":"Clousure 4Fo Plane, 3 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"262079","sub":"MUFA","name":"Clousure 1Fo Plane, 2 Ports, Empalme mecanico","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"300476","sub":"ODB","name":"ODB, 11 Ports Adapter (HUB-BOX 70/30)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300477","sub":"ODB","name":"ODB, 11 Ports Adapter (SUB-BOX 70/30)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300478","sub":"ODB","name":"ODB, 11 Ports Adapter (SUB-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300479","sub":"ODB","name":"ODB, 10 Ports Adapter (END-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"298476","sub":"ODB","name":"ODB, 9 Ports Adapter (EXP-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"298912","sub":"ODB","name":"ODB, 9 Ports Adapter (Building)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"296344","sub":"MUFA","name":"ZTE_ODB, 2 fiber Ports Adapter (Juntion Box)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294765","sub":"MUFA","name":"ZTE_ODB, 8 MPO and 4 fiber Ports Adapter (X-BOX)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294764","sub":"MUFA","name":"ZTE_ODB, 5 Ports Adapter (HUB-BOX)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294767","sub":"ODB","name":"ZTE_ODB, 11 Ports Adapter (SUB-BOX 70/30)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294768","sub":"ODB","name":"ZTE_ODB, 11 Ports Adapter (SUB-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294766","sub":"ODB","name":"ZTE_ODB, 10 Ports Adapter (END-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"296345","sub":"ODB","name":"ZTE_ODB, 9 Ports Adapter (EXP-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"299379","sub":"CONNECTOR","name":"Waterproof Field Conector for ZTE Box","type":"Conector pre-ensamblado","unit":"Set","grp":"Connector"},{"code":"299378","sub":"CONNECTOR","name":"Conector Fastener SC/APC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"","sub":"SPLITTER","name":"Splitter 1x8 PLC (Pigtail 1*8 PLC)","type":"Splitter","unit":"Unit","grp":"Connector"},{"code":"043978","sub":"CABLES","name":"Fiber Optic Cable ADSS 48 Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"063004","sub":"CABLES","name":"Fiber Optic Cable ADSS 24 Span 200m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"000067","sub":"CABLES","name":"Fiber Optic Cable ADSS 24 Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"299344","sub":"CABLES","name":"Fiber Optic Cable ASU 12Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"300378","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"009266","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m - Flexible","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"300379","sub":"CABLES","name":"Fiber Optic Cable ASU 1Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"294795","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 100m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294796","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 200m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"296347","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 300m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294797","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 500m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294798","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 600m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294799","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 700m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294790","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 50m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294791","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 100m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294792","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 150m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294793","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 200m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294794","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 250m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"295995","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 300m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"299381","sub":"CABLES","name":"Cable Fibra Optica 1 Hilo - Drop","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"296348","sub":"PATCH CORD","name":"ZTE_Patch Cord SC/APC 7mt","type":"Patch Cord","unit":"Unit","grp":"Accesories"},{"code":"000306","sub":"PREFORMADOS","name":"Tension Span 200","type":"Herraje de Tensión","unit":"Unit","grp":"Accesories"},{"code":"000305","sub":"PREFORMADOS","name":"Tension Span 100","type":"Herraje de Tensión","unit":"Unit","grp":"Accesories"},{"code":"000313","sub":"FERRETERIA","name":"Suspension Span 100","type":"Herraje de Suspensión","unit":"Unit","grp":"Accesories"},{"code":"000350","sub":"FERRETERIA","name":"Cable clamps OPGW","type":"Herraje de Suspensión","unit":"Unit","grp":"Accesories"},{"code":"298983","sub":"PREFORMADOS","name":"Preformed plastic for 5mm-8mm cable","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"294929","sub":"PREFORMADOS","name":"Preformed for 6.8mm cable (MPO Cable)","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"294928","sub":"PREFORMADOS","name":"Preformed for 5mm cable (Pre-con Cable)","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"299380","sub":"PREFORMADOS","name":"Templador for Drop Cable","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"028497","sub":"FERRETERIA","name":"Clevis D type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"294898","sub":"FERRETERIA","name":"Clevis Trebol Type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"285043","sub":"FERRETERIA","name":"Supporting arm 1.0m","type":"Brazo de Soporte","unit":"Unit","grp":"Accesories"},{"code":"295136","sub":"FERRETERIA","name":"Supporting arm 0.6m","type":"Brazo de Soporte","unit":"Unit","grp":"Accesories"},{"code":"024941","sub":"FERRETERIA","name":"Cruzeta 60cm","type":"Cruceta","unit":"Unit","grp":"Accesories"},{"code":"295280","sub":"MENSAJERO","name":"Steel Wire Rope 4mm, with PVC cover","type":"Cable de Acero","unit":"Meters","grp":"Accesories"},{"code":"295360","sub":"MENSAJERO","name":"Dielectric Hanging clamp","type":"Abrazadera Dieléctrica","unit":"Unit","grp":"Accesories"},{"code":"020910","sub":"MENSAJERO","name":"Steel Padlock 3/8\" for Steel Wire","type":"Accesorio de Seguridad","unit":"Unit","grp":"Accesories"},{"code":"008332","sub":"FERRETERIA","name":"Cinta Bandit + Set belt (Hebillas)","type":"Cinta de Acero + Hebillas de Fijación","unit":"Set","grp":"Accesories"},{"code":"294899","sub":"FERRETERIA","name":"Steel Band for pole diameters range from 100-200mm","type":"Cinta de Acero Ensamblado","unit":"Set","grp":"Accesories"},{"code":"295660","sub":"FERRETERIA","name":"Cinta Bandit","type":"Cinta de Acero","unit":"Meters","grp":"Accesories"},{"code":"295661","sub":"FERRETERIA","name":"Set belt (Hebillas)","type":"Hebillas de Fijación","unit":"Unit","grp":"Accesories"},{"code":"","sub":"","name":"Fiber cable label","type":"Etiqueta de Identificación","unit":"Unit","grp":"Accesories"},{"code":"009610","sub":"FERRETERIA","name":"Fireproof PVC Corrugated Tube 25mm","type":"Tubo corrugado PVC","unit":"Meters","grp":"Accesories"},{"code":"","sub":"FERRETERIA","name":"Ear type cable Clamp","type":"Abrazadera","unit":"Unit","grp":"Accesories"},{"code":"","sub":"","name":"Cable Cintillo 4x200mm","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"}],"bccs1":[{"code":"110012","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 1.25Gb LC/UPC (Tx1310/Rx1550)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110004","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 1.25Gb LC/UPC (Tx1550/Rx1310)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110003","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 1.25Gb SC/UPC (Tx1310/Rx1550)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110033","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP 20km (Tx1490/Rx1310)","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"110006","sub":"PATCH CORD","name":"Patch Cord FC/UPC-LC/UPC 5mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110029","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 1mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110028","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 2mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110027","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 3mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110026","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/APC 5mt","type":"Equipo de Distribución","unit":"Unit","grp":"ODF"},{"code":"110025","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/UPC 2mt","type":"Equipo de Distribución","unit":"Unit","grp":"ODF"},{"code":"110024","sub":"PATCH CORD","name":"Patch Cord SC/APC-SC/UPC 3mt","type":"Gabinete Exterior","unit":"Unit","grp":"ODF"},{"code":"110079","sub":"PATCH CORD","name":"Patch Cord SC/UPC-FC/UPC 3mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110014","sub":"PATCH CORD","name":"Patch Cord SC/UPC-LC/UPC 5mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110023","sub":"PATCH CORD","name":"Patch Cord SC/UPC-SC/UPC 2mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110078","sub":"PATCH CORD","name":"Patch Cord SC/UPC-SC/UPC 3mt","type":"Patch Cord","unit":"Unit","grp":"ODF"},{"code":"110019","sub":"PATCH CORD","name":"Pigtail SC/UPC","type":"Pigtail","unit":"Unit","grp":"ODF"},{"code":"110016","sub":"ODF","name":"ODF 2 Ports","type":"Pigtail","unit":"Set","grp":"ODF"},{"code":"110032","sub":"ODF","name":"ODF 24 Ports SC/APC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"110030","sub":"ODF","name":"ODF 48 Ports SC/APC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"110018","sub":"ODF","name":"ODF 96 Ports SC/APC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"110055","sub":"MUFA","name":"Clousure 1Fo Plane, 2 Ports, Empalme mecanico","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"110068","sub":"MUFA","name":"Clousure 24Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"110059","sub":"MUFA","name":"Empalme Para Fibra de 1 Hilo","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"110031","sub":"MUFA","name":"ODB, 9 Ports Adapter (Building)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"110021","sub":"MUFA","name":"Splitter 1x16 PLC (SC/APC)","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110020","sub":"MUFA","name":"Splitter 1x4 FHP (SC/APC)","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110022","sub":"ODB","name":"Splitter 1x8 FHP","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110034","sub":"ODB","name":"Splitter 1x8 FHP (SC/APC)","type":"Splitter","unit":"Unit","grp":"ODB"},{"code":"110013","sub":"CONNECTOR","name":"Conector Fastener LC/APC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"110039","sub":"CONNECTOR","name":"Conector Fastener SC/APC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"110005","sub":"CONNECTOR","name":"Conector Fastener SC/UPC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"110069","sub":"CONNECTOR","name":"Waterproof Field Conector for ZTE Box","type":"Conector","unit":"Set","grp":"Connector"},{"code":"110001","sub":"CABLES","name":"Cable Fibra Optica 1 Hilo - Drop","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"110036","sub":"CABLES","name":"Cable Fibra Optica 2 Hilos - Drop","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"110035","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"110044","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 100m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110045","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 150m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110046","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 200m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110047","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 250m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110048","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 300m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110049","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 350m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110042","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 50m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110043","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 80m SC/APC","type":"Cable de Fibra Óptica","unit":"Unit","grp":"Cables"},{"code":"110057","sub":"CABLES","name":"UTP Cat5 Cable","type":"Cable de Red","unit":"Meters","grp":"Cables"},{"code":"110017","sub":"ONU","name":"PHYHOME_Router AC1200","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110002","sub":"ONU","name":"TP LINK_Router TL-WR841F","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110054","sub":"ONU","name":"ZTE_Mesh ZXHN H196A","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110041","sub":"ONU","name":"ZTE_Router F671Y","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110071","sub":"ONU","name":"ZTE_Router F672Y","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110052","sub":"ONU","name":"ZTE_Router S6600P","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110066","sub":"TV BOX","name":"DYNALINK_Tv Box DL-GT36","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110070","sub":"TV BOX","name":"Tv Box DV9187","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110058","sub":"TV BOX","name":"ZTE_Tv Box ZXV10 B866V2K","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110060","sub":"TV BOX","name":"ZTE_Tv Box ZXV10 B866V2K","type":"Tv Box ultima milla","unit":"Set","grp":"Routers"},{"code":"110064","sub":"ACCESORIOS","name":"Canaleta Adhesiva 13x7x2000mm","type":"Canaleta de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110080","sub":"ACCESORIOS","name":"Cintillo Bandera Amarillo 2.5mm","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110063","sub":"ACCESORIOS","name":"Grapa","type":"Grapa de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110065","sub":"FERRETERIA","name":"Cinta Aislante Negro 3m","type":"Cinta Aislante Negro","unit":"Unit","grp":"Accesories"},{"code":"110008","sub":"FERRETERIA","name":"Cinta Bandit + Set belt (Hebillas)","type":"Cinta de Acero + Hebillas de Fijación","unit":"Set","grp":"Accesories"},{"code":"110051","sub":"FERRETERIA","name":"Cinta Bandit + Set belt (Hebillas)","type":"Cinta de Acero + Hebillas de Fijación","unit":"Set","grp":"Accesories"},{"code":"110062","sub":"FERRETERIA","name":"Cintillo Blanco 4.8mm","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110007","sub":"FERRETERIA","name":"Clevis D type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"110050","sub":"FERRETERIA","name":"Clevis Trebol Type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"110053","sub":"PREFORMADOS","name":"Templador for Drop Cable","type":"Retenida Preformada","unit":"Set","grp":"Accesories"}]};
+const DEFAULT_CATALOG = {"gpon":[{"code":"291368","sub":"OLT","name":"OLT GPON ZTE C610 - 16 port DC","type":"Equipo","unit":"Set","grp":"OLT"},{"code":"294701","sub":"OLT","name":"Single Fiber Bidirectional Optical Transceiver SFP GPON-OLT class C+","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"283866","sub":"OLT","name":"Single Channel Dual Fiber Bidirectional Optical Module ZTE 10Km/1.25Gb","type":"Módulo","unit":"Unit","grp":"OLT"},{"code":"294702","sub":"PATCH CORD","name":"Patch Cord SC/UPC-SC/UPC 3mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000089","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 3mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000087","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 15mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"000086","sub":"PATCH CORD","name":"Patch Cord LC/UPC-LC/UPC 10mt","type":"Patch Cord","unit":"Set","grp":"ODF"},{"code":"267990","sub":"ODF","name":"ODF 48 Ports SC/UPC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"002925","sub":"ODF","name":"ODF 24 Ports SC/UPC","type":"Equipo de Distribución","unit":"Set","grp":"ODF"},{"code":"265191","sub":"GABINETE","name":"Cabinet Outdoor for OLT and ODF","type":"Gabinete Exterior","unit":"Unit","grp":"ODF"},{"code":"299798","sub":"MUFA","name":"Clousure 48Fo Dome, 8 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"299799","sub":"MUFA","name":"Clousure 24Fo Dome, 8 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"000424","sub":"MUFA","name":"Clousure 24Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"000423","sub":"MUFA","name":"Clousure 12Fo Plane, 4 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"008810","sub":"MUFA","name":"Clousure 4Fo Plane, 3 Ports","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"262079","sub":"MUFA","name":"Clousure 1Fo Plane, 2 Ports, Empalme mecanico","type":"Caja de Empalme","unit":"Set","grp":"ODB"},{"code":"300476","sub":"ODB","name":"ODB, 11 Ports Adapter (HUB-BOX 70/30)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300477","sub":"ODB","name":"ODB, 11 Ports Adapter (SUB-BOX 70/30)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300478","sub":"ODB","name":"ODB, 11 Ports Adapter (SUB-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"300479","sub":"ODB","name":"ODB, 10 Ports Adapter (END-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"298476","sub":"ODB","name":"ODB, 9 Ports Adapter (EXP-BOX 50/50)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"298912","sub":"ODB","name":"ODB, 9 Ports Adapter (Building)","type":"Caja de Distribución","unit":"Set","grp":"ODB"},{"code":"296344","sub":"MUFA","name":"ZTE_ODB, 2 fiber Ports Adapter (Juntion Box)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294765","sub":"MUFA","name":"ZTE_ODB, 8 MPO and 4 fiber Ports Adapter (X-BOX)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294764","sub":"MUFA","name":"ZTE_ODB, 5 Ports Adapter (HUB-BOX)","type":"Caja de Empalme Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294767","sub":"ODB","name":"ZTE_ODB, 11 Ports Adapter (SUB-BOX 70/30)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294768","sub":"ODB","name":"ZTE_ODB, 11 Ports Adapter (SUB-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"294766","sub":"ODB","name":"ZTE_ODB, 10 Ports Adapter (END-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"296345","sub":"ODB","name":"ZTE_ODB, 9 Ports Adapter (EXP-BOX 50/50)","type":"Caja de Distribución Preconectorizado","unit":"Set","grp":"ODB"},{"code":"299379","sub":"CONNECTOR","name":"Waterproof Field Conector for ZTE Box","type":"Conector pre-ensamblado","unit":"Set","grp":"Connector"},{"code":"299378","sub":"CONNECTOR","name":"Conector Fastener SC/APC","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"","sub":"SPLITTER","name":"Splitter 1x8 PLC (Pigtail 1*8 PLC)","type":"Splitter","unit":"Unit","grp":"Connector"},{"code":"043978","sub":"CABLES","name":"Fiber Optic Cable ADSS 48 Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"063004","sub":"CABLES","name":"Fiber Optic Cable ADSS 24 Span 200m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"000067","sub":"CABLES","name":"Fiber Optic Cable ADSS 24 Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"299344","sub":"CABLES","name":"Fiber Optic Cable ASU 12Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"300378","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"009266","sub":"CABLES","name":"Fiber Optic Cable ASU 4Fo Span 100m - Flexible","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"300379","sub":"CABLES","name":"Fiber Optic Cable ASU 1Fo Span 100m","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"294795","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 100m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294796","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 200m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"296347","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 300m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294797","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 500m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294798","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 600m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294799","sub":"CABLES","name":"Pre-Connectorized 12 Core Optical Fiber 700m MPO/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294790","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 50m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294791","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 100m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294792","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 150m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294793","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 200m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"294794","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 250m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"295995","sub":"CABLES","name":"Pre-Connectorized 1 Core Optical Fiber 300m SC/APC","type":"Cable de Fibra Óptica Preconectorizado","unit":"Unit","grp":"Cables"},{"code":"299381","sub":"CABLES","name":"Cable Fibra Optica 1 Hilo - Drop","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"296348","sub":"PATCH CORD","name":"ZTE_Patch Cord SC/APC 7mt","type":"Patch Cord","unit":"Unit","grp":"Accesories"},{"code":"000306","sub":"PREFORMADOS","name":"Tension Span 200","type":"Herraje de Tensión","unit":"Unit","grp":"Accesories"},{"code":"000305","sub":"PREFORMADOS","name":"Tension Span 100","type":"Herraje de Tensión","unit":"Unit","grp":"Accesories"},{"code":"000313","sub":"FERRETERIA","name":"Suspension Span 100","type":"Herraje de Suspensión","unit":"Unit","grp":"Accesories"},{"code":"000350","sub":"FERRETERIA","name":"Cable clamps OPGW","type":"Herraje de Suspensión","unit":"Unit","grp":"Accesories"},{"code":"298983","sub":"PREFORMADOS","name":"Preformed plastic for 5mm-8mm cable","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"294929","sub":"PREFORMADOS","name":"Preformed for 6.8mm cable (MPO Cable)","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"294928","sub":"PREFORMADOS","name":"Preformed for 5mm cable (Pre-con Cable)","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"299380","sub":"PREFORMADOS","name":"Templador for Drop Cable","type":"Retenida Preformada","unit":"Unit","grp":"Accesories"},{"code":"028497","sub":"FERRETERIA","name":"Clevis D type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"294898","sub":"FERRETERIA","name":"Clevis Trebol Type","type":"Herraje de Conexión","unit":"Unit","grp":"Accesories"},{"code":"285043","sub":"FERRETERIA","name":"Supporting arm 1.0m","type":"Brazo de Soporte","unit":"Unit","grp":"Accesories"},{"code":"295136","sub":"FERRETERIA","name":"Supporting arm 0.6m","type":"Brazo de Soporte","unit":"Unit","grp":"Accesories"},{"code":"024941","sub":"FERRETERIA","name":"Cruzeta 60cm","type":"Cruceta","unit":"Unit","grp":"Accesories"},{"code":"295280","sub":"MENSAJERO","name":"Steel Wire Rope 4mm, with PVC cover","type":"Cable de Acero","unit":"Meters","grp":"Accesories"},{"code":"295360","sub":"MENSAJERO","name":"Dielectric Hanging clamp","type":"Abrazadera Dieléctrica","unit":"Unit","grp":"Accesories"},{"code":"020910","sub":"MENSAJERO","name":"Steel Padlock 3/8\" for Steel Wire","type":"Accesorio de Seguridad","unit":"Unit","grp":"Accesories"},{"code":"008332","sub":"FERRETERIA","name":"Cinta Bandit + Set belt (Hebillas)","type":"Cinta de Acero + Hebillas de Fijación","unit":"Set","grp":"Accesories"},{"code":"294899","sub":"FERRETERIA","name":"Steel Band for pole diameters range from 100-200mm","type":"Cinta de Acero Ensamblado","unit":"Set","grp":"Accesories"},{"code":"295660","sub":"FERRETERIA","name":"Cinta Bandit","type":"Cinta de Acero","unit":"Meters","grp":"Accesories"},{"code":"295661","sub":"FERRETERIA","name":"Set belt (Hebillas)","type":"Hebillas de Fijación","unit":"Unit","grp":"Accesories"},{"code":"","sub":"","name":"Fiber cable label","type":"Etiqueta de Identificación","unit":"Unit","grp":"Accesories"},{"code":"009610","sub":"FERRETERIA","name":"Fireproof PVC Corrugated Tube 25mm","type":"Tubo corrugado PVC","unit":"Meters","grp":"Accesories"},{"code":"","sub":"FERRETERIA","name":"Ear type cable Clamp","type":"Abrazadera","unit":"Unit","grp":"Accesories"},{"code":"","sub":"","name":"Cable Cintillo 4x200mm","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"}],"bccs1":[{"code":"110071","name":"Router ZTE ZXHN F672Y","sub":"ONU","type":"Router ultima milla","unit":"Set","grp":"Routers"},{"code":"110001","name":"Cable Fibra Optica 1 Hilo - FTTH","sub":"CABLES","type":"Cable de Fibra Óptica","unit":"Meters","grp":"Cables"},{"code":"110039","name":"Conector Fastener SC/APC","sub":"CONNECTOR","type":"Conector","unit":"Unit","grp":"Connector"},{"code":"110069","name":"Waterproof Field Conector for ZTE Box","sub":"CONNECTOR","type":"Conector","unit":"Set","grp":"Connector"},{"code":"110053","name":"Templador Tipo P - GPON","sub":"PREFORMADOS","type":"Retenida Preformada","unit":"Set","grp":"Accesories"},{"code":"110080","name":"Cintillo Bandera Amarillo 2.5mm","sub":"ACCESORIOS","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110063","name":"Grapa","sub":"ACCESORIOS","type":"Grapa de Plastico","unit":"Unit","grp":"Accesories"},{"code":"110062","name":"Cintillo Blanco 4.8mm","sub":"FERRETERIA","type":"Cinta de Plastico","unit":"Unit","grp":"Accesories"}]};
 </script>
 <script>
 /* ============ Utilidades ============ */
@@ -290,7 +325,7 @@ const S = {
   cmp:{code:'', a:'', b:'', sugT:'GPON', sugSrc:'central'},
   mov:{a:'', b:'', t:'', r:'', onlyCat:false},
   cal:{y:new Date().getFullYear(), m:new Date().getMonth(), wh:'', st:''},
-  pending:null
+  pending:null, lm:{stock:{}, upd:{}, rate:{}, kit:{}}, lmEdit:false
 };
 const cortesOf = kind => S.cortes.filter(c=>c.kind===kind).sort((a,b)=>a.date.localeCompare(b.date));
 const curWh = () => { const l = cortesOf('wh'); return l.find(c=>c.date===S.sel) || l[l.length-1] || null; };
@@ -348,6 +383,7 @@ function renderNav(){
 function route(){
   const h = location.hash.replace('#','');
   S.view = NAV.some(n=>n.k===h) ? h : 'resumen';
+  if(S.view!=='lastmile') S.lmEdit = false;
   render(); window.scrollTo(0,0);
 }
 window.addEventListener('hashchange', route);
@@ -587,14 +623,115 @@ function vSection(T){
   </div>` + (whs.length ? tb.html : `<div class="card empty"><b>No hay almacenes de este tipo en el reporte</b>El corte del ${fmtDate(c.date)} no trae almacenes ${sec.desc.split('·')[1]||''}.</div>`);
   if(whs.length) tb.bind(()=>vSection(T));
 }
+/* ============ 4. Lastmile (BCCS1) ============ */
+// Branches de BCCS1: su stock se ingresa a mano en la tabla.
+const BRANCHES = ['BCCS_ARE','BCCS_CAJ','BCCS_CUS','BCCS_HUN','BCCS_JUN','BCCS_LAL','BCCS_PIU','BCCS_SAN','BCCS_LI1','BCCS_LI2','BCCS_LI3','BCCS_LI4','BCCS_LI7'];
+const BRANCH_NAME = {BCCS_ARE:'Arequipa',BCCS_CAJ:'Cajamarca',BCCS_CUS:'Cusco',BCCS_HUN:'Huánuco',BCCS_JUN:'Junín',BCCS_LAL:'La Libertad',BCCS_PIU:'Piura',BCCS_SAN:'San Martín',BCCS_LI1:'Lima 1',BCCS_LI2:'Lima 2',BCCS_LI3:'Lima 3',BCCS_LI4:'Lima 4',BCCS_LI7:'Lima 7'};
+const DEFAULT_RATE = {BCCS_LI1:21,BCCS_LI2:6,BCCS_LI3:5,BCCS_LI4:19,BCCS_LAL:12,BCCS_CUS:18,BCCS_ARE:11,BCCS_PIU:6,BCCS_CAJ:5,BCCS_HUN:5,BCCS_JUN:8,BCCS_LI7:1,BCCS_SAN:2};
+const DEFAULT_KIT = {'110071':1,'110001':200,'110039':1,'110069':1,'110053':14,'110080':1,'110063':6,'110062':6};
+const ALERT_DAYS = 10;
+const lmStock = (b, code) => Number(S.lm.stock?.[b]?.[code] || 0);
+const lmRate = b => Number(S.lm.rate?.[b] ?? DEFAULT_RATE[b] ?? 0);
+const lmKit = () => ({...DEFAULT_KIT, ...(S.lm.kit||{})});
+const lmCentral = (c, code) => { let s=0; const m = idx(c).get(code); if(m) for(const v of m.values()) s += v.g; return s; };
+function coverage(getQty){ // clientes que alcanzan con el stock y material que limita
+  const kit = lmKit(); let clients = Infinity, limit = null;
+  for(const [code, per] of Object.entries(kit)){ if(!(per>0)) continue; const n = Math.floor(getQty(code)/per); if(n < clients){ clients = n; limit = code; } }
+  return {clients: isFinite(clients) ? clients : 0, limit};
+}
+function branchCov(b){
+  const cv = coverage(code => lmStock(b, code)); const rate = lmRate(b);
+  const hasData = !!S.lm.upd?.[b] || Object.values(S.lm.stock?.[b]||{}).some(v=>Number(v)>0);
+  if(!hasData) return {b, ...cv, rate, days:null, st:{k:'nodata',l:'Sin datos',cls:'t-mute'}};
+  const days = rate>0 ? cv.clients / rate : null;
+  const st = days===null ? {k:'none',l:'Sin consumo',cls:'t-mute'} : days<=ALERT_DAYS ? {k:'crit',l:`Quedan ${Math.floor(days)} día${Math.floor(days)===1?'':'s'}`,cls:'t-crit',ic:'crit'} : {k:'ok',l:'OK',cls:'t-good',ic:'ok'};
+  return {b, ...cv, rate, days, st};
+}
 function vLastmile(){
   const c = curLm();
-  const whs = whsIn(c);
-  const tb = stockTable({c, cat:catBccs(), whs, T:'LM', kindLabel:'Lastmile BCCS1'});
-  $('#main').innerHTML = header('4. Lastmile (BCCS1)', `Material de última milla · almacén <b>BCCS1</b> · ${catBccs().length} materiales en la lista`, 'bccs1') +
-    (c ? staleBanner(c,'bccs1') : `<div class="banner info">${ICON.clock}<div><b>Fuente de datos pendiente.</b> Cuando tengas el reporte de BCCS1 (por ejemplo, el “Reporte detallado de inventario de canales”), súbelo en <a href="#actualizar">Actualizar stock</a> y esta tabla se llenará sola. Mientras tanto se muestra tu lista de materiales.</div></div>`) +
-    tb.html;
-  tb.bind(vLastmile);
+  const cat = catBccs(), kit = lmKit();
+  const edit = S.lmEdit && S.canWrite;
+  const covs = BRANCHES.map(branchCov);
+  const alerts = covs.filter(x=>x.st.k==='crit').sort((a,b)=>a.days-b.days);
+  const totalRate = BRANCHES.reduce((a,b)=>a+lmRate(b),0);
+  const cen = c ? coverage(code=>lmCentral(c,code)) : {clients:0, limit:null};
+  const lastUpd = Object.values(S.lm.upd||{}).map(u=>u.at).filter(Boolean).sort().pop();
+  const q = (S.tbl.q||'').trim().toLowerCase();
+  const rows = cat.filter(it=>!q || (it.code+' '+it.name).toLowerCase().includes(q));
+  const groups = [...new Set(cat.map(i=>i.grp).filter(Boolean))];
+  const nm = code => info(code).name;
+  const daysTxt = d => d===null ? '—' : d>=999 ? '999+' : fmt(Math.floor(d));
+  const maxDays = Math.max(30, ...covs.map(x=>x.days||0).filter(isFinite));
+  const cell = (b, code) => edit ? `<td class="num"><input class="cellin" type="number" min="0" step="any" data-b="${b}" data-c="${esc(code)}" value="${lmStock(b,code)||''}" placeholder="0"></td>`
+    : `<td class="num">${lmStock(b,code)?fmt(lmStock(b,code)):'<span class="z">0</span>'}</td>`;
+  const rowHtml = it => { const tot = c?lmCentral(c,it.code):0; const st = stStatus(tot, minOf('LM',it.code));
+    return `<tr class="${edit?'':'click'} ${tot<=0?'zero':''}" ${edit?'':`data-act="mat:${it.code}:LM"`}>
+      <td class="code">${esc(it.code)}</td><td class="wrap"><div class="mname">${esc(it.name)}</div>${it.type?`<div class="mspec">${esc([it.sub,it.type].filter(Boolean).join(' · '))}</div>`:''}</td>
+      <td>${esc(unitEs(it.unit))}</td>
+      <td class="num">${edit?`<input class="cellin" type="number" min="0" step="any" data-kit="${esc(it.code)}" value="${kit[it.code]??''}" placeholder="0">`:(kit[it.code]?fmt(kit[it.code]):'<span class="z">—</span>')}</td>
+      <td class="num tot"><b>${tot?fmt(tot):'<span class="z">0</span>'}</b></td>
+      ${BRANCHES.map(b=>cell(b,it.code)).join('')}
+      <td class="num">${minOf('LM',it.code)!==null?fmt(minOf('LM',it.code)):'<span class="z">—</span>'}</td><td>${tag(st.cls,st.l,st.ic)}</td></tr>`; };
+  let body = '';
+  for(const g of [...groups,'']){ const rs = rows.filter(r=>(r.grp||'')===g); if(!rs.length) continue; if(g) body += `<tr class="grp"><td colspan="${BRANCHES.length+7}">${esc(g)} <span class="muted">· ${rs.length}</span></td></tr>`; body += rs.map(rowHtml).join(''); }
+  $('#main').innerHTML = header('4. Lastmile (BCCS1)', `Material de última milla · almacén central <b>BCCS1</b> (reporte) y ${BRANCHES.length} branches (ingreso manual)`, 'bccs1') +
+    (c ? staleBanner(c,'bccs1') : `<div class="banner info">${ICON.clock}<div><b>Aún no hay reporte de BCCS1.</b> Súbelo en <a href="#actualizar">Actualizar stock</a> para llenar la columna Total BCCS1. El stock de los branches se ingresa a mano en la tabla.</div></div>`) +
+    (alerts.length?`<div class="banner crit">${ICON.crit}<div><b>${alerts.length} branch${alerts.length>1?'es':''} con material para ${ALERT_DAYS} días o menos:</b> ${alerts.map(a=>`${esc(a.b)} (${Math.floor(a.days)} d)`).join(', ')}.</div></div>`:'') + `
+  <div class="grid g4">
+    <div class="card kpi"><div class="lbl">BCCS1 central alcanza para</div><div class="val">${fmt(cen.clients)}<span class="muted" style="font-size:15px"> clientes</span></div><div class="foot">${c&&cen.limit?`Limita: ${esc(nm(cen.limit))}`:'Según el último reporte'}</div></div>
+    <div class="card kpi"><div class="lbl">Instalaciones por día (13 branches)</div><div class="val">${fmt(totalRate)}</div><div class="foot">${totalRate&&c?`Central ≈ ${daysTxt(cen.clients/totalRate)} días a este ritmo`:'clientes/día'}</div></div>
+    <div class="card kpi"><div class="lbl">Branches en alerta (≤ ${ALERT_DAYS} días)</div><div class="val" style="color:${alerts.length?'var(--crit)':'inherit'}">${alerts.length}<span class="muted" style="font-size:16px"> / ${BRANCHES.length}</span></div><div class="foot">${alerts.length?'Revisa la tabla de cobertura':'Todos con más de '+ALERT_DAYS+' días'}</div></div>
+    <div class="card kpi"><div class="lbl">Último ajuste manual de branches</div><div class="val" style="font-size:22px">${lastUpd?fmtDate(lastUpd.slice(0,10)):'—'}</div><div class="foot">${lastUpd?'':'Aún no se ingresa stock de branches'}</div></div>
+  </div>
+
+  <div class="card mt"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><h3>Cobertura por branch</h3>
+    <p class="hint">Clientes que se pueden instalar con el stock del branch (según el kit por cliente) y días que dura al ritmo de instalación. Alerta con ${ALERT_DAYS} días o menos.</p></div></div>
+    <div class="tbl-wrap" style="max-height:none"><table><thead><tr><th>Branch</th><th class="num">Instalaciones / día</th><th class="num">Material para</th><th style="min-width:200px">Días de cobertura</th><th>Material que limita</th><th>Estado</th><th>Actualizado</th></tr></thead><tbody>
+    ${covs.slice().sort((a,b)=>(a.days??1e9)-(b.days??1e9)).map(x=>`<tr><td><b>${x.b}</b> <span class="muted">${esc(BRANCH_NAME[x.b]||'')}</span></td>
+      <td class="num">${edit?`<input class="cellin" type="number" min="0" step="any" data-rate="${x.b}" value="${lmRate(x.b)}">`:fmt(x.rate)}</td>
+      <td class="num"><b>${fmt(x.clients)}</b> <span class="muted">clientes</span></td>
+      <td><div class="mini"><div class="bar-track"><div class="bar-fill" style="width:${x.days===null?0:Math.min(100,x.days/maxDays*100)}%;background:${x.st.k==='crit'?'var(--crit)':'var(--s400)'};${x.days>0?'min-width:2px':''}"></div></div><span>${daysTxt(x.days)}</span></div></td>
+      <td class="muted" style="white-space:normal">${x.limit&&x.days!==null?esc(nm(x.limit)):'—'}</td>
+      <td>${tag(x.st.cls,x.st.l,x.st.ic)}</td>
+      <td class="muted">${S.lm.upd?.[x.b]?.at?fmtDate(S.lm.upd[x.b].at.slice(0,10)):'—'}</td></tr>`).join('')}
+    </tbody></table></div>
+    <p class="muted" style="font-size:12px;margin:8px 0 0">Kit por cliente: ${Object.entries(kit).filter(([,v])=>v>0).map(([k,v])=>`${fmt(v)} ${esc(unitEs(info(k).unit))} ${esc(nm(k))}`).join(' · ')}.</p>
+  </div>
+
+  <div class="card mt"><div class="row" style="justify-content:space-between;align-items:flex-start"><div><h3>Stock por material</h3>
+    <p class="hint">Total BCCS1 viene del reporte. Las columnas de branches se actualizan a mano${S.canWrite?'':' (solo el equipo)'}.</p></div>
+    <div class="row">
+      <input type="search" id="sq" placeholder="Buscar…" value="${esc(S.tbl.q)}">
+      ${edit?`<button class="btn" id="lmCancel">Cancelar</button><button class="btn pri" id="lmSave">Guardar stock de branches</button>`
+        :`<button class="btn edit-only pri" id="lmEdit">Editar stock de branches</button><button class="btn" id="xlsxBtn">Descargar Excel</button>`}
+    </div></div>
+    ${edit?`<div class="banner info">${ICON.clock}<div>Modo edición: escribe el stock actual de cada branch. También puedes ajustar el kit por cliente y las instalaciones por día (tabla de arriba). Pulsa <b>Guardar</b> al terminar.</div></div>`:''}
+    <div class="tbl-wrap"><table><thead><tr><th>Código</th><th>Material</th><th>Und.</th><th class="num">Kit / cliente</th><th class="num tot">Total BCCS1</th>
+      ${BRANCHES.map(b=>`<th class="num" title="${esc(BRANCH_NAME[b]||'')}">${b.replace('BCCS_','')}<span class="whname">${esc(BRANCH_NAME[b]||'')}</span></th>`).join('')}
+      <th class="num">Mínimo</th><th>Estado</th></tr></thead>
+    <tbody>${body||`<tr><td colspan="${BRANCHES.length+7}" class="empty">Ningún material coincide.</td></tr>`}</tbody></table></div>
+    <p class="muted" style="font-size:12px">Clic en un material para ver el detalle, la tendencia del central y fijar su mínimo.</p>
+  </div>`;
+  const sq=$('#sq'); sq.oninput=()=>{ S.tbl.q=sq.value; const p=sq.selectionStart; vLastmile(); renderNav(); const n=$('#sq'); n.focus(); n.setSelectionRange(p,p); };
+  if($('#lmEdit')) $('#lmEdit').onclick=()=>{ S.lmEdit=true; render(); };
+  if($('#lmCancel')) $('#lmCancel').onclick=()=>{ S.lmEdit=false; render(); };
+  if($('#lmSave')) $('#lmSave').onclick=async()=>{
+    const stock = JSON.parse(JSON.stringify(S.lm.stock||{})), upd = {...(S.lm.upd||{})}, rate = {...DEFAULT_RATE, ...(S.lm.rate||{})}, kitN = {...kit};
+    const now = new Date().toISOString();
+    document.querySelectorAll('[data-b]').forEach(i=>{ const b=i.dataset.b, code=i.dataset.c, v=i.value===''?0:Number(i.value);
+      stock[b] = stock[b]||{}; if((Number(stock[b][code])||0)!==v){ stock[b][code]=v; upd[b]={at:now, by:S.email||''}; } });
+    document.querySelectorAll('[data-rate]').forEach(i=>rate[i.dataset.rate]=i.value===''?0:Number(i.value));
+    document.querySelectorAll('[data-kit]').forEach(i=>kitN[i.dataset.kit]=i.value===''?0:Number(i.value));
+    $('#lmSave').disabled=true;
+    if(await saveLm({stock, upd, rate, kit:kitN})){ S.lmEdit=false; toast('Stock de branches guardado'); render(); } else $('#lmSave').disabled=false;
+  };
+  if($('#xlsxBtn')) $('#xlsxBtn').onclick=()=>{
+    if(!window.XLSX){ toast('El generador de Excel aún está cargando.'); return; }
+    const wb=XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(cat.map(it=>{ const o={'Sección':it.grp,'Código':it.code,'Material':it.name,'Unidad':unitEs(it.unit),'Kit por cliente':kit[it.code]||0,'Total BCCS1':c?lmCentral(c,it.code):0}; BRANCHES.forEach(b=>o[b]=lmStock(b,it.code)); return o; })), 'Stock');
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(covs.map(x=>({'Branch':x.b,'Nombre':BRANCH_NAME[x.b],'Instalaciones/día':x.rate,'Clientes posibles':x.clients,'Días de cobertura':x.days===null?'':Math.floor(x.days),'Material que limita':x.limit?nm(x.limit):'','Estado':x.st.l}))), 'Cobertura');
+    XLSX.writeFile(wb, `Lastmile_BCCS1_${c?c.date:todayISO()}.xlsx`);
+  };
 }
 
 /* ============ Detalle de material ============ */
@@ -602,12 +739,12 @@ function openMaterial(code, T){
   if(!code) return;
   const c = T==='LM' ? curLm() : curWh();
   const inf = info(code);
-  const whs = T==='LM' ? whsIn(c) : whsIn(c, T);
-  const per = whs.map(w=>({w, g:qty(c,code,w), b:idx(c).get(code)?.get(w)?.b||0}));
-  const total = per.reduce((a,x)=>a+x.g,0);
+  const whs = T==='LM' ? [] : whsIn(c, T);
+  const per = T==='LM' ? [{w:'BCCS1', g:c?lmCentral(c,code):0, b:0}, ...BRANCHES.map(b=>({w:b, g:lmStock(b,code), b:0}))] : whs.map(w=>({w, g:qty(c,code,w), b:idx(c).get(code)?.get(w)?.b||0}));
+  const total = T==='LM' ? (per[0]?.g||0) : per.reduce((a,x)=>a+x.g,0);
   const m = minOf(T, code), st = stStatus(total, m);
   const list = T==='LM' ? cortesOf('bccs1') : cortesOf('wh');
-  const hist = list.map(x=>{ const v = T==='LM' ? whsIn(x).reduce((a,w)=>a+qty(x,code,w),0) : sumType(x,code,T).g; return {x:fmtShort(x.date), y:v, tip:`<div class='tt'>${fmtDate(x.date)}</div>${fmt(v)} ${unitEs(inf.unit)}`}; });
+  const hist = list.map(x=>{ const v = T==='LM' ? lmCentral(x,code) : sumType(x,code,T).g; return {x:fmtShort(x.date), y:v, tip:`<div class='tt'>${fmtDate(x.date)}</div>${fmt(v)} ${unitEs(inf.unit)}`}; });
   const regions = T==='LM' ? [] : [...new Set(whsIn(c).map(whRegion))].sort(regionSort);
   const cross = regions.map(r=>({r, v:SEC_KEYS.map(k=>qty(c,code,`${r}_${k==='GPON'?'GPON':k==='NOC'?'NOC_GPON':'ROTATIONAL_GPON'}`))})).filter(x=>x.v.some(Boolean));
   const dels = S.deliveries.filter(d=>(d.items||[]).some(x=>x.code===code)).sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
@@ -616,11 +753,11 @@ function openMaterial(code, T){
       <div class="muted" style="font-size:12.5px">${esc([inf.grp, inf.sub, inf.type].filter(Boolean).join(' · '))}${inf.inCat?'':' Fuera de tu lista de materiales'}</div></div>
       <button class="btn ghost" data-act="close">${ICON.x}</button></div>
     <div class="grid g4" style="margin-bottom:14px">
-      <div class="card kpi"><div class="lbl">Stock total en ${esc(secName)}</div><div class="val">${fmt(total)}</div><div class="foot">${esc(unitEs(inf.unit))}${c?` · corte ${fmtDate(c.date)}`:''}</div></div>
+      <div class="card kpi"><div class="lbl">${T==='LM'?'Stock en BCCS1 central':'Stock total en '+esc(secName)}</div><div class="val">${fmt(total)}</div><div class="foot">${esc(unitEs(inf.unit))}${c?` · corte ${fmtDate(c.date)}`:''}</div></div>
       <div class="card kpi"><div class="lbl">Stock mínimo</div><div class="row" style="margin-top:6px"><input type="number" min="0" id="minIn" value="${m??''}" placeholder="Sin definir" style="width:120px" ${S.canWrite?'':'disabled'}><button class="btn pri sm edit-only" id="minSave">Guardar</button></div><div class="foot">${tag(st.cls,st.l,st.ic)}</div></div>
     </div>
     <h3 style="font-size:14px">Por almacén</h3>
-    ${per.length?hbars(per.map(x=>({label:x.w, sub:regionLabel(whRegion(x.w)), value:x.g, tip:`<div class='tt'>${esc(x.w)}</div>${fmt(x.g)} ${esc(unitEs(inf.unit))}${x.b?` · ${fmt(x.b)} dañados`:''}`}))):'<p class="muted">Sin datos de almacenes.</p>'}
+    ${per.length?hbars(per.map(x=>({label:x.w, sub:T==='LM'?(BRANCH_NAME[x.w]||'central (reporte)'):regionLabel(whRegion(x.w)), value:x.g, tip:`<div class='tt'>${esc(x.w)}</div>${fmt(x.g)} ${esc(unitEs(inf.unit))}${x.b?` · ${fmt(x.b)} dañados`:''}`}))):'<p class="muted">Sin datos de almacenes.</p>'}
     ${cross.length?`<h3 style="font-size:14px;margin-top:18px">Comparado entre tipos de almacén</h3><p class="hint">Stock de este material por región en Proyectos, Incidencias y Recuperado.</p>
       <div class="tbl-wrap" style="max-height:260px"><table><thead><tr><th>Región</th>${SEC_KEYS.map(k=>`<th class="num">${SECS[k].short}</th>`).join('')}</tr></thead><tbody>
       ${cross.map(x=>`<tr><td><b>${esc(x.r)}</b> <span class="muted">${esc(regionLabel(x.r))}</span></td>${x.v.map(v=>`<td class="num">${v?fmt(v):'<span class="z">0</span>'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`:''}
@@ -963,9 +1100,8 @@ function parseWorkbook(wb, fileName){
     const ti = hdr.findIndex(c=>/^total/i.test(c)), si = hdr.findIndex(c=>/situaci/i.test(c)), wi = hdr.findIndex(c=>/wh code/i.test(c));
     for(const r of rows.slice(h+1)){
       const code = normCode(r[ci]); if(!/^\d+$/.test(code)) continue;
-      const w = (String(r[wi>=0?wi:1]??'').trim() || 'BCCS1').toUpperCase();
       const v = numv(r[ti]); const ok = si<0 || /new|nuevo|good/i.test(String(r[si]));
-      add(w==='VTP'?'BCCS1':w, code, r[ni], r[ui], ok?v:0, ok?0:v);
+      add('BCCS1', code, r[ni], r[ui], ok?v:0, ok?0:v);
     }
     return {kind:'bccs1', date:date||todayISO(), dateFound:!!date, rows:out, names, whNames, fileName};
   }
@@ -1054,7 +1190,11 @@ async function loadCortes(){
 async function loadCatalog(){
   const rows = await run(sb.from('catalogo').select('*'));
   S.catalog = {gpon:DEFAULT_CATALOG.gpon, bccs1:DEFAULT_CATALOG.bccs1}; S.catalogFromDb = false;
-  for(const r of rows){ if(Array.isArray(r.items) && r.items.length){ S.catalog[r.id] = r.items; S.catalogFromDb = true; } }
+  S.lm = {stock:{}, upd:{}, rate:{}, kit:{}};
+  for(const r of rows){
+    if(r.id==='lm_branch'){ const v = r.items && !Array.isArray(r.items) ? r.items : {}; S.lm = {stock:v.stock||{}, upd:v.upd||{}, rate:v.rate||{}, kit:v.kit||{}}; continue; }
+    if(Array.isArray(r.items) && r.items.length){ S.catalog[r.id] = r.items; S.catalogFromDb = true; }
+  }
 }
 async function loadDels(){ S.deliveries = (await run(sb.from('deliveries').select('*'))).map(rowToDel).filter(d=>d.date); }
 async function loadCfg(){
@@ -1084,6 +1224,11 @@ async function removeCorte(id){
 async function saveCatalog(cat){
   if(!sb){ Object.assign(S.catalog, cat); S.catalogFromDb = true; return true; }
   try{ await run(sb.from('catalogo').upsert(Object.entries(cat).map(([id,items])=>({id, items, updated_at:new Date().toISOString(), updated_by:S.email||null})))); await loadCatalog(); return true; }
+  catch(e){ return writeErr(e); }
+}
+async function saveLm(v){
+  if(!sb){ S.lm = v; return true; }
+  try{ await run(sb.from('catalogo').upsert({id:'lm_branch', items:v, updated_at:new Date().toISOString(), updated_by:S.email||null})); await loadCatalog(); return true; }
   catch(e){ return writeErr(e); }
 }
 async function saveDelivery(id, rec){
@@ -1139,7 +1284,7 @@ function openLogin(){
 }
 
 let rT = null;
-function scheduleRender(){ cancelAnimationFrame(rT); rT = requestAnimationFrame(()=>{ if(!$('#scrim').classList.contains('on')) render(); else renderNav(); }); }
+function scheduleRender(){ cancelAnimationFrame(rT); rT = requestAnimationFrame(()=>{ if(!$('#scrim').classList.contains('on') && !(S.lmEdit && S.view==='lastmile')) render(); else renderNav(); }); }
 
 async function init(){
   route();
